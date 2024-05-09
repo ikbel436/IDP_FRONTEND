@@ -1,0 +1,57 @@
+<!-- Avatar/User Icon Button -->
+<button mat-icon-button [matMenuTriggerFor]="userActions">
+    <span class="relative" *ngIf="isLoaded">
+        <img class="w-7 h-7 rounded-full" *ngIf="showAvatar && currentUser.avatar" [src]="currentUser.avatar">
+        <mat-icon *ngIf="showAvatar ||currentUser.avatar" [svgIcon]="'heroicons_outline:user-circle'"></mat-icon>
+        <span class="absolute right-0 bottom-0 w-2 h-2 rounded-full" [ngClass]="{
+                            'mr-px mb-px':showAvatar ||currentUser.avatar,
+                            'bg-green-500': currentUser && currentUser.status === 'online',
+                            'bg-amber-500': currentUser && currentUser.status === 'away',
+                            'bg-red-500': currentUser && currentUser.status === 'busy',
+                            'bg-gray-400': currentUser && currentUser.status === 'not-visible'}"></span>
+    </span>
+</button>
+
+<!-- User Actions Menu -->
+<mat-menu #userActions="matMenu">
+    <button mat-menu-item>
+        <span class="flex flex-col leading-none">
+            <span>Signed in as</span>
+            <span class="mt-1.5 text-md font-medium">{{currentUser && currentUser.email}}</span>
+        </span>
+    </button>
+    <mat-divider class="my-2"></mat-divider>
+    <button mat-menu-item (click)="goToProfile()">
+        <mat-icon [svgIcon]="'heroicons_outline:user-circle'"></mat-icon>
+        <span>Profile</span>
+    </button>
+    <button mat-menu-item [matMenuTriggerFor]=" statusMenu">
+        <mat-icon [svgIcon]="'heroicons_outline:ellipsis-horizontal-circle'"></mat-icon>
+        <span>Status</span>
+    </button>
+    <mat-divider class="my-2"></mat-divider>
+    <button mat-menu-item (click)="signOut()">
+        <mat-icon [svgIcon]="'heroicons_outline:arrow-right-on-rectangle'"></mat-icon>
+        <span>Sign out</span>
+    </button>
+</mat-menu>
+
+<!-- Status Menu -->
+<mat-menu class="user-status-menu" #statusMenu="matMenu">
+    <button mat-menu-item (click)="updateStatus1('online')">
+        <span class="w-4 h-4 mr-3 rounded-full bg-green-500"></span>
+        <span>Online</span>
+    </button>
+    <button mat-menu-item (click)="updateStatus1('away')">
+        <span class="w-4 h-4 mr-3 rounded-full bg-amber-500"></span>
+        <span>Away</span>
+    </button>
+    <button mat-menu-item (click)="updateStatus1('busy')">
+        <span class="w-4 h-4 mr-3 rounded-full bg-red-500"></span>
+        <span>Busy</span>
+    </button>
+    <button mat-menu-item (click)="updateStatus1('invisible')">
+        <span class="w-4 h-4 mr-3 rounded-full bg-gray-400"></span>
+        <span>Invisible</span>
+    </button>
+</mat-menu>
