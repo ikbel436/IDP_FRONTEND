@@ -48,7 +48,7 @@ export const appRoutes: Route[] = [
         children: [
             { path: 'sign-out', loadChildren: () => import('app/modules/auth/sign-out/sign-out.routes') },
             { path: 'unlock-session', loadChildren: () => import('app/modules/auth/unlock-session/unlock-session.routes') },
-            { path: 'profile', loadChildren: () => import('app/modules/user/profile/profile.routes') },
+        
 
         ]
     },
@@ -77,7 +77,8 @@ export const appRoutes: Route[] = [
         children: [
 
             // Dashboards
-            { path: 'exemple', loadChildren: () => import('app/modules/admin/example/example.routes') },
+            { path: 'project', loadChildren: () => import('app/mock-api/apps/project/project.routes') },
+            { path: 'profile', loadChildren: () => import('app/modules/user/profile/profile.routes') },
 
             // Apps
 
