@@ -18,7 +18,7 @@ export default [
                 component: ProjectComponent,
                 resolve  : {
                    
-                     products  : () => inject(ProjectService).getProjects("662cf8384d4c8ed1e798f618"),
+                     products  : () => inject(ProjectService).getProjects(),
                    
                 },
             },

@@ -110,7 +110,7 @@ export class ProjectComponent {
     // console.log(this.projects$);
       // Create the selected product form
       this.selectProjectForm = this._formBuilder.group({
-        id: [''],
+        _id: [''],
         name: ['', Validators.required],
         provider: [''],
         lien: [''],
@@ -127,7 +127,7 @@ export class ProjectComponent {
               {
                   this.closeDetails();
                   this.isLoading = true;
-                  return this._inventoryService.getProjects("662cf8384d4c8ed1e798f618");
+                  return this._inventoryService.getProjects();
               }),
               map(() =>
               {
@@ -172,7 +172,7 @@ export class ProjectComponent {
               {
                   this.closeDetails();
                   this.isLoading = true;
-                  return this._inventoryService.getProjects("662cf8384d4c8ed1e798f618");
+                  return this._inventoryService.getProjects();
               }),
               map(() =>
               {
@@ -205,25 +205,30 @@ export class ProjectComponent {
   private showDetailsMap = new Map<string, boolean>();
   toggleDetails(productId: string): void {
     // Check if the product is already selected
-    if (this.selectProject && this.selectProject.id === productId) {
+    if (this.selectProject && this.selectProject._id === productId) {
       // If the product is already selected, close the details
       this.closeDetails();
       return;
     }
   
     // Attempt to get the project by ID
-    this._inventoryService.getProjectsByIds(productId).subscribe((product) => {
+    this._inventoryService.getProjectsByIds(productId).subscribe((project) => {
       // Toggle the visibility of the details
       this.showDetails =!this.showDetails;
    this.showDetailsMap.set(productId,!this.showDetailsMap.get(productId));
       // Set the selected project
-      this.selectProject = product;
+      this.selectProject = project;
   
-      // Log the selected project for debugging purposes
-      console.log(this.selectProject);
+
   
       // Patch the form with the selected project's data
-      this.selectProjectForm.patchValue(product);
+      this.selectProjectForm.patchValue({
+        _id: project._id,
+        name: project.name,
+        provider: project.provider,
+        lien: project.lien,
+        description: project.description,
+        reference: project.reference});
   
       // Mark the component for change detection
       this._changeDetectorRef.markForCheck();
@@ -277,9 +282,8 @@ export class ProjectComponent {
 
   // Inside your component class
   fetchProjects(): void {
-    const userId = '662cf8384d4c8ed1e798f618'; // Example user ID, replace with actual logic to get the user ID
   
-    this._inventoryService.getProjects(userId)
+    this._inventoryService.getProjects()
     .pipe(
       tap(), // Debugging line
         switchMap((projects:any) => {
@@ -295,7 +299,7 @@ export class ProjectComponent {
         (projects) => {
           this.projects$ = of(projects);
           this.projects$.subscribe((projects:any) => {
-            console.log("porjects", projects);
+            console.log("projects", projects);
             this.testProjects = projects
             this.isloaded = true;
             console.log("isloaded", this.isloaded);
@@ -317,21 +321,25 @@ export class ProjectComponent {
   // /**
   //  * Update the selected product using the form data
   //  */
-  updateSelectedProduct(): void
-  {
-      // Get the product object
-      const product = this.selectProjectForm.getRawValue();
+  updateSelectedProduct(): void {
+    
+    const project = this.selectProject; 
+    console.log("project aaaaaa", project.name);
+   
 
-      // Remove the currentImageIndex field
-     // delete product.currentImageIndex;
-
-      // Update the product on the server
-      this._inventoryService.updateProduct(product.id, product).subscribe(() =>
-      {
-          // Show a success message
-          this.showFlashMessage('success');
-      });
-  }
+    // Update the project on the server
+    this._inventoryService.updateproject(project._id, project).subscribe({
+        next: () => {
+            // Show a success message
+            this.showFlashMessage('success');
+        },
+        error: (error) => {
+            console.error('Failed to update project:', error);
+            // Optionally show an error message
+            this.showFlashMessage('error');
+        }
+    });
+}
 
   
 

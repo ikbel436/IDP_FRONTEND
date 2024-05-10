@@ -16,9 +16,9 @@ import {
 @Injectable({ providedIn: 'root' })
 export class ProjectService {
     // Private
-    private _product: BehaviorSubject<InventoryProject | null> =
+    private _project: BehaviorSubject<InventoryProject | null> =
         new BehaviorSubject(null);
-    private _products: BehaviorSubject<InventoryProject[] | null> =
+    private _projects: BehaviorSubject<InventoryProject[] | null> =
         new BehaviorSubject(null);
 
     /**
@@ -40,7 +40,7 @@ export class ProjectService {
      * Getter for product
      */
     get product$(): Observable<InventoryProject> {
-        return this._product.asObservable();
+        return this._project.asObservable();
     }
 
     /**
@@ -143,40 +143,41 @@ export class ProjectService {
     /**
      * Update product
      *
-     * @param id
-     * @param product
+     * @param _id
+     * @param project
      */
-    updateProduct(id: string, product: InventoryProject): Observable<InventoryProject> {
-        return this._products.pipe(
+    updateproject(_id: string, project: InventoryProject): Observable<InventoryProject> {
+        return this._projects.pipe(
           take(1),
-          switchMap(products => this._httpClient.put<InventoryProject>(`${this.apiUrl}/project/${id}`, {
-            name: product.name,
-            description: product.description,
-            provider: product.provider,
-            lien: product.lien
+          switchMap(projects => this._httpClient.put<InventoryProject>(`${this.apiUrl}/project/${_id}`, {
+            _id: project._id,
+            name: project.name,
+            description: project.description,
+            provider: project.provider,
+            lien: project.lien
           }).pipe(
-            map((updatedProduct) => {
-              // Find the index of the updated product
-              const index = products.findIndex(item => item.id === id);
+            map((updatedproject) => {
+              // Find the index of the updated project
+              const index = projects.findIndex(item => item._id === _id);
     
-              // Update the product
-              products[index] = updatedProduct;
+              // Update the project
+              projects[index] = updatedproject;
     
-              // Update the products
-              this._products.next(products);
+              // Update the projects
+              this._projects.next(projects);
     
-              // Return the updated product
-              return updatedProduct;
+              // Return the updated project
+              return updatedproject;
             }),
-            switchMap(updatedProduct => this._product.pipe(
+            switchMap(updatedproject => this._project.pipe(
               take(1),
-              filter(item => item && item.id === id),
+              filter(item => item && item._id === _id),
               tap(() => {
-                // Update the product if it's selected
-                this._product.next(updatedProduct);
+                // Update the project if it's selected
+                this._project.next(updatedproject);
     
-                // Return the updated product
-                return updatedProduct;
+                // Return the updated project
+                return updatedproject;
               }),
             )),
           )),
@@ -216,7 +217,8 @@ export class ProjectService {
      * Project
      * */
 
-    getProjects(userId: string): Observable<InventoryProject[]> {
+    getProjects(): Observable<InventoryProject[]> {
+        
         const token = this.accessToken; 
         const headers = new HttpHeaders().set(
             'Authorization',

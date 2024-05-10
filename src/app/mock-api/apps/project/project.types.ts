@@ -1,7 +1,6 @@
 export interface InventoryProject
 {
-    id: string;
-    // category?: string;
+    _id: string;
     name: string;
     description?: string;
     reference?: string | null;
