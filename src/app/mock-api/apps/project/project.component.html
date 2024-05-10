@@ -61,6 +61,7 @@
                         <div [mat-sort-header]="'reference'">Reference</div>
                         <div [mat-sort-header]="'lien'">Lien</div>
                         <div class="hidden lg:block" [mat-sort-header]="'description'">Description</div>
+                        <div class="hidden sm:block">Details</div>
                     </div>
                     <!-- Rows -->
                     <ng-container *ngFor="let project of testProjects; trackBy: trackByFn">
@@ -78,19 +79,145 @@
                             </div>
                             <!-- Description -->
                             <div class="truncate hidden lg:block">{{ project?.description }}</div>
+                             <!-- Details button -->
+                             
+                             <div >
+                                <button
+                                    class="min-w-10 min-h-7 h-7 px-2 leading-6"
+                                    mat-stroked-button
+                                    (click)="toggleDetails(project?._id)">
+                                    <mat-icon
+                                        class="icon-size-5"
+                                        [svgIcon]="showDetails ? 'heroicons_solid:chevron-up' : 'heroicons_solid:chevron-down'"></mat-icon>
+                                </button>
+                            </div>
                         </div>
                         <div class="grid">
-                            <ng-container *ngIf="selectedProduct?.id === project.id">
+                            <ng-container *ngIf="showDetails">
+                                
                                 <ng-container *ngTemplateOutlet="rowDetailsTemplate; context: { $implicit: project }">
                                 </ng-container>
                             </ng-container>
                         </div>
+                    
                     </ng-container>
                 </div>
                 <!-- Paginator -->
             
             </ng-container>
         </ng-container>
+        <ng-template
+                #rowDetailsTemplate
+                let-product>
+                <div class="shadow-lg overflow-hidden">
+                    <div class="flex border-b">
+                        <!-- Selected product form -->
+                        <form
+                            class="flex flex-col w-full"
+                            [formGroup]="selectProjectForm">
+
+                            <div class="flex flex-col sm:flex-row p-8">
+
+                               
+
+                                <div class="flex flex-auto flex-wrap">
+                                    <!-- Name, SKU & etc. -->
+                                    <div class="flex flex-col w-full lg:w-2/4 sm:pl-8">
+
+                                        <!-- Name -->
+                                        <mat-form-field class="w-full">
+                                            <mat-label>Name</mat-label>
+                                            <input
+                                                matInput
+                                                [formControlName]="'name'">
+                                        </mat-form-field>
+
+                                        <!-- SKU and Barcode -->
+                                        <div class="flex">
+                                            <mat-form-field class="w-1/3 pr-2">
+                                                <mat-label>Reference</mat-label>
+                                                <input
+                                                    matInput
+                                                    [formControlName]="'reference'">
+                                            </mat-form-field>
+                                            <mat-form-field class="w-2/3 pl-2">
+                                                <mat-label>Provider</mat-label>
+                                                <input
+                                                    matInput
+                                                    [formControlName]="'provider'">
+                                            </mat-form-field>
+                                        </div>
+
+                                       
+                                        </div>
+
+                                        <!-- Stock and Reserved -->
+                                        <div class="flex">
+                                            <mat-form-field class="w-1/3 pr-2">
+                                                <mat-label>lien</mat-label>
+                                                <input
+                                                   
+                                                    matInput
+                                                    [formControlName]="'lien'">
+                                            </mat-form-field>
+                                            <mat-form-field class="w-1/3 pl-2">
+                                                <mat-label>description</mat-label>
+                                                <input
+                                                   
+                                                    matInput
+                                                    [formControlName]="'description'">
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+
+                                   
+
+                                    <!-- Weight & Tags -->
+                                
+
+                                </div>
+
+                           
+                            <!-- delete and update -->
+
+                            <div class="flex items-center justify-between w-full border-t px-8 py-4">
+                                <button
+                                    class="-ml-4"
+                                    mat-button
+                                    [color]="'warn'"
+                                    (click)="deleteSelectedProduct()">
+                                    Delete
+                                </button>
+                                <div class="flex items-center">
+                                    <div
+                                        class="flex items-center mr-4"
+                                        *ngIf="flashMessage">
+                                        <ng-container *ngIf="flashMessage === 'success'">
+                                            <mat-icon
+                                                class="text-green-500"
+                                                [svgIcon]="'heroicons_outline:check'"></mat-icon>
+                                            <span class="ml-2">Product updated</span>
+                                        </ng-container>
+                                        <ng-container *ngIf="flashMessage === 'error'">
+                                            <mat-icon
+                                                class="text-red-500"
+                                                [svgIcon]="'heroicons_outline:x-mark'"></mat-icon>
+                                            <span class="ml-2">An error occurred, try again!</span>
+                                        </ng-container>
+                                    </div>
+                                    <button
+                                        mat-flat-button
+                                        [color]="'primary'"
+                                        (click)="updateSelectedProduct()">
+                                        Update
+                                    </button>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </ng-template>
             <ng-template #rowDetailsTemplate let-project>
                 <!-- Details template content remains unchanged -->
             </ng-template>
@@ -104,94 +231,5 @@
         </div>
     </div>
 
-    <mat-tab label="Project">
-        <ng-template matTabContent>
-            <div class="grid grid-cols-1 sm:grid-cols-6 gap-6 w-full min-w-0">
-                <!-- Budget distribution -->
-                <!-- project-list.component.html -->
-
-                <div
-                    class="sm:col-span-6 flex flex-col flex-auto p-6 bg-card shadow rounded-2xl overflow-hidden"
-                >
-                    <div
-                        class="text-lg font-medium tracking-tight leading-6 truncate"
-                    >
-                        Project Details
-                    </div>
-                    <div class="flex flex-col flex-auto mt-2 overflow-x-auto">
-                        <table
-                            class="min-w-240 overflow-y-visible"
-                            mat-table
-                            [dataSource]="projects"
-                        >
-                            <!-- Name -->
-                            <ng-container matColumnDef="name">
-                                <th mat-header-cell *matHeaderCellDef>Name</th>
-                                <td mat-cell *matCellDef="let project">
-                                    {{ project.name }}
-                                </td>
-                            </ng-container>
-
-                            <!-- Reference -->
-                            <ng-container matColumnDef="reference">
-                                <th mat-header-cell *matHeaderCellDef>
-                                    Reference
-                                </th>
-                                <td mat-cell *matCellDef="let project">
-                                    {{ project.reference }}
-                                </td>
-                            </ng-container>
-
-                            <!-- Provider -->
-                            <ng-container matColumnDef="provider">
-                                <th mat-header-cell *matHeaderCellDef>
-                                    Provider
-                                </th>
-                                <td mat-cell *matCellDef="let project">
-                                    {{ project.provider }}
-                                </td>
-                            </ng-container>
-
-                            <!-- Description -->
-                            <ng-container matColumnDef="description">
-                                <th mat-header-cell *matHeaderCellDef>
-                                    Description
-                                </th>
-                                <td mat-cell *matCellDef="let project">
-                                    {{ project.description }}
-                                </td>
-                            </ng-container>
-
-                            <!-- Add more project details as needed -->
-
-                            <!-- Header and row definitions -->
-                            <tr
-                                mat-header-row
-                                *matHeaderRowDef="[
-                                    'name',
-                                    'reference',
-                                    'provider',
-                                    'description'
-                                ]"
-                            ></tr>
-                            <tr
-                                mat-row
-                                *matRowDef="
-                                    let row;
-                                    columns: [
-                                        'name',
-                                        'reference',
-                                        'provider',
-                                        'description'
-                                    ]
-                                "
-                            ></tr>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- Budget details -->
-            </div>
-        </ng-template>
-    </mat-tab>
+ 
 </div>

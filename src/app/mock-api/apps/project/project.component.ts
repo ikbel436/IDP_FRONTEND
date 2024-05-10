@@ -52,7 +52,7 @@ import { Router } from '@angular/router';
 encapsulation  : ViewEncapsulation.None,
 changeDetection: ChangeDetectionStrategy.OnPush,
 animations     : fuseAnimations,
-imports        : [MatTabsModule,NgIf, MatProgressBarModule, MatFormFieldModule, MatIconModule, MatInputModule, FormsModule, ReactiveFormsModule, MatButtonModule, MatSortModule, NgFor, NgTemplateOutlet, MatPaginatorModule, NgClass, MatSlideToggleModule, MatSelectModule, MatOptionModule, MatCheckboxModule, MatRippleModule, AsyncPipe, CurrencyPipe],
+imports        : [MatTabsModule,NgIf,ReactiveFormsModule, MatProgressBarModule, MatFormFieldModule, MatIconModule, MatInputModule, FormsModule, ReactiveFormsModule, MatButtonModule, MatSortModule, NgFor, NgTemplateOutlet, MatPaginatorModule, NgClass, MatSlideToggleModule, MatSelectModule, MatOptionModule, MatCheckboxModule, MatRippleModule, AsyncPipe, CurrencyPipe],
 })
 export class ProjectComponent {
   @ViewChild(MatPaginator) private _paginator: MatPaginator;
@@ -90,12 +90,14 @@ export class ProjectComponent {
       private router: Router
 
   )
-  {
-  }
+  { 
+}
+  
 
   // -----------------------------------------------------------------------------------------------------
   // @ Lifecycle hooks
   // -----------------------------------------------------------------------------------------------------
+
 
   /**
    * On init
@@ -108,22 +110,14 @@ export class ProjectComponent {
     // console.log(this.projects$);
       // Create the selected product form
       this.selectProjectForm = this._formBuilder.group({
-          id               : [''],
-          name             : ['', [Validators.required]],
-          provider              : [''],
-          lien          : [''],
-          description            : [''],
-          Reference           : [''],   
-          images           : [[]],
-          currentImageIndex: [0], // Image index that is currently being viewed
+        id: [''],
+        name: ['', Validators.required],
+        provider: [''],
+        lien: [''],
+        description: [''],
+        reference: [''],
       });
  
-
-    
-
-      
-      
-
       // Subscribe to search input field value changes
       this.searchInputControl.valueChanges
           .pipe(
@@ -201,14 +195,16 @@ export class ProjectComponent {
   // -----------------------------------------------------------------------------------------------------
   // @ Public methods
   // -----------------------------------------------------------------------------------------------------
+  showDetails = false;
 
   /**
    * Toggle product details
    *
    * @param productId
    */
+  private showDetailsMap = new Map<string,boolean>();
   toggleDetails(productId: string): void
-  {
+  { 
       // If the product is already selected...
       if ( this.selectProject && this.selectProject.id === productId )
       {
@@ -216,20 +212,22 @@ export class ProjectComponent {
           this.closeDetails();
           return;
       }
-
+    
       // Get the product by id
-      // this._inventoryService.getProductById(productId)
-      //     .subscribe((product) =>
-      //     {
-      //         // Set the selected product
-      //         this.selectProject = product;
-
-      //         // Fill the form
-      //         this.selectProjectForm.patchValue(product);
-
-      //         // Mark for check
-      //         this._changeDetectorRef.markForCheck();
-      //     });
+      this._inventoryService.getProjectsByIds(productId)
+          .subscribe((product) =>
+          { 
+   
+            this.showDetails =!this.showDetails;
+              // Set the selected product
+              this.selectProject = product;
+   console.log(this.selectProject)
+              // Fill the form
+              this.selectProjectForm.patchValue(product);
+              // Mark for check
+              this._changeDetectorRef.markForCheck();
+              console.log(this.selectProject);
+          });
   }
 
   /**
@@ -313,21 +311,21 @@ export class ProjectComponent {
   // /**
   //  * Update the selected product using the form data
   //  */
-  // updateSelectedProduct(): void
-  // {
-  //     // Get the product object
-  //     const product = this.selectedProductForm.getRawValue();
+  updateSelectedProduct(): void
+  {
+      // Get the product object
+      const product = this.selectProjectForm.getRawValue();
 
-  //     // Remove the currentImageIndex field
-  //     delete product.currentImageIndex;
+      // Remove the currentImageIndex field
+     // delete product.currentImageIndex;
 
-  //     // Update the product on the server
-  //     this._inventoryService.updateProduct(product.id, product).subscribe(() =>
-  //     {
-  //         // Show a success message
-  //         this.showFlashMessage('success');
-  //     });
-  // }
+      // Update the product on the server
+      this._inventoryService.updateProduct(product.id, product).subscribe(() =>
+      {
+          // Show a success message
+          this.showFlashMessage('success');
+      });
+  }
 
   /**
    * Delete the selected product using the form data

@@ -146,43 +146,43 @@ export class ProjectService {
      * @param id
      * @param product
      */
-    // updateProduct(id: string, product: InventoryProject): Observable<InventoryProject>
-    // {
-    //     return this.products$.pipe(
-    //         take(1),
-    //         switchMap(products => this._httpClient.patch<InventoryProject>('api/apps/ecommerce/inventory/product', {
-    //             id,
-    //             product,
-    //         }).pipe(
-    //             map((updatedProduct) =>
-    //             {
-    //                 // Find the index of the updated product
-    //                 const index = products.findIndex(item => item.id === id);
+    updateProduct(id: string, product: InventoryProject): Observable<InventoryProject>
+    {
+        return this.products$.pipe(
+            take(1),
+            switchMap(products => this._httpClient.put<InventoryProject>(`${this.apiUrl}/project/${id}`, {
+               
+                product,
+            }).pipe(
+                map((updatedProduct) =>
+                {
+                    // Find the index of the updated product
+                    const index = products.findIndex(item => item.id === id);
 
-    //                 // Update the product
-    //                 products[index] = updatedProduct;
+                    // Update the product
+                    products[index] = updatedProduct;
 
-    //                 // Update the products
-    //                 this._products.next(products);
+                    // Update the products
+                    this._products.next(products);
 
-    //                 // Return the updated product
-    //                 return updatedProduct;
-    //             }),
-    //             switchMap(updatedProduct => this.product$.pipe(
-    //                 take(1),
-    //                 filter(item => item && item.id === id),
-    //                 tap(() =>
-    //                 {
-    //                     // Update the product if it's selected
-    //                     this._product.next(updatedProduct);
+                    // Return the updated product
+                    return updatedProduct;
+                }),
+                switchMap(updatedProduct => this.product$.pipe(
+                    take(1),
+                    filter(item => item && item.id === id),
+                    tap(() =>
+                    {
+                        // Update the product if it's selected
+                        this._product.next(updatedProduct);
 
-    //                     // Return the updated product
-    //                     return updatedProduct;
-    //                 }),
-    //             )),
-    //         )),
-    //     );
-    // }
+                        // Return the updated product
+                        return updatedProduct;
+                    }),
+                )),
+            )),
+        );
+    }
 
     /**
      * Delete the product
@@ -230,7 +230,7 @@ export class ProjectService {
     getProjectsByIds(id: string) {
         // Implement this method based on how your backend API supports fetching projects by IDs
         // This is a placeholder implementation
-        return this._httpClient.get<InventoryProject>(`${this.apiUrl}/${id}`);
+        return this._httpClient.get<InventoryProject>(`${this.apiUrl}/get/${id}`);
     }
 
     createProject(
