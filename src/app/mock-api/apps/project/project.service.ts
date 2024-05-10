@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { InventoryProject } from './project.types';
+import { catchError } from 'rxjs/operators';
 import {
     BehaviorSubject,
     filter,
@@ -143,67 +144,79 @@ export class ProjectService {
     /**
      * Update product
      *
-     * @param _id
-     * @param project
+     * @param id
+     * @param product
      */
-    updateproject(_id: string, project: InventoryProject): Observable<InventoryProject> {
-        return this._projects.pipe(
-          take(1),
-          switchMap(projects => this._httpClient.put<InventoryProject>(`${this.apiUrl}/project/${_id}`, {
-            _id: project._id,
-            name: project.name,
-            description: project.description,
-            provider: project.provider,
-            lien: project.lien
-          }).pipe(
-            map((updatedproject) => {
-              // Find the index of the updated project
-              const index = projects.findIndex(item => item._id === _id);
+    updateProduct(id: string, product: InventoryProject): Observable<InventoryProject> {
+        return this.products$.pipe(
+            take(1),
+            switchMap(products => {
+                // Ensure products is an array before proceeding
+                if (!Array.isArray(products)) {
+                    console.error('products is not an array:', products);
+                    return of(null); // Or handle this case appropriately
+                }
     
-              // Update the project
-              projects[index] = updatedproject;
+                return this._httpClient.put<InventoryProject>(`${this.apiUrl}/project/${id}`, {
+                    id,
+                    product,
+                }).pipe(
+                    map((updatedProduct) => {
+                        // Find the index of the updated product
+                        const index = products.findIndex(item => item._id === id);
     
-              // Update the projects
-              this._projects.next(projects);
+                        // Update the product
+                        products[index] = updatedProduct;
     
-              // Return the updated project
-              return updatedproject;
+                        // Update the products
+                        this._projects.next(products);
+    
+                        // Return the updated product
+                        return updatedProduct;
+                    }),
+                    switchMap(updatedProduct => this.product$.pipe(
+                        take(1),
+                        filter(item => item && item._id === id),
+                        tap(() => {
+                            // Update the product if it's selected
+                            this._project.next(updatedProduct);
+    
+                            // Return the updated product
+                            return updatedProduct;
+                        }),
+                    )),
+                );
             }),
-            switchMap(updatedproject => this._project.pipe(
-              take(1),
-              filter(item => item && item._id === _id),
-              tap(() => {
-                // Update the project if it's selected
-                this._project.next(updatedproject);
-    
-                // Return the updated project
-                return updatedproject;
-              }),
-            )),
-          )),
         );
+    }
+    
+    updateProject1(projectId: string, updatedProject: any): Observable<any> {
+        return this._httpClient.put(`${this.apiUrl}/project/${projectId}`, updatedProject);
       }
-
+    
     /**
      * Delete the product
      *
      * @param id
      */
+      deleteProduct(projectId: string): Observable<any> {
+        return this._httpClient.delete(`${this.apiUrl}/project/${projectId}`);
+      }
     // deleteProduct(id: string): Observable<boolean>
     // {
     //     return this.products$.pipe(
     //         take(1),
-    //         switchMap(products => this._httpClient.delete('api/apps/ecommerce/inventory/product', {params: {id}}).pipe(
+    //         switchMap(products => this._httpClient.delete(`${this.apiUrl}/project/${id}`).pipe(
     //             map((isDeleted: boolean) =>
     //             {
     //                 // Find the index of the deleted product
-    //                 const index = products.findIndex(item => item.id === id);
+    //                 const index = products.findIndex(item => item._id === id);
 
     //                 // Delete the product
     //                 products.splice(index, 1);
 
     //                 // Update the products
-    //                 this._products.next(products);
+    //                 this._projects.next(products);
 
     //                 // Return the deleted status
     //                 return isDeleted;
