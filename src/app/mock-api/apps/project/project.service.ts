@@ -146,43 +146,42 @@ export class ProjectService {
      * @param id
      * @param product
      */
-    updateProduct(id: string, product: InventoryProject): Observable<InventoryProject>
-    {
-        return this.products$.pipe(
-            take(1),
-            switchMap(products => this._httpClient.put<InventoryProject>(`${this.apiUrl}/project/${id}`, {
-               
-                product,
-            }).pipe(
-                map((updatedProduct) =>
-                {
-                    // Find the index of the updated product
-                    const index = products.findIndex(item => item.id === id);
-
-                    // Update the product
-                    products[index] = updatedProduct;
-
-                    // Update the products
-                    this._products.next(products);
-
-                    // Return the updated product
-                    return updatedProduct;
-                }),
-                switchMap(updatedProduct => this.product$.pipe(
-                    take(1),
-                    filter(item => item && item.id === id),
-                    tap(() =>
-                    {
-                        // Update the product if it's selected
-                        this._product.next(updatedProduct);
-
-                        // Return the updated product
-                        return updatedProduct;
-                    }),
-                )),
+    updateProduct(id: string, product: InventoryProject): Observable<InventoryProject> {
+        return this._products.pipe(
+          take(1),
+          switchMap(products => this._httpClient.put<InventoryProject>(`${this.apiUrl}/project/${id}`, {
+            name: product.name,
+            description: product.description,
+            provider: product.provider,
+            lien: product.lien
+          }).pipe(
+            map((updatedProduct) => {
+              // Find the index of the updated product
+              const index = products.findIndex(item => item.id === id);
+    
+              // Update the product
+              products[index] = updatedProduct;
+    
+              // Update the products
+              this._products.next(products);
+    
+              // Return the updated product
+              return updatedProduct;
+            }),
+            switchMap(updatedProduct => this._product.pipe(
+              take(1),
+              filter(item => item && item.id === id),
+              tap(() => {
+                // Update the product if it's selected
+                this._product.next(updatedProduct);
+    
+                // Return the updated product
+                return updatedProduct;
+              }),
             )),
+          )),
         );
-    }
+      }
 
     /**
      * Delete the product

@@ -202,32 +202,38 @@ export class ProjectComponent {
    *
    * @param productId
    */
-  private showDetailsMap = new Map<string,boolean>();
-  toggleDetails(productId: string): void
-  { 
-      // If the product is already selected...
-      if ( this.selectProject && this.selectProject.id === productId )
-      {
-          // Close the details
-          this.closeDetails();
-          return;
-      }
-    
-      // Get the product by id
-      this._inventoryService.getProjectsByIds(productId)
-          .subscribe((product) =>
-          { 
-   
-            this.showDetails =!this.showDetails;
-              // Set the selected product
-              this.selectProject = product;
-   console.log(this.selectProject)
-              // Fill the form
-              this.selectProjectForm.patchValue(product);
-              // Mark for check
-              this._changeDetectorRef.markForCheck();
-              console.log(this.selectProject);
-          });
+  private showDetailsMap = new Map<string, boolean>();
+  toggleDetails(productId: string): void {
+    // Check if the product is already selected
+    if (this.selectProject && this.selectProject.id === productId) {
+      // If the product is already selected, close the details
+      this.closeDetails();
+      return;
+    }
+  
+    // Attempt to get the project by ID
+    this._inventoryService.getProjectsByIds(productId).subscribe((product) => {
+      // Toggle the visibility of the details
+      this.showDetails =!this.showDetails;
+   this.showDetailsMap.set(productId,!this.showDetailsMap.get(productId));
+      // Set the selected project
+      this.selectProject = product;
+  
+      // Log the selected project for debugging purposes
+      console.log(this.selectProject);
+  
+      // Patch the form with the selected project's data
+      this.selectProjectForm.patchValue(product);
+  
+      // Mark the component for change detection
+      this._changeDetectorRef.markForCheck();
+  
+      // Optionally, log the selected project again after patching the form
+      console.log(this.selectProject);
+    }, error => {
+      // Handle any errors that occur during the subscription
+      console.error('Error fetching project:', error);
+    });
   }
 
   /**
@@ -326,6 +332,8 @@ export class ProjectComponent {
           this.showFlashMessage('success');
       });
   }
+
+  
 
   /**
    * Delete the selected product using the form data

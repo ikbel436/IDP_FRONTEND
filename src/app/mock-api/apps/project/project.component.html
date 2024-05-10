@@ -88,12 +88,12 @@
                                     (click)="toggleDetails(project?._id)">
                                     <mat-icon
                                         class="icon-size-5"
-                                        [svgIcon]="showDetails ? 'heroicons_solid:chevron-up' : 'heroicons_solid:chevron-down'"></mat-icon>
+                                        [svgIcon]="showDetailsMap.get(project?._id)? 'heroicons_solid:chevron-up' : 'heroicons_solid:chevron-down'"></mat-icon>
                                 </button>
                             </div>
                         </div>
                         <div class="grid">
-                            <ng-container *ngIf="showDetails">
+                            <ng-container *ngIf="showDetailsMap.get(project?._id)">
                                 
                                 <ng-container *ngTemplateOutlet="rowDetailsTemplate; context: { $implicit: project }">
                                 </ng-container>
@@ -206,6 +206,7 @@
                                         </ng-container>
                                     </div>
                                     <button
+                                   
                                         mat-flat-button
                                         [color]="'primary'"
                                         (click)="updateSelectedProduct()">
