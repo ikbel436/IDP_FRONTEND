@@ -252,16 +252,47 @@ export class ProjectService {
         description: string,
         provider: string,
         lien: string
-    ): Observable<any> {
+      ): Observable<InventoryProject> {
         const token = this.accessToken; 
         const headers = new HttpHeaders().set(
-            'Authorization',
-            `Bearer ${token}`
+          'Authorization',
+          `Bearer ${token}`
         );
         const body = { name, description, provider, lien };
-
-        return this._httpClient.post<any>(`${this.apiUrl}/project`, body, {
+      
+        return this.products$.pipe(
+          take(1),
+          switchMap(products => this._httpClient.post<InventoryProject>(`${this.apiUrl}/project`, body, {
             headers,
-        });
-    }
+          }).pipe(
+            map((newProduct) => {
+              // Update the _project with the new product
+              this._project.next(newProduct);
+      
+              // Return the new product
+              return newProduct;
+            }),
+          )),
+        );
+      }
+      
+    // createProject(): Observable<InventoryProject>
+    // {
+    //     return this.products$.pipe(
+    //         take(1),
+    //         switchMap(products => this._httpClient.post<InventoryProject>(`${this.apiUrl}/project`, {}).pipe(
+    //             map((newProduct) =>
+    //             {
+    //                 // Update the products with the new product
+    //                 this._projects.next([newProduct, ...products]);
+
+    //                 // Return the new product
+    //                 return newProduct;
+    //             }),
+    //         )),
+    //     );
+    // }
+
+    
+
 }

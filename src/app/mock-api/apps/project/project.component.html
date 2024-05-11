@@ -50,7 +50,7 @@
         <div
             class="flex flex-col flex-auto sm:mb-18 overflow-hidden sm:overflow-y-auto"
         >
-        <ng-container>
+        <ng-container *ngIf="(projects$ | async) as testProjects">
             <ng-container *ngIf="testProjects.length > 0; else noProjects">
                 <div class="grid">
                     <!-- Header -->
@@ -64,6 +64,7 @@
                         <div class="hidden sm:block">Details</div>
                     </div>
                     <!-- Rows -->
+                    <ng-container *ngIf="(projects$ | async) as testProjects">
                     <ng-container *ngFor="let project of testProjects; trackBy: trackByFn">
                         <div class="inventory-grid grid items-center gap-4 py-3 px-6 md:px-8 border-b">
                             <!-- Name -->
@@ -88,12 +89,12 @@
                                     (click)="toggleDetails(project?._id)">
                                     <mat-icon
                                         class="icon-size-5"
-                                        [svgIcon]="showDetailsMap.get(project?._id)? 'heroicons_solid:chevron-up' : 'heroicons_solid:chevron-down'"></mat-icon>
+                                        [svgIcon]="selectProject?._id === project._id ? 'heroicons_solid:chevron-up' : 'heroicons_solid:chevron-down'"></mat-icon>
                                 </button>
                             </div>
                         </div>
                         <div class="grid">
-                            <ng-container *ngIf="showDetailsMap.get(project?._id)">
+                            <ng-container *ngIf="selectProject?._id === project._id">
                                 
                                 <ng-container *ngTemplateOutlet="rowDetailsTemplate; context: { $implicit: project }">
                                 </ng-container>
@@ -101,6 +102,7 @@
                         </div>
                     
                     </ng-container>
+                </ng-container>
                 </div>
                 <!-- Paginator -->
             

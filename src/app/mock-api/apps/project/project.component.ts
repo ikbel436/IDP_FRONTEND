@@ -106,7 +106,7 @@
     ngOnInit(): void
     { 
         this.fetchProjects();
-        
+        this.projects$ = this._inventoryService.products$;
         // this.projects$ = this._inventoryService.products$;
         // console.log(this.projects$);
         // Create the selected product form
@@ -118,7 +118,7 @@
             description: [''],
             reference: [''],
         });
-    
+     
         // Subscribe to search input field value changes
         this.searchInputControl.valueChanges
             .pipe(
@@ -136,6 +136,7 @@
                 }),
             )
             .subscribe();
+            this.projects$ = this._inventoryService.products$;
     }
 
     /**
@@ -225,7 +226,7 @@
          this.selectProject = project;
  
          // Patch the form with the selected project's data
-         this.selectProjectForm.setValue({
+         this.selectProjectForm.patchValue({
              _id: project._id,
              name: project.name,
              provider: project.provider,
@@ -267,21 +268,22 @@
     /**
      * Create product
      */
-    createProject(): void
-    {
+    createProject(): void {
         // Create the product
-        this._inventoryService.createProject(this.name, this.description,this.provider,this.lien).subscribe((newProject) =>
-        {
+        this._inventoryService.createProject(this.name, this.description, this.provider, this.lien).subscribe((newProject) => {
             // Go to new product
             this.selectProject = newProject;
-
+          
             // Fill the form
             this.selectProjectForm.patchValue(newProject);
-
             // Mark for check
             this._changeDetectorRef.markForCheck();
+    
+            // Fetch projects again to refresh the list
+            this.fetchProjects();
         });
     }
+
 
 
     // Inside your component class
@@ -309,7 +311,7 @@
                 this.isloaded = true;
                 console.log("isloaded", this.isloaded);
                 
-                
+                this.cdRef.detectChanges();
             })
             this.cdRef.detectChanges(); // Manually trigger change detection
 
@@ -332,7 +334,7 @@
     updateSelectedProduct(): void {
         // Assuming getRawValue() returns the form values as they were submitted
         const project = this.selectProjectForm.getRawValue();
-        console.log("project aaaaaa", project.name);
+        console.log("project aaaaaa", project._id);
     
         // Update the product on the server
         this._inventoryService.updateProject1(project._id, project).subscribe(
