@@ -19,13 +19,13 @@ export const defaultNavigation: FuseNavigationItem[] = [
 
 
 
-            {
-                id: 'dashboards.finance',
-                title: 'Create Project',
-                type: 'basic',
-                icon: 'heroicons_outline:banknotes',
-                link: '/exemple',
-            },
+            // {
+            //     id: 'dashboards.finance',
+            //     title: 'Create Project',
+            //     type: 'basic',
+            //     icon: 'heroicons_outline:banknotes',
+            //     link: '/exemple',
+            // },
 
 
         ],
@@ -64,7 +64,7 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 title: 'Configure Infrastructure',
                 type: 'basic',
                 icon: 'heroicons_outline:cloud',
-                link: 'apps/academy',
+                link: 'configInfrastructure',
             },
             {
                 id: 'user-interface.cards',

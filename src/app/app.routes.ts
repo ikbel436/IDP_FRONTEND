@@ -79,6 +79,7 @@ export const appRoutes: Route[] = [
             // Dashboards
             { path: 'project', loadChildren: () => import('app/mock-api/apps/project/project.routes') },
             { path: 'profile', loadChildren: () => import('app/modules/user/profile/profile.routes') },
+            { path: 'configInfrastructure', loadChildren: () => import('app/modules/config-infra/config-infra.routes') },
 
             // Apps
 
