@@ -41,15 +41,9 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 title: 'Profile',
                 type: 'basic',
                 icon: 'heroicons_outline:user-circle',
-                link: '/profile',
+                link: '/auth/profile',
             },
-            {
-                id: 'user.profile',
-                title: 'Settings',
-                type: 'basic',
-                icon: 'heroicons_outline:user-circle',
-                link: '/profile',
-            },
+
         ]
     },
     {

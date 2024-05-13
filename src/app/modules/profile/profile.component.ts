@@ -1,68 +1,64 @@
-import { CurrencyPipe, NgClass, NgFor, NgIf, CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
-import { MatButtonToggleModule } from '@angular/material/button-toggle';
-import { MatOptionModule, MatRippleModule } from '@angular/material/core';
-import { MatDialog } from '@angular/material/dialog';
-import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatTableModule } from '@angular/material/table';
-import { MatTabsModule } from '@angular/material/tabs';
-import { Router } from '@angular/router';
-import { TranslocoModule } from '@ngneat/transloco';
-import { UserService } from 'app/core/user/user.service';
-import { ProfileService } from 'app/core/user/profile.service';
-import { ApexOptions, NgApexchartsModule } from 'ng-apexcharts';
-import { Subject, takeUntil } from 'rxjs';
-import { ProfileUpdateDialogComponent } from '../profile-update-dialog/profile-update-dialog.component';
-import { FormControl, FormsModule, ReactiveFormsModule, UntypedFormBuilder, Validators } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
 import { TextFieldModule } from '@angular/cdk/text-field';
-import { MatSelectModule } from '@angular/material/select';
+import { NgClass, CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
+import { ChangeDetectionStrategy, Component, ViewEncapsulation, NgModule, OnInit } from '@angular/core';
+import { FormControl, UntypedFormBuilder, Validators } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { RouterLink } from '@angular/router';
+import { FuseCardComponent } from '@fuse/components/card';
+import { UserService } from 'app/core/user/user.service';
 import { User } from 'app/core/user/user.types';
+import { FormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'app-profile',
+  selector: 'profile',
   templateUrl: './profile.component.html',
-  styleUrl: './profile.component.scss',
   encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [MatIconModule, CommonModule, FormsModule, MatFormFieldModule, NgClass, MatInputModule, TextFieldModule, ReactiveFormsModule, MatButtonToggleModule, MatButtonModule, MatSelectModule, MatOptionModule],
+  imports: [CommonModule, FormsModule, RouterLink, FuseCardComponent, MatIconModule, MatButtonModule, MatMenuModule, MatFormFieldModule, MatInputModule, TextFieldModule, MatDividerModule, MatTooltipModule, NgClass],
 })
-export class ProfileComponent {
+export class ProfileComponent implements OnInit {
+  ctx = {};
   formFieldHelpers: string[] = [''];
   fixedSubscriptInput: FormControl = new FormControl('', [Validators.required]);
   dynamicSubscriptInput: FormControl = new FormControl('', [Validators.required]);
   fixedSubscriptInputWithHint: FormControl = new FormControl('', [Validators.required]);
   dynamicSubscriptInputWithHint: FormControl = new FormControl('', [Validators.required]);
-  //user: any;
   user: User; // Initialize with the user's data
   name: string;
   email: string;
-  phoneNumber: string;
+  phoneNumber: number;
   description: string
-  images;
+  images: string;
   title = 'fileUpload';
+  Fonction: string;
   /**
    * Constructor
    */
-  constructor(private _formBuilder: UntypedFormBuilder, private userService: UserService, private _httpClient: HttpClient) {
+  constructor(private _formBuilder: UntypedFormBuilder, private userService: UserService, private _httpClient: HttpClient,) {
   }
   currentUser: any
   ngOnInit(): void {
     this.userService.get().subscribe(
       user => {
         this.currentUser = user;
-        this.fetchImage(this.currentUser?.image);
+        this.ctx = user;
+        // Ensure currentUser is defined before calling fetchImage
+        if (this.currentUser) {
+          this.fetchImage(this.currentUser.image);
+        }
         this.getUserData(); // Fetch user data after currentUser is set
       },
       error => {
         console.error('Error fetching current user:', error);
       }
-
-
     );
 
   }
@@ -80,6 +76,7 @@ export class ProfileComponent {
         this.email = this.user.email;
         this.phoneNumber = this.user.phoneNumber;
         this.description = this.user.description;
+        this.Fonction = this.user.Fonction;
       },
       (error) => {
         console.error('Error fetching user data:', error);

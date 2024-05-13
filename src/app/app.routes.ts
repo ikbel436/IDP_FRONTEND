@@ -48,7 +48,22 @@ export const appRoutes: Route[] = [
         children: [
             { path: 'sign-out', loadChildren: () => import('app/modules/auth/sign-out/sign-out.routes') },
             { path: 'unlock-session', loadChildren: () => import('app/modules/auth/unlock-session/unlock-session.routes') },
-            { path: 'profile', loadChildren: () => import('app/modules/user/profile/profile.routes') },
+
+        ]
+    },
+
+    // profile routes for authenticated users
+    {
+        path: 'auth',
+        canActivate: [AuthGuard],
+        canActivateChild: [AuthGuard],
+        component: LayoutComponent,
+        resolve: {
+            initialData: initialDataResolver
+        },
+        children: [
+
+            { path: 'profile', loadChildren: () => import('app/modules/profile/profile.routes') },
 
         ]
     },
