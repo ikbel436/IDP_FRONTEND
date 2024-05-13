@@ -23,6 +23,7 @@
     import { InventoryProject } from './project.types';
     import {  ProjectService } from './project.service';
     import { Router } from '@angular/router';
+import { FormControl } from '@angular/forms';
 
 
     @Component({
@@ -76,8 +77,7 @@
     provider: string;
     isloaded: boolean = false;
     testProjects: any[] = []
-
-
+ 
     /**
      * Constructor
      */
@@ -98,7 +98,19 @@
     // -----------------------------------------------------------------------------------------------------
     // @ Lifecycle hooks
     // -----------------------------------------------------------------------------------------------------
-
+    handleProviderSelection(provider: string): void {
+        const providers = this.selectProjectForm.get('provider') as FormControl;
+        if (Array.isArray(providers.value)) { // Ensure providers.value is an array
+            if (providers.value.includes(provider)) {
+                providers.setValue(providers.value.filter(p => p!== provider));
+            } else {
+                providers.setValue([...providers.value, provider]);
+            }
+        } else {
+            console.error('Expected providers.value to be an array');
+        }
+    }
+    
 
     /**
      * On init
@@ -320,7 +332,9 @@
     }
     
 
-
+    openLien(url: string) {
+        window.open(url, '_blank');
+      }
  
      
       
@@ -330,14 +344,15 @@
     //  * Update the selected product using the form data
     //  */
    
+    
  
     updateSelectedProduct(): void {
         // Assuming getRawValue() returns the form values as they were submitted
         const project = this.selectProjectForm.getRawValue();
         console.log("project aaaaaa", project._id);
-    
+        
         // Update the product on the server
-        this._inventoryService.updateProject1(project._id, project).subscribe(
+        this._inventoryService.updateProject1(project._id,project).subscribe(
             (updatedProject) => {
                 // Assuming 'school' is a nested form group and 'code' is a form control within it
                 const updatedValues = {
