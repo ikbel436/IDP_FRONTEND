@@ -6,8 +6,9 @@ import { catchError, Observable, of, switchMap, throwError } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { tap } from 'rxjs/operators';
 
-@Injectable({ providedIn: 'root' })
-export class AuthService {
+@Injectable({providedIn: 'root'})
+export class AuthService
+{
     private _authenticated: boolean = false;
     private apiUrl = 'http://localhost:3000/auth';
     /**
@@ -16,7 +17,8 @@ export class AuthService {
     constructor(
         private _httpClient: HttpClient,
         private _userService: UserService,
-    ) {
+    )
+    {
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -24,16 +26,18 @@ export class AuthService {
     // -----------------------------------------------------------------------------------------------------
     getUserRole(): string {
         return localStorage.getItem('userRole');
-    }
+      }
     /**
      * Setter & getter for access token
      */
-    set accessToken(token: string) {
+    set accessToken(token: string)
+    {
         localStorage.setItem('accessToken', token);
-
+       
     }
 
-    get accessToken(): string {
+    get accessToken(): string
+    {
         return localStorage.getItem('accessToken') ?? '';
     }
 
@@ -46,10 +50,10 @@ export class AuthService {
      *
      * @param email
      */
-    forgotPassword(email: string): Observable<any> {
-        const url = `${this.apiUrl}/forgot`;
-        return this._httpClient.post(url, { email });
-
+    forgotPassword(email: string): Observable<any>
+    {const url = `${this.apiUrl}/forgot`;
+        return this._httpClient.post(url, {email});
+        
     }
 
     /**
@@ -61,26 +65,28 @@ export class AuthService {
         localStorage.setItem('resetLink', token);
         console.log(token);
     }
-    get resetPasswordToken(): string {
-        return localStorage.getItem('resetLink') ?? '';
+    get resetPasswordToken(): string
+    {
+        return localStorage.getItem('resetLink') ?? '' ;
     }
-    resetPassword(password: string): Observable<any> {
+    resetPassword(password: string): Observable<any>
+    {
         const token = this.resetPasswordToken;
 
         const url = `${this.apiUrl}/reset`;
         const requestBody = {
-            newPass: password,
-            resetLink: token
+        newPass: password,
+        resetLink: token
         };
         console.log(requestBody.newPass);
-
+        
         return this._httpClient.post(url, requestBody).pipe(
             tap(() => {
                 // Supprimer le resetPasswordToken du localStorage après l'utilisation
                 localStorage.removeItem('resetLink');
             })
         );
-
+    
     }
 
 
@@ -89,20 +95,23 @@ export class AuthService {
      *
      * @param credentials
      */
-    signIn(credentials: { email: string; password: string }): Observable<any> {
+    signIn(credentials: { email: string; password: string }): Observable<any>
+    {
         // Throw error, if the user is already logged in
-        if (this._authenticated) {
+        if ( this._authenticated )
+        {
             return throwError('User is already logged in.');
         }
         const url = `${this.apiUrl}/login`;
         return this._httpClient.post<any>(url, credentials).pipe(
-
-            switchMap((response: any) => {
+            
+            switchMap((response: any) =>
+            {
                 // Store the access token in the local storage
                 this.accessToken = response.token;
 
                 console.log(this.accessToken)
-                //  localStorage.setItem('userRole', response.user.Role);
+             //  localStorage.setItem('userRole', response.user.Role);
                 // Set the authenticated flag to true
                 this._authenticated = true;
 
@@ -120,7 +129,8 @@ export class AuthService {
     /**
      * Sign in using the access token
      */
-    signInUsingToken(): Observable<any> {
+    signInUsingToken(): Observable<any>
+    {
         // Sign in using the token
         return this._httpClient.post('api/auth/sign-in-with-token', {
             accessToken: this.accessToken,
@@ -130,7 +140,8 @@ export class AuthService {
                 // Return false
                 of(false),
             ),
-            switchMap((response: any) => {
+            switchMap((response: any) =>
+            {
                 // Replace the access token with the new one if it's available on
                 // the response object.
                 //
@@ -138,7 +149,8 @@ export class AuthService {
                 // in using the token, you should generate a new one on the server
                 // side and attach it to the response object. Then the following
                 // piece of code can replace the token with the refreshed one.
-                if (response.accessToken) {
+                if ( response.accessToken )
+                {
                     this.accessToken = response.accessToken;
                 }
 
@@ -157,7 +169,8 @@ export class AuthService {
     /**
      * Sign out
      */
-    signOut(): Observable<any> {
+    signOut(): Observable<any>
+    {
         // Remove the access token from the local storage
         localStorage.removeItem('accessToken');
 
@@ -190,33 +203,34 @@ export class AuthService {
     /**
      * Check the authentication status
      */
-    check(): Observable<boolean> {
+    check(): Observable<boolean>
+    {
 
 
-        return of(true);
+      //  return of(true);
         // Check if the user is logged in
-        // if ( this._authenticated )
-        // {
-        //     return of(true);
-        // }
+        if ( this._authenticated )
+        {
+            return of(true);
+        }
 
         // // Check the access token availability
-        // if ( !this.accessToken )
-        // {
-        //     return of(false);
-        // }
+        if ( !this.accessToken )
+        {
+            return of(false);
+        }
 
         // // Check the access token expire date
         // // if ( AuthUtils.isTokenExpired(this.accessToken) )
         // // {
         // //     return of(false);
         // // }
-        // this._authenticated=true;
-        // this.accessToken=localStorage.getItem('accessToken')
+        this._authenticated=true;
+        this.accessToken=localStorage.getItem('accessToken')
         // // If the access token exists, and it didn't expire, sign in using it
-        // return of(true);
+        return of(true);
     }
     getCurrentUser(): Observable<any> {
         return this._httpClient.get<any>(`${this.apiUrl}/current`);
-    }
+      }
 }
