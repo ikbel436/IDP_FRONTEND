@@ -56,9 +56,10 @@
                     <!-- Header -->
                     <div class="inventory-grid z-10 sticky top-0 grid gap-4 py-4 px-6 md:px-8 shadow text-md font-semibold text-secondary bg-gray-50 dark:bg-black dark:bg-opacity-5"
                         matSort matSortDisableClear>
+                        <div [mat-sort-header]="'image'">Cloud</div>
                         <div [mat-sort-header]="'name'">Name</div>
-                        <div [mat-sort-header]="'provider'">Provider</div>
                         <div [mat-sort-header]="'reference'">Reference</div>
+                        <div [mat-sort-header]="'provider'">Provider</div>
                         <div [mat-sort-header]="'lien'">Lien</div>
                         <div class="hidden lg:block" [mat-sort-header]="'description'">Description</div>
                         <div class="hidden sm:block">Details</div>
@@ -68,11 +69,21 @@
                     <ng-container *ngFor="let project of testProjects; trackBy: trackByFn">
                         <div class="inventory-grid grid items-center gap-4 py-3 px-6 md:px-8 border-b">
                             <!-- Name -->
+                            <div *ngIf="project?.provider === 'azure'; else defaultLogo">
+                                <img src="assets/images/logo/azure.png" alt="Azure Logo">
+                            </div>
+                             <!-- AWS Logo -->
+            
+                <div *ngIf="project?.provider === 'AWS'; else defaultLogo">
+                    <img src="assets/images/logo/aws.png" alt="AWS Logo">
+                </div>
+           
                             <div class="truncate">{{ project?.name }}</div>
+                             <!-- Reference -->
+                             <div class="truncate hidden sm:block">{{ project?.reference }}</div>
                             <!-- Provider -->
                             <div class="truncate hidden sm:block">{{ project?.provider }}</div>
-                            <!-- Reference -->
-                            <div class="truncate hidden sm:block">{{ project?.reference }}</div>
+                           
                             <!-- Lien -->
                             <div class="truncate hidden lg:block">
                                 <!-- Make the link clickable -->
@@ -80,6 +91,7 @@
                             </div>
                             <!-- Description -->
                             <div class="truncate hidden lg:block">{{ project?.description }}</div>
+                           
                              <!-- Details button -->
                              
                              <div >

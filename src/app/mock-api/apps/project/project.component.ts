@@ -400,13 +400,14 @@
 
                 // Delete the product on the server
                 this._inventoryService.deleteProduct(project._id).subscribe(() =>
-                {
+                {   //this.fetchProjects();
                     // Close the details
                     this.closeDetails();
                     const index = this.testProjects.findIndex(p => p._id === project._id);
                     if (index!== -1) {
                         this.testProjects.splice(index, 1);
                     }
+                    this.fetchProjects();
                 });
             }
         });
