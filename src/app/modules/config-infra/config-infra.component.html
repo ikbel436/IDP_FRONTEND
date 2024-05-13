@@ -1,0 +1,203 @@
+<div class="flex flex-col flex-auto min-w-0">
+  <!-- Header -->
+  <div class="flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between p-6 sm:py-8 sm:px-10 border-b bg-card dark:bg-transparent">
+    <div class="flex-1 min-w-0">
+        <!-- Breadcrumbs -->
+      
+        <!-- Title -->
+        <div class="mt-2">
+            <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate">
+               Infrastructure Configuration
+            </h2>
+        </div>
+    </div>
+</div>
+<div class="flex-auto p-6 sm:p-10">
+
+    <div class="max-w-3xl">
+        <div class="prose prose-sm max-w-3xl">
+            <p>
+                This configuration page is designed to streamline the setup and management of your cloud infrastructure 
+              
+                .
+            </p>
+            <p>
+                Whether you're provisioning resources, adjusting network settings, or fine-tuning security parameters, this form provides a comprehensive interface to cater to your needs.
+            </p>
+        </div>
+<form
+                class="p-8 bg-card shadow rounded overflow-hidden"
+                [formGroup]="horizontalStepperForm">
+                <mat-horizontal-stepper
+                    [linear]="true"
+                    #horizontalStepper>
+                    <mat-step
+                        [formGroupName]="'step1'"
+                        [stepControl]="horizontalStepperForm.get('step1')"
+                        #horizontalStepperStep1>
+                        <ng-template matStepLabel>Service Selection</ng-template>
+                        <p class="my-6 font-medium">
+                            Select the services you want to configure:
+                        </p>
+                        <div class="flex">
+                            <mat-checkbox formControlName="ec2Selected">EC2 Instance</mat-checkbox>
+                            <div class="w-80"></div>
+                           
+                            <mat-checkbox formControlName="s3Selected">S3 Bucket</mat-checkbox>
+                        </div>
+                      
+                        <div class="flex justify-end">
+                            <button
+                                class="px-8"
+                                mat-flat-button
+                                [color]="'primary'"
+                                [disabled]="horizontalStepperStep1.stepControl.pristine || horizontalStepperStep1.stepControl.invalid"
+                                type="button"
+                                matStepperNext>
+                                Next
+                            </button>
+                        </div>
+                    </mat-step>
+
+                    <mat-step
+                        [formGroupName]="'step2'"
+                        *ngIf="horizontalStepperForm.get('step1.ec2Selected').value"
+                        [stepControl]="horizontalStepperForm.get('step2')"
+                        #horizontalStepperStep2>
+                        <ng-template matStepLabel>EC2 Configuration</ng-template>
+                        <p class="my-6 font-medium">
+                            Configure your EC2 instance:
+                        </p>
+                        <div class="flex flex-col gt-xs:flex-row">
+                            <mat-form-field class="flex-auto gt-xs:pr-3">
+                                <input
+                                    matInput
+                                    [formControlName]="'region'"
+                                    [placeholder]="'Region'"
+                                    required>
+                                <mat-icon
+                                    class="icon-size-5"
+                                    matPrefix
+                                    [svgIcon]="'heroicons_solid:user-circle'"></mat-icon>
+                            </mat-form-field>
+                            <mat-form-field class="flex-auto gt-xs:pl-3">
+                                <input
+                                    matInput
+                                    [formControlName]="'ami'"
+                                    [placeholder]="'Ami'"
+                                    required>
+                                <mat-icon
+                                    class="icon-size-5"
+                                    matPrefix
+                                    [svgIcon]="'heroicons_solid:user-circle'"></mat-icon>
+                            </mat-form-field>
+                        </div>
+                        <div class="flex">
+                            <mat-form-field class="flex-auto">
+                                <input
+                                    matInput
+                                    [formControlName]="'instance_type'"
+                                    [placeholder]="'Instance Type'"
+                                    required>
+                               
+                            </mat-form-field>
+                        </div>
+                        <div class="flex">
+                            <mat-form-field class="flex-auto">
+                                <textarea
+                                    matInput
+                                    [formControlName]="'name'"
+                                    [placeholder]="'Name instance'"
+                                    [rows]="3"></textarea>
+                                <mat-icon
+                                    class="icon-size-5"
+                                    matPrefix
+                                    [svgIcon]="'heroicons_solid:bars-3-bottom-left'"></mat-icon>
+                            </mat-form-field>
+                        </div>
+                        <div class="flex justify-end">
+                            <button
+                                class="px-8 mr-2"
+                                mat-flat-button
+                                [color]="'accent'"
+                                type="button"
+                                matStepperPrevious>
+                                Back
+                            </button>
+                            <button
+                                class="px-8"
+                                mat-flat-button
+                                [color]="'primary'"
+                                [disabled]="horizontalStepperStep2.stepControl.pristine || horizontalStepperStep2.stepControl.invalid"
+                                type="button"
+                                matStepperNext>
+                                Next
+                            </button>
+                        </div>
+                    </mat-step>
+
+                    <mat-step
+                        [formGroupName]="'step3'"
+                        *ngIf="horizontalStepperForm.get('step1.s3Selected').value"
+                        [stepControl]="horizontalStepperForm.get('step3')">
+                        <ng-template matStepLabel>S3 Configuration</ng-template>
+                        <p class="my-6 font-medium">
+                            Configure your S3 bucket:
+                        </p>
+                        <div class="flex">
+                            <mat-form-field class="flex-auto">
+                              <input matInput formControlName="s3BucketName" placeholder="S3 Bucket Name" required>
+                            </mat-form-field>
+                          </div>
+                        <div class="flex justify-end mt-8">
+                            <button
+                                class="px-8 mr-2"
+                                mat-flat-button
+                                [color]="'accent'"
+                                type="button"
+                                matStepperPrevious>
+                                Back
+                            </button>
+                            <button
+                                class="px-8"
+                                mat-flat-button
+                                [color]="'primary'"
+                                type="button"
+                                matStepperNext>
+                                Next
+                            </button>
+                        </div>
+                    </mat-step>
+
+                    <mat-step>
+                        <ng-template matStepLabel>Done</ng-template>
+                        <p class="my-6 font-medium">
+                            Thank you for completing our form! You can reset the form if you would like to change your information.
+                        </p>
+                        <div class="flex justify-end mt-8">
+                            <button mat-button (click)="onSubmit()" [disabled]="horizontalStepperForm.invalid">Submit</button>
+                            <button
+                                class="px-8 mr-2"
+                                mat-flat-button
+                                [color]="'accent'"
+                                type="button"
+                                matStepperPrevious>
+                                Back
+                            </button>
+                            <button
+                                class="px-8"
+                                mat-flat-button
+                                [color]="'primary'"
+                                type="reset"
+                                (click)="horizontalStepper.reset();">
+                                Reset
+                            </button>
+                        </div>
+                    </mat-step>
+                </mat-horizontal-stepper>
+            </form>
+
+    </div>
+    </div>
+
+</div>

@@ -3,6 +3,8 @@ import { initialDataResolver } from 'app/app.resolvers';
 import { AuthGuard } from 'app/core/auth/guards/auth.guard';
 import { NoAuthGuard } from 'app/core/auth/guards/noAuth.guard';
 import { LayoutComponent } from 'app/layout/layout.component';
+import { AdminGuard } from './core/auth/guards/admin.guard';
+import { ClientGuard } from './core/auth/guards/client.guard';
 
 // @formatter:off
 /* eslint-disable max-len */
@@ -10,14 +12,14 @@ import { LayoutComponent } from 'app/layout/layout.component';
 export const appRoutes: Route[] = [
 
     // Redirect empty path to '/dashboards/project'
-    { path: '', pathMatch: 'full', redirectTo: '/exemple' },
+    { path: '', pathMatch: 'full', redirectTo: '/profile' },
 
     // Redirect signed-in user to the '/dashboards/project'
     //
     // After the user signs in, the sign-in page will redirect the user to the 'signed-in-redirect'
     // path. Below is another redirection for that path to redirect the user to the desired
     // location. This is a small convenience to keep all main routes together here on this file.
-    { path: 'signed-in-redirect', pathMatch: 'full', redirectTo: '/exemple' },
+    { path: 'signed-in-redirect', pathMatch: 'full', redirectTo: '/profile' },
 
     // Auth routes for guests
     {
@@ -48,22 +50,7 @@ export const appRoutes: Route[] = [
         children: [
             { path: 'sign-out', loadChildren: () => import('app/modules/auth/sign-out/sign-out.routes') },
             { path: 'unlock-session', loadChildren: () => import('app/modules/auth/unlock-session/unlock-session.routes') },
-
-        ]
-    },
-
-    // profile routes for authenticated users
-    {
-        path: 'auth',
-        canActivate: [AuthGuard],
-        canActivateChild: [AuthGuard],
-        component: LayoutComponent,
-        resolve: {
-            initialData: initialDataResolver
-        },
-        children: [
-
-            { path: 'profile', loadChildren: () => import('app/modules/profile/profile.routes') },
+           
 
         ]
     },
@@ -92,8 +79,10 @@ export const appRoutes: Route[] = [
         children: [
 
             // Dashboards
-            { path: 'exemple', loadChildren: () => import('app/modules/admin/example/example.routes') },
-
+            { path: 'project', loadChildren: () => import('app/mock-api/apps/project/project.routes') },
+            { path: 'profile', loadChildren: () => import('app/modules/profile/profile.routes') },
+            { path: 'configInfrastructure', loadChildren: () => import('app/modules/config-infra/config-infra.routes') },
+            { path: 'templateTerraform', loadChildren: () => import('app/modules/template-terraform/template-terraform.routes') },
             // Apps
 
 
