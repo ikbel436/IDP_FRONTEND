@@ -77,7 +77,10 @@ export class ProfileComponent implements OnInit {
         this.phoneNumber = this.user.phoneNumber;
         this.description = this.user.description;
         this.Fonction = this.user.Fonction;
+        console.error(this.ctx);
+
       },
+
       (error) => {
         console.error('Error fetching user data:', error);
       }

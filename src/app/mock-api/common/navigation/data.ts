@@ -13,21 +13,9 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 id: 'dashboards.project',
                 title: 'Projects',
                 type: 'basic',
-                icon: 'heroicons_outline:square-3-stack-3d',
+                icon: 'heroicons_outline:clipboard-document-check',
                 link: '/exemple',
             },
-
-
-
-            {
-                id: 'dashboards.finance',
-                title: 'Create Project',
-                type: 'basic',
-                icon: 'heroicons_outline:banknotes',
-                link: '/exemple',
-            },
-
-
         ],
     },
     {
@@ -57,7 +45,7 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 id: 'user-interface.cards',
                 title: 'Configure Infrastructure',
                 type: 'basic',
-                icon: 'heroicons_outline:cloud',
+                icon: 'heroicons_outline:cog-6-tooth',
                 link: 'apps/academy',
             },
             {
@@ -71,14 +59,14 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 id: 'user-interface.cards',
                 title: 'Download Terrafrom Templates',
                 type: 'basic',
-                icon: 'heroicons_outline:cloud',
+                icon: 'heroicons_outline:folder-arrow-down',
                 link: '/ui/cards',
             },
             {
                 id: 'user-interface.cards',
                 title: 'Gitlab CI Templates',
                 type: 'basic',
-                icon: 'heroicons_outline:cloud',
+                icon: 'heroicons_outline:document-arrow-down',
                 link: '/ui/cards',
             },
             {
