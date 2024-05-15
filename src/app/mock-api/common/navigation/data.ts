@@ -48,7 +48,7 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 title: 'Settings',
                 type: 'basic',
                 icon: 'heroicons_outline:cog-8-tooth',
-                link: '/profile',
+                link: '',
             },
         ]
     },
