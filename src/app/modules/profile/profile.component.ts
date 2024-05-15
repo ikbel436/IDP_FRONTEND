@@ -92,7 +92,9 @@ export class ProfileComponent implements OnInit {
       name: this.name,
       email: this.email,
       phoneNumber: this.phoneNumber,
-      description: this.description
+      description: this.description,
+      Fonction: this.Fonction,
+
     };
 
     // Call the service method to update user info

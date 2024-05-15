@@ -40,7 +40,7 @@
 
             <!-- Menu -->
             <div class="flex items-center mt-8 mb-4 lg:m-0 lg:ml-auto space-x-6">
-                <a class="font-medium" [routerLink]="['./auth/exemple']">
+                <a class="font-medium" [routerLink]="['/exemple']">
                     Home
                 </a>
                 <a class="text-secondary" [routerLink]="['./']">
@@ -70,10 +70,10 @@
                         <mat-icon class="icon-size-5 mr-3" svgIcon="heroicons_outline:phone"></mat-icon>
                         <span class="leading-none">{{currentUser?.phoneNumber}}</span>
                     </div>
-                    <div class="flex items-center mt-4">
+                    <!--div class="flex items-center mt-4">
                         <mat-icon class="icon-size-5 mr-3" svgIcon="heroicons_outline:briefcase"></mat-icon>
                         <span class="leading-none">{{currentUser?.Fonction}}</span>
-                    </div>
+                    </div-->
                     <div class="flex items-center mt-4">
                         <mat-icon class="icon-size-5 mr-3" svgIcon="heroicons_outline:calendar-days"></mat-icon>
                         <span class="leading-none">{{currentUser?.createdAt}}</span>
@@ -173,11 +173,11 @@
                                 required>
                             <mat-icon class="icon-size-5" matSuffix [svgIcon]="'heroicons_outline:phone'"></mat-icon>
                         </mat-form-field>
-                        <mat-form-field [ngClass]="formFieldHelpers" class="flex-auto gt-xs:pl-3">
+                        <!--mat-form-field [ngClass]="formFieldHelpers" class="flex-auto gt-xs:pl-3">
                             <mat-label>Profile title</mat-label>
                             <input matInput [(ngModel)]="Fonction" name="Fonction" placeholder="Fonction" required>
                             <mat-icon class="icon-size-5" matSuffix svgIcon="heroicons_outline:briefcase"></mat-icon>
-                        </mat-form-field>
+                        </mat-form-field-->
                     </div>
                     <div class="flex">
                         <mat-form-field [ngClass]="formFieldHelpers" class="flex-auto">
