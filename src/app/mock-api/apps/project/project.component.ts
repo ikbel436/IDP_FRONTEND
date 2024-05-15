@@ -48,6 +48,16 @@ import { FormControl } from '@angular/forms';
                 grid-template-columns: 48px 112px auto 112px 96px 96px 72px;
             }
         }
+        .icon-container {
+    position: relative;
+    display: inline-block;
+}
+
+
+
+.icon-container:hover.feather-feather-copy {
+    display: block;
+}
     `,
     ],
     encapsulation  : ViewEncapsulation.None,
@@ -110,7 +120,13 @@ import { FormControl } from '@angular/forms';
             console.error('Expected providers.value to be an array');
         }
     }
-    
+    copyToClipboard(text: string): void {
+        navigator.clipboard.writeText(text).then(() => {
+          console.log('Copying to clipboard was successful!');
+        }, (err) => {
+          console.error('Could not copy text: ', err);
+        });
+      }
 
     /**
      * On init

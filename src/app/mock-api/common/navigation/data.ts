@@ -11,21 +11,21 @@
 
                 {
                     id: 'dashboards.project',
-                    title: 'Projects',
+                    title: 'Create Project',
                     type: 'basic',
                     icon: 'heroicons_outline:square-3-stack-3d',
-                    link: '/project',
+                    link: '/createProject',
                 },
 
 
 
-                // {
-                //     id: 'dashboards.finance',
-                //     title: 'Create Project',
-                //     type: 'basic',
-                //     icon: 'heroicons_outline:banknotes',
-                //     link: '/exemple',
-                // },
+                {
+                    id: 'dashboards.finance',
+                    title: 'Projects',
+                    type: 'basic',
+                    icon: 'heroicons_outline:banknotes',
+                    link: '/project',
+                },
 
 
             ],
