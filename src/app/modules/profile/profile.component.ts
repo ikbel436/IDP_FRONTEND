@@ -32,10 +32,10 @@ export class ProfileComponent implements OnInit {
   fixedSubscriptInputWithHint: FormControl = new FormControl('', [Validators.required]);
   dynamicSubscriptInputWithHint: FormControl = new FormControl('', [Validators.required]);
   user: User; // Initialize with the user's data
-  name: string;
-  email: string;
-  phoneNumber: number;
-  description: string
+  // name: string;
+  // email: string;
+  // phoneNumber: number;
+  // description: string
   images: string;
   title = 'fileUpload';
   Fonction: string;
@@ -48,13 +48,15 @@ export class ProfileComponent implements OnInit {
   ngOnInit(): void {
     this.userService.get().subscribe(
       user => {
+        // this.getUserData(user);
         this.currentUser = user;
         this.ctx = user;
         // Ensure currentUser is defined before calling fetchImage
         if (this.currentUser) {
-          this.fetchImage(this.currentUser.image);
+          this.imageUrl = 'hello'
+          // this.fetchImage(this.currentUser.image);
         }
-        this.getUserData(); // Fetch user data after currentUser is set
+        // Fetch user data after currentUser is set
       },
       error => {
         console.error('Error fetching current user:', error);
@@ -67,41 +69,42 @@ export class ProfileComponent implements OnInit {
   // @ Public methods
   // -----------------------------------------------------------------------------------------------------
 
-  getUserData(): void {
-    this.userService.get().subscribe(
-      (response) => {
-        this.user = response;
-        // Initialize form fields with old values
-        this.name = this.user.name;
-        this.email = this.user.email;
-        this.phoneNumber = this.user.phoneNumber;
-        this.description = this.user.description;
-        this.Fonction = this.user.Fonction;
-        console.error(this.ctx);
+  // getUserData(user: User): void {
+  //   // this.userService.get().subscribe(
+  //   //   (response) => {
+  //   // this.user = response;
+  //   // Initialize form fields with old values
+  //   this.name = user.name;
+  //   this.email = user.email;
+  //   this.phoneNumber = user.phoneNumber;
+  //   this.description = user.description;
+  //   this.Fonction = user.Fonction;
+  //   // console.error(this.ctx);
 
-      },
+  //   //   },
 
-      (error) => {
-        console.error('Error fetching user data:', error);
-      }
-    );
-  }
+  //   //   (error) => {
+  //   //     console.error('Error fetching user data:', error);
+  //   //   }
+  //   // );
+  // }
   updateUserInfo(): void {
     // Prepare updated user object
-    const updatedUser = {
-      name: this.name,
-      email: this.email,
-      phoneNumber: this.phoneNumber,
-      description: this.description,
-      Fonction: this.Fonction,
+    // const updatedUser = {
+    //   name: this.name,
+    //   email: this.email,
+    //   phoneNumber: this.phoneNumber,
+    //   description: this.description,
+    //   Fonction: this.Fonction,
 
-    };
+    // };
+    const updatedUser = this.currentUser;
 
     // Call the service method to update user info
     this.userService.update(updatedUser).subscribe(
       (response) => {
         console.log('User updated successfully:', response);
-        this.getUserData();
+        // this.getUserData(response);
         this.currentUser = response
         window.location.reload();
       },

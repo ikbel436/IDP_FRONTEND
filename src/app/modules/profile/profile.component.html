@@ -158,19 +158,19 @@
                     <div class="flex flex-col gt-xs:flex-row">
                         <mat-form-field [ngClass]="formFieldHelpers" class="flex-auto gt-xs:pr-3">
                             <mat-label>Name</mat-label>
-                            <input matInput [(ngModel)]="name" name="name" placeholder="name" required>
+                            <input matInput [(ngModel)]="currentUser.name" name="name" placeholder="name" required>
                             <mat-icon class="icon-size-5" matSuffix
                                 [svgIcon]="'heroicons_solid:user-circle'"></mat-icon>
                         </mat-form-field>
                         <mat-form-field [ngClass]="formFieldHelpers" class="flex-auto gt-xs:pl-3">
                             <mat-label>Email</mat-label>
-                            <input matInput [(ngModel)]="email" name="email" placeholder="email" required>
+                            <input matInput [(ngModel)]="currentUser.email" name="email" placeholder="email" required>
                             <mat-icon class="icon-size-5" matSuffix [svgIcon]="'heroicons_solid:envelope'"></mat-icon>
                         </mat-form-field>
                         <mat-form-field [ngClass]="formFieldHelpers" class="flex-auto gt-xs:pl-3">
                             <mat-label>Phone</mat-label>
-                            <input matInput [(ngModel)]="phoneNumber" name="phoneNumber" placeholder="phoneNumber"
-                                required>
+                            <input matInput [(ngModel)]="currentUser.phoneNumber" name="phoneNumber"
+                                placeholder="phoneNumber" required>
                             <mat-icon class="icon-size-5" matSuffix [svgIcon]="'heroicons_outline:phone'"></mat-icon>
                         </mat-form-field>
                         <!--mat-form-field [ngClass]="formFieldHelpers" class="flex-auto gt-xs:pl-3">
@@ -182,8 +182,9 @@
                     <div class="flex">
                         <mat-form-field [ngClass]="formFieldHelpers" class="flex-auto">
                             <mat-label>Description</mat-label>
-                            <textarea matInput [(ngModel)]="description" name="description" placeholder="description"
-                                cdkTextareaAutosize [cdkAutosizeMinRows]="3" required></textarea>
+                            <textarea matInput [(ngModel)]="currentUser.description" name="description"
+                                placeholder="description" cdkTextareaAutosize [cdkAutosizeMinRows]="3"
+                                required></textarea>
                         </mat-form-field>
                     </div>
                     <div style="text-align: center">
