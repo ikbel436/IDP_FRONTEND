@@ -1,7 +1,7 @@
 import { TextFieldModule } from '@angular/cdk/text-field';
 import { NgClass, CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, ViewEncapsulation, NgModule, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ViewEncapsulation, NgModule, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormControl, UntypedFormBuilder, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
@@ -42,7 +42,7 @@ export class ProfileComponent implements OnInit {
   /**
    * Constructor
    */
-  constructor(private _formBuilder: UntypedFormBuilder, private userService: UserService, private _httpClient: HttpClient,) {
+  constructor(private _formBuilder: UntypedFormBuilder, private userService: UserService, private _httpClient: HttpClient, private cdRef: ChangeDetectorRef) {
   }
   currentUser: any
   ngOnInit(): void {
@@ -60,8 +60,8 @@ export class ProfileComponent implements OnInit {
         console.error('Error fetching current user:', error);
       }
     );
-
   }
+
 
   // -----------------------------------------------------------------------------------------------------
   // @ Public methods
@@ -92,7 +92,9 @@ export class ProfileComponent implements OnInit {
       name: this.name,
       email: this.email,
       phoneNumber: this.phoneNumber,
-      description: this.description
+      description: this.description,
+      Fonction: this.Fonction,
+
     };
 
     // Call the service method to update user info
