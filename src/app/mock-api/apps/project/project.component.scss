@@ -1,0 +1,22 @@
+/* CSS for the description column */
+.description-column {
+    min-width: 100px; /* Adjust based on your needs */
+    font-size: 104px; /* Increase font size for better readability */
+    padding: 100px 120  px; /* Add padding for better readability */
+}
+.icon-container {
+    position: relative;
+    display: inline-block;
+}
+
+.icon-container svg {
+    position: absolute;
+    top: 50%;
+    right: -20px; /* Adjust based on your design */
+    transform: translateY(-50%);
+    cursor: pointer;
+}
+
+.hover.feather-feather-copy {
+    display: block;
+}
