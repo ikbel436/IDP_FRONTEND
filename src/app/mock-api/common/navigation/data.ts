@@ -19,13 +19,13 @@ export const defaultNavigation: FuseNavigationItem[] = [
 
 
 
-            {
-                id: 'dashboards.finance',
-                title: 'Projects',
-                type: 'basic',
-                icon: 'heroicons_outline:banknotes',
-                link: '/project',
-            },
+            // {
+            //     id: 'dashboards.finance',
+            //     title: 'Projects',
+            //     type: 'basic',
+            //     icon: 'heroicons_outline:banknotes',
+            //     link: '/project',
+            // },
 
 
         ],

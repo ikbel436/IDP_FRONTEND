@@ -32,7 +32,7 @@
                 />
             </mat-form-field>
             <!-- Add product button -->
-            <button
+            <!-- <button
                 class="ml-4"
                 mat-flat-button
                 [color]="'primary'"
@@ -40,7 +40,23 @@
             >
                 <mat-icon [svgIcon]="'heroicons_outline:plus'"></mat-icon>
                 <span class="ml-2 mr-1">Add</span>
-            </button>
+            </button> -->
+            <button
+            class="ml-4"
+            mat-flat-button
+            [color]="'primary'"
+            (click)="openComposeDialog()">
+            <mat-icon [svgIcon]="'heroicons_outline:plus'"></mat-icon>
+            <span class="ml-2 mr-1">Add</span>
+        </button>
+        <button
+        class="ml-4"
+        mat-flat-button
+        [color]="'primary'"
+        (click)="goToDetails()">
+        <mat-icon [svgIcon]="'heroicons_outline:plus'"></mat-icon>
+        <span class="ml-2 mr-1">Details</span>
+    </button>
         </div>
     </div>
 
@@ -63,6 +79,7 @@
                         <div [mat-sort-header]="'lien'">Lien</div>
                    
                         <div class="hidden sm:block">Details</div>
+                       
                     </div>
                     <!-- Rows -->
                     <ng-container *ngIf="(projects$ | async) as testProjects">
@@ -116,6 +133,7 @@
                                         [svgIcon]="selectProject?._id === project._id? 'heroicons_solid:chevron-up' : 'heroicons_solid:chevron-down'"></mat-icon>
                                 </button>
                             </div>
+
                         </div>
                         <div class="grid">
                             <ng-container *ngIf="selectProject?._id === project._id">
@@ -151,7 +169,19 @@
                                         <mat-form-field class="w-full mb-6">
                                             <input matInput [formControlName]="'name'" placeholder="Project Name">
                                         </mat-form-field>
-                            
+                                        <mat-form-field class="w-full mb-6">
+                                            <input matInput [formControlName]="'backendDockerImage'" placeholder="Image backend">
+
+                                        </mat-form-field>
+                                        <mat-form-field class="w-full mb-6">
+                                            <input matInput [formControlName]="'frontendDockerImage'" placeholder="Image frontend">
+                                        </mat-form-field>
+                                        <mat-form-field class="w-full mb-6" appearance="outline" floatLabel="always">
+                                            <mat-label>Database Type</mat-label>
+                                            <mat-select formControlName="databaseType">
+                                              <mat-option *ngFor="let option of databaseOptions" [value]="option">{{ option }}</mat-option>
+                                            </mat-select>
+                                          </mat-form-field>
                                         <!-- Reference and Provider -->
                                         <div class="flex flex-wrap mb-6">
                                             <mat-form-field class="w-1/2 pr-2">

@@ -13,7 +13,7 @@
                     </div>
                     <div class="flex flex-col min-w-0 ml-4">
                         <ng-container *transloco="let t">
-                            <div class="text-2xl md:text-5xl font-semibold tracking-tight leading-7 md:leading-snug truncate">{{t('welcome-back')}}, Brian!</div>
+                            <div class="text-2xl md:text-5xl font-semibold tracking-tight leading-7 md:leading-snug truncate">{{t('welcome-back')}}, {{currentUser?.name}}!</div>
                         </ng-container>
                         <div class="flex items-center">
                             <mat-icon
@@ -45,23 +45,7 @@
                 </div>
             </div>
             <!-- Project selector -->
-            <!-- <div class="relative flex self-start pt-2 pb-1 pl-5 pr-4 cursor-pointer overflow-hidden rounded-t-xl border border-b-0 bg-default" matRipple [matMenuTriggerFor]="projectsMenu">
-                <div class="flex items-center">
-                  <div class="overflow-hidden">
-                    <div class="font-medium leading-6 truncate">{{selectedProjectName}}</div>
-                  </div>
-                  <div class="flex items-center justify-center pl-2">
-                    <mat-icon class="icon-size-5" [svgIcon]="'heroicons_mini:chevron-down'"></mat-icon>
-                  </div>
-                </div>
-                <mat-menu #projectsMenu="matMenu" [xPosition]="'before'">
-                  <ng-container *ngIf="projects$ | async as projectsData">
-                    <ng-container *ngFor="let project of projectsData.projects">
-                      <button mat-menu-item (click)="handleProjectSelection(project.name)">{{project.name}}</button>
-                    </ng-container>
-                  </ng-container>
-                </mat-menu>
-              </div> -->
+       
               <div class="relative flex self-start pt-2 pb-1 pl-5 pr-4 cursor-pointer overflow-hidden rounded-t-xl border border-b-0 bg-default" matRipple [matMenuTriggerFor]="projectsMenu">
                 <div class="flex items-center">
                   <div class="overflow-hidden">
@@ -96,63 +80,34 @@
                 <mat-tab label="Home">
                     <ng-template matTabContent>
                         <div *ngIf="selectedProject" class="details-container">
-                            <mat-toolbar color="primary">Project Details</mat-toolbar>
-                            <div class="details-card">
-                                <h2>Details</h2>
-                                <div class="details-content">
-                                  <div class="details-left-column">
-                                    <p><strong>Identifier:</strong> {{ selectedProject.reference }}</p>
-                                    <p><strong>Provider:</strong> {{ selectedProject.provider || 'N/A' }}</p>
-                                    
-                                  </div>
-                                  <div class="details-right-column">
-                                    <p><strong>Title:</strong> {{ selectedProject.name }}</p>
-                                
-                                    <p><strong>URL:</strong> <a [href]="selectedProject.lien" target="_blank">Link to Project</a></p>
-                                   
-                                   
-                                  </div>
+                            <mat-toolbar color="primary" class="details-toolbar">Project Details</mat-toolbar>
+                            <div class="details-card mat-elevation-z4">
+                              <h2 class="details-title">Details</h2>
+                              <div class="details-content">
+                                <div class="details-column">
+                                  <p><strong>Identifier:</strong> {{ selectedProject.reference }}</p>
+                                  <p><strong>Provider:</strong> {{ selectedProject.provider || 'N/A' }}</p>
+                                  <p><strong>Backend Docker Image:</strong> {{ selectedProject.backendDockerImage }}</p>
+                                  <p><strong>Frontend Docker Image:</strong> {{ selectedProject.frontendDockerImage }}</p>
                                 </div>
-                              
+                                <div class="details-column">
+                                  <p><strong>Title:</strong> {{ selectedProject.name }}</p>
+                                  <p><strong>URL:</strong> <a [href]="selectedProject.lien" target="_blank">Link to Project</a></p>
+                                  <p><strong>Database Type:</strong> {{ selectedProject.databaseType }}</p>
+                                  <p><strong>Description:</strong> {{ selectedProject.description }}</p>
+                                </div>
                               </div>
-                            <!-- <mat-card>
-                              <mat-card-header>
-                                <mat-card-title>{{ selectedProject.name }}</mat-card-title>
-                              </mat-card-header>
-                              <mat-card-content>
-                                <mat-tab-group>
-                                  <mat-tab label="Overview">
-                                    <div class="details">
-                                      <div class="detail" *ngIf="selectedProject.description">
-                                        <span class="label">Description:</span>
-                                        <span class="value">{{ selectedProject.description }}</span>
-                                      </div>
-                                      <div class="detail" *ngIf="selectedProject.provider">
-                                        <span class="label">Provider:</span>
-                                        <span class="value">{{ selectedProject.provider }}</span>
-                                      </div>
-                                      <div class="detail" *ngIf="selectedProject.lien">
-                                        <span class="label">URL:</span>
-                                        <span class="value"><a [href]="selectedProject.lien" target="_blank">{{ selectedProject.lien }}</a></span>
-                                      </div>
-                                      <div class="detail" *ngIf="selectedProject.reference">
-                                        <span class="label">Reference:</span>
-                                        <span class="value">{{ selectedProject.reference }}</span>
-                                      </div>
-                                    </div>
-                                  </mat-tab>
-                                  <mat-tab label="Runs">Content 2</mat-tab>
-                                  <mat-tab label="Audit Log">Content 3</mat-tab>
-                                  <mat-tab label="Scorecards">Content 4</mat-tab>
-                                  <mat-tab label="README">Content 5</mat-tab>
-                                </mat-tab-group>
-                              </mat-card-content>
-                              <mat-card-actions>
-                                <button mat-raised-button color="primary">Add Visualization</button>
-                                <button mat-raised-button>Save this view</button>
-                              </mat-card-actions>
-                            </mat-card> -->
+                              <div class="details-footer">
+                                <p><strong>Created At:</strong> {{ selectedProject.createdAt | date }}</p>
+                              </div>
+                            </div>
                           </div>
+                          <div *ngIf="!selectedProject" class="loading-container">
+                            <mat-progress-spinner mode="indeterminate" diameter="50"></mat-progress-spinner>
+                            <p>Loading project details...</p>
+                          </div>
+                          
+                          
                          
                           
                         

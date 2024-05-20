@@ -24,6 +24,8 @@
     import {  ProjectService } from './project.service';
     import { Router } from '@angular/router';
 import { FormControl } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
+import { CreateProjectComponent } from 'app/modules/create-project/create-project.component';
 
 
     @Component({
@@ -63,7 +65,7 @@ import { FormControl } from '@angular/forms';
     encapsulation  : ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush,
     animations     : fuseAnimations,
-    imports        : [MatTabsModule,NgIf,ReactiveFormsModule, MatProgressBarModule, MatFormFieldModule, MatIconModule, MatInputModule, FormsModule, ReactiveFormsModule, MatButtonModule, MatSortModule, NgFor, NgTemplateOutlet, MatPaginatorModule, NgClass, MatSlideToggleModule, MatSelectModule, MatOptionModule, MatCheckboxModule, MatRippleModule, AsyncPipe, CurrencyPipe],
+    imports        : [MatTabsModule,NgIf,ReactiveFormsModule,CommonModule , MatProgressBarModule, MatFormFieldModule, MatIconModule, MatInputModule, FormsModule, ReactiveFormsModule, MatButtonModule, MatSortModule, NgFor, NgTemplateOutlet, MatPaginatorModule, NgClass, MatSlideToggleModule, MatSelectModule, MatOptionModule, MatCheckboxModule, MatRippleModule, AsyncPipe, CurrencyPipe],
     })
     export class ProjectComponent {
     @ViewChild(MatPaginator) private _paginator: MatPaginator;
@@ -87,7 +89,7 @@ import { FormControl } from '@angular/forms';
     provider: string;
     isloaded: boolean = false;
     testProjects: any[] = []
- 
+    databaseOptions: string[] = ['MySQL', 'MongoDB', 'PostgreSQL', 'SQLite', 'Other'];
     /**
      * Constructor
      */
@@ -98,13 +100,28 @@ import { FormControl } from '@angular/forms';
         private _formBuilder: UntypedFormBuilder,
         // private _inventoryService: InventoryService,
         private _inventoryService: ProjectService,
-        private router: Router
+        private router: Router,
+        private _matDialog: MatDialog,
 
     )
     { 
     }
     
+    openComposeDialog(): void
+    {
+        // Open the dialog
+        const dialogRef = this._matDialog.open(CreateProjectComponent, {
+            width: '600px',
+      maxHeight: '80vh',
+      panelClass: 'custom-dialog-container'
+          });
 
+        dialogRef.afterClosed()
+            .subscribe((result) =>
+            {
+                console.log('Compose dialog was closed!');
+            });
+    }
     // -----------------------------------------------------------------------------------------------------
     // @ Lifecycle hooks
     // -----------------------------------------------------------------------------------------------------
@@ -127,6 +144,9 @@ import { FormControl } from '@angular/forms';
           console.error('Could not copy text: ', err);
         });
       }
+      goToDetails(): void {
+        this.router.navigate(['/project']);
+      }
 
     /**
      * On init
@@ -145,6 +165,9 @@ import { FormControl } from '@angular/forms';
             lien: [''],
             description: [''],
             reference: [''],
+            backendDockerImage: ['', Validators.required],
+            frontendDockerImage: ['', Validators.required],
+            databaseType: ['', Validators.required]
         });
      
         // Subscribe to search input field value changes
@@ -260,7 +283,12 @@ import { FormControl } from '@angular/forms';
              provider: project.provider,
              lien: project.lien,
              description: project.description,
-             reference: project.reference
+             reference: project.reference,
+             backendDockerImage: project.backendDockerImage,
+             frontendDockerImage:project.frontendDockerImage,
+             databaseType:project.databaseType
+
+
          });
          console.log(this.selectProjectForm.getRawValue())
  
