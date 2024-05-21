@@ -10,7 +10,7 @@ export class User {
     password: string;
     createdAt: Date;
     avatar?: string;
-    image: Image;
+    image: string;
     Role: string;
     Fonction: string;
     resetLink: {
