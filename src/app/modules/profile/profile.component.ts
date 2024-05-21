@@ -52,9 +52,10 @@ export class ProfileComponent implements OnInit {
         this.currentUser = user;
         this.ctx = user;
         // Ensure currentUser is defined before calling fetchImage
-        if (this.currentUser) {
-          this.imageUrl = 'hello'
-          // this.fetchImage(this.currentUser.image);
+        if (this.currentUser && this.currentUser.image) {
+          const transformedUrl = this.currentUser.image.replace('/upload/', '/upload/w_128,h_128,c_fill/');
+          this.imageUrl = transformedUrl;
+          console.log(this.imageUrl); // Check if URL is logged
         }
         // Fetch user data after currentUser is set
       },
