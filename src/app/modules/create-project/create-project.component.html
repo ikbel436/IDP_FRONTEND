@@ -1,0 +1,62 @@
+<div mat-dialog-content class="form-container">
+    <!-- Header -->
+    <div class="header flex items-center justify-between h-16 px-6 bg-primary text-on-primary rounded-t-lg">
+      <div class="text-lg font-medium">New Project</div>
+      <button mat-icon-button (click)="saveAndClose()">
+        <mat-icon class="text-current" [svgIcon]="'heroicons_outline:x-mark'"></mat-icon>
+      </button>
+    </div>
+  
+    <!-- Compose form -->
+    <form class="flex flex-col p-6 sm:p-8 overflow-y-auto flex-grow" [formGroup]="projectForm" (ngSubmit)="onSubmit()">
+      <!-- Project Name -->
+      <mat-form-field class="w-full mb-6" appearance="outline" floatLabel="always">
+        <mat-label>Project Name</mat-label>
+        <input matInput formControlName="name" placeholder="Enter project name">
+      </mat-form-field>
+  
+      <!-- Provider Type -->
+      <mat-form-field class="w-full mb-6" appearance="outline" floatLabel="always">
+        <mat-label>Provider Type</mat-label>
+        <mat-select formControlName="provider">
+          <mat-option *ngFor="let option of providerOptions" [value]="option">{{ option }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+  
+      <!-- Project Link -->
+      <mat-form-field class="w-full mb-6" appearance="outline" floatLabel="always">
+        <mat-label>Project Link</mat-label>
+        <input matInput formControlName="lien" placeholder="Enter project link">
+      </mat-form-field>
+  
+      <!-- Project Description -->
+      <mat-form-field class="w-full mb-6" appearance="outline" floatLabel="always">
+        <mat-label>Project Description</mat-label>
+        <textarea matInput formControlName="description" rows="4" placeholder="Enter project description"></textarea>
+      </mat-form-field>
+  
+      <!-- Backend Docker Image -->
+      <mat-form-field class="w-full mb-6" appearance="outline" floatLabel="always">
+        <mat-label>Backend Docker Image</mat-label>
+        <input matInput formControlName="backendDockerImage" placeholder="Enter backend Docker image">
+      </mat-form-field>
+  
+      <!-- Frontend Docker Image -->
+      <mat-form-field class="w-full mb-6" appearance="outline" floatLabel="always">
+        <mat-label>Frontend Docker Image</mat-label>
+        <input matInput formControlName="frontendDockerImage" placeholder="Enter frontend Docker image">
+      </mat-form-field>
+  
+      <!-- Database Type -->
+      <mat-form-field class="w-full mb-6" appearance="outline" floatLabel="always">
+        <mat-label>Database Type</mat-label>
+        <mat-select formControlName="databaseType">
+          <mat-option *ngFor="let option of databaseOptions" [value]="option">{{ option }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+  
+      <!-- Save Project Button -->
+      <button mat-raised-button color="primary" class="w-full" type="submit">Save Project</button>
+    </form>
+  </div>
+  

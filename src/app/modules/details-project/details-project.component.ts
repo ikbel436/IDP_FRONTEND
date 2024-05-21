@@ -16,6 +16,7 @@ import { ApexOptions, NgApexchartsModule } from 'ng-apexcharts';
 import { Observable, Subject, map, takeUntil, tap } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { DetailsProjectService } from './details-project.service';
+import { UserService } from 'app/core/user/user.service';
 @Component({
   selector: 'app-details-project',
   encapsulation  : ViewEncapsulation.None,
@@ -47,7 +48,8 @@ export class DetailsProjectComponent {
     constructor(
         private _projectService: DetailsProjectService,
         private _router: Router,
-         private cd: ChangeDetectorRef
+         private cd: ChangeDetectorRef,
+         private userService: UserService
     )
     { // this.projects$ = this._projectService.getProjects();
     }
@@ -55,7 +57,7 @@ export class DetailsProjectComponent {
     // -----------------------------------------------------------------------------------------------------
     // @ Lifecycle hooks
     // -----------------------------------------------------------------------------------------------------
- 
+    currentUser:any
     /**
      * On init
      */
@@ -73,6 +75,22 @@ export class DetailsProjectComponent {
           this.cd.detectChanges(); // Trigger change detection manually
         }
       });
+      this.userService.get().subscribe(
+        user => {
+          // this.getUserData(user);
+          this.currentUser = user;
+        //  this.ctx = user;
+          // Ensure currentUser is defined before calling fetchImage
+        //   if (this.currentUser) {
+        //     this.imageUrl = 'hello'
+        //     // this.fetchImage(this.currentUser.image);
+        //   }
+          // Fetch user data after currentUser is set
+        },
+        error => {
+          console.error('Error fetching current user:', error);
+        }
+      );
       //  Get the data
         // this._projectService.getProjects
         //     .pipe(takeUntil(this._unsubscribeAll))

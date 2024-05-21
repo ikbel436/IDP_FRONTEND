@@ -20,3 +20,9 @@
 .hover.feather-feather-copy {
     display: block;
 }
+.custom-dialog-container {
+    border-radius: 10px;
+    overflow: hidden; /* Ensure content does not overflow out of the dialog */
+    padding: 0; /* Remove padding to fit content properly */
+  }
+  

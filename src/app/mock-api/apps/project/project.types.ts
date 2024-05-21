@@ -6,6 +6,9 @@ export interface InventoryProject
     reference?: string | null;
     provider?: string | null;
     lien?: string | null;
+    backendDockerImage?: string
+    frontendDockerImage?:string
+    databaseType?:string
     // tags?: string[];
     // sku?: string | null;
     // barcode?: string | null;
