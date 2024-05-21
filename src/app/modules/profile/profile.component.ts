@@ -15,6 +15,7 @@ import { FuseCardComponent } from '@fuse/components/card';
 import { UserService } from 'app/core/user/user.service';
 import { User } from 'app/core/user/user.types';
 import { FormsModule } from '@angular/forms';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'profile',
@@ -44,26 +45,42 @@ export class ProfileComponent implements OnInit {
    */
   constructor(private _formBuilder: UntypedFormBuilder, private userService: UserService, private _httpClient: HttpClient, private cdRef: ChangeDetectorRef) {
   }
-  currentUser: any
+  
+  currentUser: User = {
+    name: '',
+    email: '',
+    image: '',
+    phoneNumber: 0,
+    password: '',
+    createdAt: undefined,
+    Role: '',
+    Fonction: '',
+    resetLink: {
+      data: ''
+    },
+    status: '',
+    description: ''
+  };
+  user$: Observable<User>;
   ngOnInit(): void {
     this.userService.get().subscribe(
       user => {
-        // this.getUserData(user);
+        console.log('User fetched:', user);
         this.currentUser = user;
-        this.ctx = user;
-        // Ensure currentUser is defined before calling fetchImage
+       
         if (this.currentUser && this.currentUser.image) {
           const transformedUrl = this.currentUser.image.replace('/upload/', '/upload/w_128,h_128,c_fill/');
           this.imageUrl = transformedUrl;
           console.log(this.imageUrl); // Check if URL is logged
         }
-        // Fetch user data after currentUser is set
       },
       error => {
         console.error('Error fetching current user:', error);
       }
     );
+    this.user$ = this.userService.get();
   }
+  
 
 
   // -----------------------------------------------------------------------------------------------------
