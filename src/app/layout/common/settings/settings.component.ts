@@ -5,14 +5,20 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router } from '@angular/router';
 import { FuseDrawerComponent } from '@fuse/components/drawer';
-import { FuseConfig, FuseConfigService, Scheme, Theme, Themes } from '@fuse/services/config';
+import {
+    FuseConfig,
+    FuseConfigService,
+    Scheme,
+    Theme,
+    Themes,
+} from '@fuse/services/config';
 
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({
-    selector     : 'settings',
-    templateUrl  : './settings.component.html',
-    styles       : [
+    selector: 'settings',
+    templateUrl: './settings.component.html',
+    styles: [
         `
             settings {
                 position: static;
@@ -22,7 +28,6 @@ import { Subject, takeUntil } from 'rxjs';
             }
 
             @media (screen and min-width: 1280px) {
-
                 empty-layout + settings .settings-cog {
                     right: 0 !important;
                 }
@@ -30,11 +35,17 @@ import { Subject, takeUntil } from 'rxjs';
         `,
     ],
     encapsulation: ViewEncapsulation.None,
-    standalone   : true,
-    imports      : [MatIconModule, FuseDrawerComponent, MatButtonModule, NgFor, NgClass, MatTooltipModule],
+    standalone: true,
+    imports: [
+        MatIconModule,
+        FuseDrawerComponent,
+        MatButtonModule,
+        NgFor,
+        NgClass,
+        MatTooltipModule,
+    ],
 })
-export class SettingsComponent implements OnInit, OnDestroy
-{
+export class SettingsComponent implements OnInit, OnDestroy {
     config: FuseConfig;
     layout: string;
     scheme: 'dark' | 'light';
@@ -47,10 +58,8 @@ export class SettingsComponent implements OnInit, OnDestroy
      */
     constructor(
         private _router: Router,
-        private _fuseConfigService: FuseConfigService,
-    )
-    {
-    }
+        private _fuseConfigService: FuseConfigService
+    ) {}
 
     // -----------------------------------------------------------------------------------------------------
     // @ Lifecycle hooks
@@ -59,13 +68,11 @@ export class SettingsComponent implements OnInit, OnDestroy
     /**
      * On init
      */
-    ngOnInit(): void
-    {
+    ngOnInit(): void {
         // Subscribe to config changes
         this._fuseConfigService.config$
             .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((config: FuseConfig) =>
-            {
+            .subscribe((config: FuseConfig) => {
                 // Store the config
                 this.config = config;
             });
@@ -74,8 +81,7 @@ export class SettingsComponent implements OnInit, OnDestroy
     /**
      * On destroy
      */
-    ngOnDestroy(): void
-    {
+    ngOnDestroy(): void {
         // Unsubscribe from all subscriptions
         this._unsubscribeAll.next(null);
         this._unsubscribeAll.complete();
@@ -90,19 +96,19 @@ export class SettingsComponent implements OnInit, OnDestroy
      *
      * @param layout
      */
-    setLayout(layout: string): void
-    {
+    setLayout(layout: string): void {
         // Clear the 'layout' query param to allow layout changes
-        this._router.navigate([], {
-            queryParams        : {
-                layout: null,
-            },
-            queryParamsHandling: 'merge',
-        }).then(() =>
-        {
-            // Set the config
-            this._fuseConfigService.config = {layout};
-        });
+        this._router
+            .navigate([], {
+                queryParams: {
+                    layout: null,
+                },
+                queryParamsHandling: 'merge',
+            })
+            .then(() => {
+                // Set the config
+                this._fuseConfigService.config = { layout };
+            });
     }
 
     /**
@@ -110,9 +116,8 @@ export class SettingsComponent implements OnInit, OnDestroy
      *
      * @param scheme
      */
-    setScheme(scheme: Scheme): void
-    {
-        this._fuseConfigService.config = {scheme};
+    setScheme(scheme: Scheme): void {
+        this._fuseConfigService.config = { scheme };
     }
 
     /**
@@ -120,8 +125,7 @@ export class SettingsComponent implements OnInit, OnDestroy
      *
      * @param theme
      */
-    setTheme(theme: Theme): void
-    {
-        this._fuseConfigService.config = {theme};
+    setTheme(theme: Theme): void {
+        this._fuseConfigService.config = { theme };
     }
 }

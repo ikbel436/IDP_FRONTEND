@@ -1,5 +1,600 @@
 {
+    "languages": {
+        "en": "English",
+        "fr": "French"
+    },
+    "theme": {
+        "dark": "Dark",
+        "light": "Light"
+    },
+    "rights": "all rights reserved",
+    "company_dashboards": "Dashboards",
+    "company_dashboards.home": "Home",
+    "company_dashboards.analytics": "Analytics",
+    "my-team": "My Team",
+    "profile":"Company Profile",
+    "jobs":"Jobs",
+    "jobs.list":"Jobs Offers",
+    "jobs.applications":"Applications",
     "welcome-back": "Welcome back",
     "Project": "Project",
-    "Analytics": "Analytics"
+    "dashboards": {
+        "home": "Home",
+        "analytics": "Analytics"
+    },
+    "apps":{
+        "academy": "User Management",
+        "users": {
+            "employee": "Employees",
+            "coach": "Coaches"
+        },
+        "enterprise": {
+            "name": "Enterprise Management",
+            "enterprise":"Enterprises",
+            "responsible": "Responsibles"
+        },
+        "configuration": {
+            "name": "Configuration",
+            "jobConfig": {
+                "name": "Job Configuration",
+                "jobTitles": "Job Titles",
+                "jobCategory": "Job Categories",
+                "contractType": "Contract Types",
+                "industry": "Industries",
+                "experienceLevel": "Experience Levels"
+            },
+            "trainingConfig": {
+                "name": "Training Configuration",
+                "availability": "Availability",
+                "budget": "Budget",
+                "domain": "Domain",
+                "level": "Level",
+                "objective": "Objective",
+                "trainingDomain": "Training Domain"
+            },
+            "skillConfig": "Skills",
+            "schoolConfig": "Schools",
+            "goalsConfig": "Goals",
+            "sex": "sex",
+            "languagesConfig": "Languages"
+        }
+    },
+    "error": {
+        "server": {
+            "authorization": {
+                "invalid-credential": {
+                    "msg": "Wrong email or password"
+                }
+            },
+            "exist":{
+                "msg":{
+                    "email":"Email already exists",
+                    "company":"Company already exists"
+                }
+            }
+            
+        },
+        "imgUpload":{
+            "errorUpload": "Error uploading image",
+            "errorRemove": "Error removing image",
+            "invalidImgFormat":"File type should be Image",
+            "maxImgSize":"Image size should be less than 5MB"
+        }
+    },
+    "success":{
+        "imgUpload":{
+            "success": "Image uploaded successfully",
+            "successRemove": "Image removed successfully"
+        }
+    },
+    "configuration": {
+        "skills": "Skills",
+        "jobTitles": "Job Titles",
+        "contractTypes": "Contract Types",
+        "jobCategories": "Job Categories",
+        "industries": "Industries",
+        "experienceLevels": "Experience Levels",
+        "availability": "Availability",
+        "budget": "Budget",
+        "domain": "Domain",
+        "level": "Level",
+        "objective": "Objective",
+        "trainingDomain": "Training Domain",
+        "school": "Schools",
+        "goal": "Goals",
+        "language": "Languages"
+    },
+    "messages":{
+        "no-skills": "There are no skills !",
+        "no-jobTitles": "There are no job titles !",
+        "no-contractTypes": "There are no contract types !",
+        "no-jobCategories": "There are no job categories !",
+        "no-industries": "There are no industries !",
+        "no-experienceLevels": "There are no experience levels !",
+        "no-availability": "There are no availabilities !",
+        "no-budget": "There are no budgets !",
+        "no-domain": "There are no domains !",
+        "no-level": "There are no levels !",
+        "no-objective": "There are no objectives !",
+        "no-trainingDomain": "There are no training domains !",
+        "no-school": "There are no schools !",
+        "no-goals": "There are no goals !",
+        "no-languages": "There are no languages !",
+        "no-employees": "There are no employees !",
+        "no-jobOffers": "There are no job offers !"
+    },
+    "search": {
+        "skills": "Search skills",
+        "jobTitles": "Search job titles",
+        "contractTypes": "Search contract types",
+        "jobCategories": "Search job categories",
+        "industries": "Search industries",
+        "experienceLevels": "Search experience levels",
+        "availability": "Search availabilities",
+        "budget": "Search budgets",
+        "domain": "Search domains",
+        "level": "Search levels",
+        "objective": "Search objectives",
+        "trainingDomain": "Search training domains",
+        "school": "Search schools",
+        "goal": "Search goals",
+        "language": "Search languages",
+        "employees": "Search employees",
+        "jobOffers": "Search job offers"
+    },
+    "buttons":{
+        "upload-file": "Upload file",
+        "save-file": "Save file",
+        "add": "Add",
+        "save":"Save",
+        "update": "Update",
+        "next": "Next",
+        "back": "Back",
+        "reset": "Reset",
+        "finish": "Finish",
+        "delete": "Delete",
+        "cancel": "Cancel",
+        "close": "Close"
+    },
+
+    "array-labels":{
+        "key": "Key",
+        "name": "Name",
+        "address": "Address",
+        "details": "Details",
+        "actions": "Actions",
+        "employees":{
+            "title":"Team Members",
+            "name": "name",
+            "email": "Email",
+            "phoneNumber": "Phone Number",
+            "role": "Role(s)",
+            "status": "Status",
+            "createdAt": "Created At",
+            "enabled": "Enabled",
+            "disabled": "Disabled",
+            "actions": "Actions"
+        },
+        "jobOffers":{
+            "header":"Job Offers",
+            "showInactive":"Show Inactive",
+            "reference": "Reference",
+            "title":"Title",
+            "recruiter": "Recruiter",
+            "active": "active",
+            "inactive": "inactive",
+            "createdAt": "Created At",
+            "actions": "Actions"
+        }
+    },
+    "titles":{
+        "configuration-skill": "Skills Configuration",
+        "configuration-jobTitle": "Job Titles Configuration",
+        "configuration-contractType": "Contract Types Configuration",
+        "configuration-jobCategories": "Job Categories Configuration",
+        "configuration-industries": "Industries Configuration",
+        "configuration-experienceLevels": "Experience Levels Configuration",
+        "configuration-availability": "Availabilities Configuration",
+        "configuration-budget": "Budgets Configuration",
+        "configuration-domain": "Domains Configuration",
+        "configuration-level": "Levels Configuration",
+        "configuration-objective": "Objectives Configuration",
+        "configuration-trainingDomain": "Training Domains Configuration",
+        "configuration-school": "Schools Configuration",
+        "configuration-goal": "Goals Configuration",
+        "configuration-language": "Languages Configuration"
+    },
+    "userMenu":{
+        "signedInAs": "Signed in as",
+        "profile": "Profile",
+        "settings": "Settings",
+        "status": "Status",
+        "signOut": "Sign out"
+      },
+    "confirmationDialog":{
+        "message": "Are you sure you want to remove this <b>{{title}}</b> permanently? <span class='font-medium'>This action cannot be undone!</span>",
+        "deleteEmployee":"Are you sure you want to remove {{name}} permanently? <span class='font-medium'>This action cannot be undone!</span>",
+        "deleteJobOffer":"Are you sure you want to remove the job offer <b>{{title}}</b>?",
+        "titles": {
+            "delete-job-title": "Delete Job Title",
+            "delete-skill": "Delete Skill",
+            "delete-contract-type": "Delete Contract Type",
+            "delete-job-category": "Delete Job Category",
+            "delete-industry": "Delete Industry",
+            "delete-experience-level": "Delete Experience Level",
+            "delete-availability": "Delete Availability",
+            "delete-budget": "Delete Budget",
+            "delete-domain": "Delete Domain",
+            "delete-level": "Delete Level",
+            "delete-objective": "Delete Objective",
+            "delete-training-domain": "Delete Training Domain",
+            "delete-school": "Delete School",
+            "delete-goal": "Delete Goal",
+            "delete-language": "Delete Language",
+            "deleteEmployee":"Delete Employee",
+            "deleteJobOffer":"Delete Job Offer"
+        },
+        "addSuccess": " {{title}} added Successfully ",
+        "updateSuccess": " {{title}} updated Successfully ",
+        "deleteSuccess":{
+            "skill": "Skill deleted Successfully",
+            "jobTitle": "Job Title deleted Successfully",
+            "contractType": "Contract Type deleted Successfully",
+            "jobCategory": "Job Category deleted Successfully",
+            "industry": "Industry deleted Successfully",
+            "experienceLevel": "Experience Level deleted Successfully",
+            "availability": "Availability deleted Successfully",
+            "budget": "Budget deleted Successfully",
+            "domain": "Domain deleted Successfully",
+            "level": "Level deleted Successfully",
+            "objective": "Objective deleted Successfully",
+            "trainingDomain": "Training Domain deleted Successfully",
+            "school": "School deleted Successfully",
+            "goal": "Goal deleted Successfully",
+            "language": "Language deleted Successfully"
+        },
+        "deleteError": "Operation unsuccessful. Please try again.",
+        "toggle": {
+            "title":"{{status}} Employee",
+            "enable": "Enable",
+            "disable": "Disable",
+            "enableSuccess": "Enabled Successfully",
+            "disableSuccess":"Disabled Successfully",
+            "message":"Are you want to {{status}} {{name}} ?"
+        }
+    },
+    "toasts":{
+        "addSuccess": " {{title}} has been saved Successfully ",
+        "updateSuccess": " {{title}} has been updated Successfully ",
+        "deleteSuccess": " {{title}} has been deleted Successfully ",
+        "titles":{
+            "company": "Company",
+            "employee":"Employee",
+            "jobOffer":"Job Offer"
+        }
+    },
+    "toastLoading":{
+        "socials":{
+          "save":"Saving socials...",
+          "success":"Socials saved successfully",
+          "error":"Error saving socials"
+        }
+      },
+    "pagination":{
+        "items-per-page": "Items per page",
+        "next-page": "Next page",
+        "previous-page": "Previous page",
+        "first-page": "First page",
+        "last-page": "Last page",
+        "of": "of"
+    },
+    "loading": "Loading...",
+    "dataNotFound":{
+        "noDate":"No date found!"
+      },
+      "validators":{
+        "isRequired": " is required.",
+        "maxCharacters": " characters left.",
+        "fieldsRequired":"Fields with * are required. ",
+        "invalidUrl": "Please enter a valid url.",
+        "invalidEmail": "Please enter a valid email.",
+        "atLeastOne":"Should be at least one.",
+        "invalidPhoneNumber": "Must only contain numbers.",
+        "invalidPhoneNumberMin": "Must be at least 7 digits.",
+        "invalidPhoneNumberMax": "Must be at most 15 digits.",
+        "passwordMatch": "Passwords do not match."
+      },
+      "placeholders":{
+        "search": "Search",
+        "email": "Enter your email address",
+        "password": "Enter your password",
+        "phoneNumber": "Enter your phone number",
+        "name": "Enter your  name",
+        "confirmPassword": "Confirm password"
+      },
+      "settings":{
+        "title":"Settings",
+        "panels":{
+          "account":{
+            "title":"Account",
+            "description":"Manage your public profile and private information"
+          },
+          "security":{
+            "title":"Security",
+            "description":"Manage your password and 2-step verification preferences"
+          },
+          "goals":{
+            "title":"Goals",
+            "description":"Manage your career goals and training preferences"
+          },
+          "notifications":{
+            "title":"Notifications",
+            "description":"Manage when you'll be notified on which channels"
+          },
+          "plan-billing":{
+            "title":"Plan & Billing",
+            "description":"Manage your subscription plan, payment method and billing information"
+          
+          },
+          "team":{
+            "title":"Team",
+            "description":"Manage your existing team and change roles/permissions" 
+          }
+        },
+        "account":{
+         
+         
+          "name":"Name",
+          "phoneNumber":"Phone number",
+          "email":"Email not verified",
+          "description":"Update your personal information",
+          "createdAt":"Created at"
+         
+        }
+      },
+    "authForms":{
+        "signIn": {
+          "title": "Sign in",
+          "email": "Email",
+          "password": "Password",
+          "rememberMe": "Remember me",
+          "forgotPassword": "Forgot password?",
+          "noAccount": "Don't have an account?",
+          "continueWith":"Or continue with",
+          "signUp": "Sign Up"
+        },
+        "signUp": {
+          "title": "Sign up",
+          "name": "name",
+          "email": "Email",
+          "phoneNumber": "Phone number",
+          "currentPost":"Current Post",
+          "password": "Password",
+          "passwordConfirm": "Confirm password",
+          "alreadyAccount": "Already have an account?",
+          "createAccount": "Create a company account",
+          "agree":"I agree with",
+          "terms":"Terms",
+          "and":"and",
+          "privacyPolicy":"Privacy Policy",
+          "signIn": "Sign In",
+          "welcome":"Welcome to ",
+          "inspark IDP":"Inspark IDP",
+          "description":"Inspark IDP, is designed to match talents with suitable employers and provide personalized training opportunities. With a focus on efficiency and user satisfaction, our platform streamlines the recruitment process while fostering talent development, ultimately bridging the gap between job seekers and employers. ",
+          "people":"More than 17k people joined us, it's your turn "
+        },
+        "forgotPassword": {
+          "title": "Forgot password", 
+          "description": "Fill the form to reset your password",
+          "email": "Email ",
+          "backTo": "return to",
+          "signIn":"Sign In",
+          "send":"Send reset link",
+          "success":"Reset link sent successfully, please check your email to reset your password",
+          "error":"Error sending reset link, please try again later"
+  
+        },
+        "resetPassword": {
+          "title": "Reset password",
+          "password": "Password",
+          "confirmPassword": "Confirm password"
+        },
+        "signOut":{
+          "title":"You have signed out!",
+          "redirectingIn":"Redirecting in",
+          "redirected": "You are now being redirected!",
+          "goTo":"Go to",
+          "signIn":"Sign In"
+        }
+      },
+      "confirmationPage": {
+        "title": "Your account has been successfully created! ",
+        "description": "A confirmation mail with instructions has been sent to your email address. Follow those instructions to confirm your email address and activate your account. ",
+        "extraDescription": "To Compete your profile, please go the profiling section: ",
+        "boost": "Boost your profile",
+        "welcome":"Welcome to",
+        "community":"our community",
+        "description2":"We are excited to have you on board. We are here to help you find the right job and training opportunities. ",
+        "people":"More than 17k people joined us, it's your turn "
+      },
+      "companyStepper":{
+        "title":"Let us know about your company",
+        "description":" By providing this information, we are able to gain a deeper understanding of your company and provide you with customized services.",
+        "step1":{
+            "title":"Introduction",
+            "description":"Introduce your company by filling in the following information.",
+            "companyName":"Company Name",
+            "location":"Location",  
+            "industry":"Industry",
+            "selectIndustry":"Select Industry",
+            "email":"Email",
+            "phoneNumber":"Phone Number"
+        },
+        "step2":{
+            "title":"Company Details",
+            "description":"Fill in the following information to provide more details about your company",
+            "foundationDate":"Foundation Date",
+            "website":"Website",
+            "parentCompany":"Parent Company",
+            "companySize":"Number of Employees",
+            "revenue":"Revenue",
+            "numSiren":"Siren Number",
+            "numSiret":"Siret Number"
+
+        },
+        "step3":{
+            "title":"Recruitment preferences",
+            "description":"Fill in your desired job categories and contract types.",
+            "desiredJobCategories":"Your desired job categories",
+            "jobCategory":"Job Category",
+            "desiredContractTypes":"Your desired contract types",
+            "contractType":"Contract Type"
+
+        },
+        "step4":{
+            "title":"Desired Skills",
+            "description":"Fill in the skills you are looking for in your employees.",
+            "about":"Description",
+            "search":"Search",
+            "placeholder":"Search for skills"
+        },
+        "step5":{
+            "title":"Done",
+            "description":"Your almost done, you can upload your company logo. you can also add social media links to your company profile. Happy to have you on board!",
+            "uploadLogo":"Upload your company Logo",
+            "acceptedFormats":"Accepted formats: jpg, png, jpeg,svg",
+            "addSocials":"Add Socials",
+            "addLinks":"Add Links",  
+            "socials":{
+                "title":"Socials",
+                "link":"Link",
+                "remove":"Remove",
+                "add":"Add another Link",
+                "other":"Other"
+              }
+        },
+        "sideImageContent":{
+            "title":"Your HR services unified and digitized to recruit, manage and develop the Talents of your teams.",
+            "lineOne":"An exclusive international CV database for talent acquisition",
+            "lineTwo":"A tracking of the recruitment, onboarding and ongoing missions",
+            "lineThree":"A support in international mobility",
+            "lineFour":"Innovative professional training advice",
+            "lineFive":"A personalized follow-up of the talents of your teams"
+            
+        }
+    },
+    "employeesForm":{
+        "title":"Add Employee",
+        "editTitle":"Edit Employee",
+        "requiredInformation":"Required Information",
+        "requiredDescription":"Fill in the following information to add a new employee.",
+        "optionalInformation":"Optional Information",
+        "optionalDescription":"Fill in the following information to set up the employee profile (optional) ",
+        "done":"Done",
+        "doneMessage":" Thank you for adding a new employee! You can save the form to finalize the addition",
+        "doneEditMessage":" Thank you for updating the employee! You can save the form to finalize the update",
+        "name":"name",
+        "email":"Email",
+        "phoneNumber":"Phone Number",
+        "role":"Role(s)",
+        "rh":"HR",
+        "companyManager":"Company Manager",
+        "currentPost":"Current Post",
+        "recruiter":"Recruiter",
+        "gender":"Gender",
+        "male":"Male",
+        "female":"Female",
+        "other":"Other",
+        "birthDate":"BirthDate",
+        "address":"Address",
+        "codePostal":"Code Postal",
+        "confirmPassword":"Confirm Password",
+        "addSuccess":"Employee added successfully",
+        "updateSuccess":"Employee updated successfully"
+    },
+    "jobOffersForm":{
+        "header":"Add Job Offer",
+        "editHeader":"Edit Job Offer",
+        "description":"Fill in the following information to add a new job offer.",
+        "done":"Done",
+        "doneMessage":" Thank you for adding a new job offer! You can save the form to finalize the addition",
+        "doneEditMessage":" Thank you for updating the job offer! You can save the form to finalize the update",
+        "basicInformation":"Basic Information",
+        "jobPreferences":"Job preferences",
+        "jobDescription":"Job Description",
+        "jobTitle":"Job Title",
+        "jobCategory":"Job Category",
+        "employmentType":"Employment Type",
+        "full_time":"Full Time",
+        "part_time":"Part Time",
+        "internship":"Internship",
+        "contract":"Contract",
+        "permanent":"Permanent",
+        "temporary":"Temporary",
+        "freelance":"Freelance",
+        "jobLevel":"Job Level",
+        "entry_level":"Entry Level",
+        "junior":"Junior",
+        "senior":"Senior",
+        "expert":"Expert",
+        "workType":"Work Type",
+        "remote":"Remote",
+        "onSite":"On Site",
+        "hybrid":"Hybrid",
+        "location":"Location",
+        "skills":"Skills",
+        "recruiter":"Recruiter",
+        "desiredJobCategories":"Desired Job Categories",
+        "contractType":"Contract Type",
+        "desiredSkills":"Desired Skills",
+        "placeholder":"Search",
+        "jobOfferPlaceHolder":"Enter job offer description",
+        "search":"Search for skills",
+        "noResult":"No results found",
+        "addSuccess":"Job offer added successfully",
+        "updateSuccess":"Job offer updated successfully"
+    },
+    "jobOfferDetails":{
+        "header":"Job Offer Details",
+        "reference":"Reference",
+        "employees":"employees",
+        "jobDescription":"Job Description",
+        "remote":"Remote",
+        "onSite":"On Site",
+        "hybrid":"Hybrid",
+        "FULL_TIME":"Full Time",
+        "PART_TIME":"Part Time",
+        "INTERNSHIP":"Internship",
+        "CONTRACT":"Contract",
+        "TEMPORARY":"Temporary",
+        "FREELANCE":"Freelance",
+        "ENTRY_LEVEL":"Entry Level",
+        "JUNIOR":"Junior",
+        "SENIOR":"Senior",
+        "EXPERT":"Expert"
+    },
+    "companyProfile":{
+        "about":{
+          "title":"Company Details",
+          "socials":{
+            "title":"Socials",
+            "link":"Link",
+            "remove":"Remove",
+            "add":"Add another Link",
+            "other":"Other"
+          },
+          "edit":"Edit"
+        },
+        "description":"Company description",
+        "desiredContractTypes":"Desired contract types",
+        "desiredJobCategories":"Desired job categories",
+        "desiredSkills":"Desired skills",
+        "founded": "Founded",
+        "revenue": "Revenue",
+        "employees": "Employees"
+
+    }
+    
+
+    
 }

@@ -12,14 +12,24 @@ import { ClientGuard } from './core/auth/guards/client.guard';
 export const appRoutes: Route[] = [
 
     // Redirect empty path to '/dashboards/project'
-    { path: '', pathMatch: 'full', redirectTo: '/profile' },
+    { path: '', pathMatch: 'full', redirectTo: '/settings' },
 
     // Redirect signed-in user to the '/dashboards/project'
     //
     // After the user signs in, the sign-in page will redirect the user to the 'signed-in-redirect'
     // path. Below is another redirection for that path to redirect the user to the desired
     // location. This is a small convenience to keep all main routes together here on this file.
-    { path: 'signed-in-redirect', pathMatch: 'full', redirectTo: '/profile' },
+    { path: 'signed-in-redirect', pathMatch: 'full', redirectTo: '/settings' },
+    {
+        path: 'settings',
+        canActivate: [AuthGuard],
+        component: LayoutComponent,
+        resolve: {
+          initialData: initialDataResolver,
+        },
+    
+        loadChildren: () => import('app/modules/user/settings/settings.routes'),
+      },
 
     // Auth routes for guests
     {
@@ -79,7 +89,7 @@ export const appRoutes: Route[] = [
 
             // Dashboards
             { path: 'project', loadChildren: () => import('app/mock-api/apps/project/project.routes') },
-            { path: 'profile', loadChildren: () => import('app/modules/user/profile/profile.routes') },
+            { path: 'profile', loadChildren: () => import('app/modules/user/settings/account/account.routes') },
             { path: 'configInfrastructure', loadChildren: () => import('app/modules/config-infra/config-infra.routes') },
             { path: 'templateTerraform', loadChildren: () => import('app/modules/template-terraform/template-terraform.routes') },
             // Apps
