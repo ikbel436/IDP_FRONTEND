@@ -15,6 +15,7 @@ import { FuseCardComponent } from '@fuse/components/card';
 import { UserService } from 'app/core/user/user.service';
 import { User } from 'app/core/user/user.types';
 import { FormsModule } from '@angular/forms';
+import { Observable } from 'rxjs';
 
 import { MatDrawer, MatSidenavModule } from '@angular/material/sidenav';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
@@ -23,7 +24,7 @@ import { RouterModule, ActivatedRoute } from '@angular/router';
 import { LanguagesComponent } from 'app/layout/common/languages/languages.component';
 import { UserComponent } from 'app/layout/common/user/user.component';
 import { TranslocoService } from '@ngneat/transloco';
-import { Observable } from 'rxjs';
+
 
 @Component({
   selector: 'profile',
@@ -89,6 +90,7 @@ export class ProfileComponent implements OnInit {
     );
     this.user$ = this.userService.get();
   }
+  
 
 
   // -----------------------------------------------------------------------------------------------------
