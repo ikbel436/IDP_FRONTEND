@@ -30,7 +30,7 @@ export class ProjectService {
     /**
      * Api Base URL
      */
-    private apiUrl = 'http://localhost:3000/project';
+    private apiUrl = 'http://localhost:3000';
     private _data: BehaviorSubject<any> = new BehaviorSubject(null);
 
     // -----------------------------------------------------------------------------------------------------

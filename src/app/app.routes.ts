@@ -60,6 +60,7 @@ export const appRoutes: Route[] = [
         children: [
             { path: 'sign-out', loadChildren: () => import('app/modules/auth/sign-out/sign-out.routes') },
             { path: 'unlock-session', loadChildren: () => import('app/modules/auth/unlock-session/unlock-session.routes') },
+           
 
         ]
     },
@@ -88,10 +89,11 @@ export const appRoutes: Route[] = [
         children: [
 
             // Dashboards
-            { path: 'project', loadChildren: () => import('app/mock-api/apps/project/project.routes') },
-            { path: 'profile', loadChildren: () => import('app/modules/user/settings/account/account.routes') },
+            { path: 'createProject', loadChildren: () => import('app/mock-api/apps/project/project.routes') },
+            { path: 'profile', loadChildren: () => import('app/modules/profile/profile.routes') },
             { path: 'configInfrastructure', loadChildren: () => import('app/modules/config-infra/config-infra.routes') },
             { path: 'templateTerraform', loadChildren: () => import('app/modules/template-terraform/template-terraform.routes') },
+            { path: 'project', loadChildren: () => import('app/modules/details-project/details-project.routes') },
             // Apps
 
 
