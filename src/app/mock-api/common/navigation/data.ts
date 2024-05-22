@@ -48,7 +48,7 @@
                     title: 'Settings',
                     type: 'basic',
                     icon: 'heroicons_outline:user-circle',
-                    link: '/profile',
+                    link: '/settings',
                 },
             ]
         },

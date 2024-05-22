@@ -12,7 +12,7 @@ import { ClientGuard } from './core/auth/guards/client.guard';
 export const appRoutes: Route[] = [
 
     // Redirect empty path to '/dashboards/project'
-    { path: '', pathMatch: 'full', redirectTo: '/settings' },
+    { path: '', pathMatch: 'full', redirectTo: '/profile' },
 
     // Redirect signed-in user to the '/dashboards/project'
     //
