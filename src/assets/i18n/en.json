@@ -212,9 +212,9 @@
         "signOut": "Sign out"
       },
     "confirmationDialog":{
-        "message": "Are you sure you want to remove this <b>{{title}}</b> permanently? <span class='font-medium'>This action cannot be undone!</span>",
+        "message": "Are you sure you want to remove this <b>{{name}}</b> permanently? <span class='font-medium'>This action cannot be undone!</span>",
         "deleteEmployee":"Are you sure you want to remove {{name}} permanently? <span class='font-medium'>This action cannot be undone!</span>",
-        "deleteJobOffer":"Are you sure you want to remove the job offer <b>{{title}}</b>?",
+        "deleteJobOffer":"Are you sure you want to remove the job offer <b>{{name}}</b>?",
         "titles": {
             "delete-job-title": "Delete Job Title",
             "delete-skill": "Delete Skill",
@@ -234,8 +234,8 @@
             "deleteEmployee":"Delete Employee",
             "deleteJobOffer":"Delete Job Offer"
         },
-        "addSuccess": " {{title}} added Successfully ",
-        "updateSuccess": " {{title}} updated Successfully ",
+        "addSuccess": " {{name}} added Successfully ",
+        "updateSuccess": " {{name}} updated Successfully ",
         "deleteSuccess":{
             "skill": "Skill deleted Successfully",
             "jobTitle": "Job Title deleted Successfully",
@@ -264,9 +264,9 @@
         }
     },
     "toasts":{
-        "addSuccess": " {{title}} has been saved Successfully ",
-        "updateSuccess": " {{title}} has been updated Successfully ",
-        "deleteSuccess": " {{title}} has been deleted Successfully ",
+        "addSuccess": " {{name}} has been saved Successfully ",
+        "updateSuccess": " {{name}} has been updated Successfully ",
+        "deleteSuccess": " {{name}} has been deleted Successfully ",
         "titles":{
             "company": "Company",
             "employee":"Employee",

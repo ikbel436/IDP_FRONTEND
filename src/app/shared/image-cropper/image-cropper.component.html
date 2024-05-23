@@ -1,0 +1,69 @@
+<div class="flex flex-col max-w-320 md:max-w-280 md:min-w-160 h-[85vh] md:h-full -m-6">
+  <div
+    class="flex flex-0 items-center justify-between h-16 pr-3 sm:pr-5 pl-6 sm:pl-8 bg-primary dark:bg-primary-600 text-on-primary"
+    *transloco="let t; read: 'settings.account.profilePic'"
+  >
+    <div class="flex flex-col">
+      <div class="text-2xl font-medium">{{ t('title') }}</div>
+    </div>
+    <button title="close" mat-icon-button (click)="close()" [tabIndex]="-1">
+      <mat-icon class="text-current" [svgIcon]="'heroicons_outline:x-mark'"></mat-icon>
+    </button>
+  </div>
+  <!-- Image Cropper and Controls -->
+  <div class="image-cropper-container max-w-160 max-h-160 p-4 overflow-auto">
+    <image-cropper
+      [imageChangedEvent]="imageChangedEvent"
+      [maintainAspectRatio]="true"
+      [containWithinAspectRatio]="containWithinAspectRatio"
+      [aspectRatio]="aspectRatio"
+      [cropperMinWidth]="128"
+      [roundCropper]="true"
+      [onlyScaleDown]="true"
+      [canvasRotation]="canvasRotation"
+      [(transform)]="transform"
+      [allowMoveImage]="allowMoveImage"
+      [style.display]="showCropper ? null : 'none'"
+      backgroundColor="transparent"
+      [hidden]="hidden"
+      (imageCropped)="imageCropped($event)"
+      (imageLoaded)="imageLoaded()"
+      (cropperReady)="cropperReady($event)"
+      (loadImageFailed)="loadImageFailed()"
+      class="object-contain"
+    ></image-cropper>
+    @if(loading){
+    <div class="flex justify-center items-center">
+      <mat-spinner diameter="50"></mat-spinner>
+    </div>
+    }
+  </div>
+  <!-- Save Button -->
+  @if(imageChangedEvent && !loading){
+  <div class="flex flex-col" *transloco="let t; read: 'settings.account.profilePic'">
+    <button (click)="toggleAspectRatio()">{{ t('aspectRatio') }}: {{ aspectRatio === 4 / 3 ? '4/3' : '16/5' }}</button>
+  </div>
+  <div class="flex mt-3 justify-center item-center">
+    <mat-slider discrete class="w-60 md:w-120" max="3" min="1" step="0.1">
+      <input title="zoom slider" matSliderThumb (input)="zoom(value)" [(ngModel)]="value" #slider />
+    </mat-slider>
+  </div>
+
+  }
+
+  <div class="flex md:flex-row gap-3 w-full p-3 justify-between" *transloco="let t; read: 'buttons'">
+    <div>
+      <input class="hidden" #uploadPic title="file" type="file" (change)="fileChangeEvent($event)" accept="image/*" />
+      <button mat-flat-button color="accent" (click)="uploadPic.click()">
+        {{ t('upload') }}
+        <mat-icon svgIcon="mat_solid:upload"></mat-icon>
+      </button>
+    </div>
+    <div>
+      <button mat-flat-button [disabled]="!imageChangedEvent" (click)="save()" type="button" [color]="'primary'">
+        {{ t('save') }}
+        <mat-icon svgIcon="mat_solid:save"></mat-icon>
+      </button>
+    </div>
+  </div>
+</div>

@@ -73,7 +73,7 @@ export class SettingsAccountComponent implements OnInit {
     selectedCountry: Country;
     countries: Country[];
     user: User;
-    uploadedImage: File | Blob;
+    uploadedImage: File | undefined;
     form: FormGroup;
     emailUpdated = false;
 
@@ -97,7 +97,7 @@ export class SettingsAccountComponent implements OnInit {
         private _toastService: ToastService,
         private _fuseConfirmationService: FuseConfirmationService,
         public dialog: MatDialog
-    ) {}
+    ) { }
 
     // -----------------------------------------------------------------------------------------------------
     // @ Lifecycle hooks
@@ -136,11 +136,12 @@ export class SettingsAccountComponent implements OnInit {
                 switchMap((user) => {
                     this.user = user;
                     this.accountForm.patchValue({
-                        lastName: user.name,
+                        name: user.name,
                         description: user.description,
                         email: user.email,
                         phoneNumber: user.phoneNumber ? user.phoneNumber : '',
                         countryCode: user.phoneNumber ? user.phoneNumber : '',
+                        image:user.image,
                         // gender: user.additionalInformation.gender,
                     });
 
@@ -197,11 +198,11 @@ export class SettingsAccountComponent implements OnInit {
         const formValue = this.accountForm.value;
         const payload = {
             ...this.user,
-            email: formValue.email.toLowerCase(),
             name: formValue.name,
-
+            email: formValue.email.toLowerCase(),
+            description: formValue.description,
             phoneNumber: formValue.phoneNumber,
-
+            image:formValue.image,
             // additionalInformation: {
             //   address: formValue.address,
             //   title: formValue.title,
@@ -249,34 +250,34 @@ export class SettingsAccountComponent implements OnInit {
             });
     }
 
-    // openDialog() {
-    //   const dialogRef = this.dialog.open(ImageCropperComponent);
+    openDialog() {
+        const dialogRef = this.dialog.open(ImageCropperComponent);
 
-    //   dialogRef.afterClosed().subscribe((result) => {
-    //     if (result !== undefined) {
-    //       this.uploadedImage = result;
-    //       const reader = new FileReader();
-    //       reader.onloadend = () => {};
-    //       if (this.uploadedImage instanceof Blob && this.uploadedImage) {
-    //         reader.readAsDataURL(this.uploadedImage);
-    //       }
+        dialogRef.afterClosed().subscribe((result) => {
+            if (result !== undefined) {
+                this.uploadedImage = result;
+                const reader = new FileReader();
+                reader.onloadend = () => { };
+                if (this.uploadedImage instanceof Blob && this.uploadedImage) {
+                    reader.readAsDataURL(this.uploadedImage);
+                }
 
-    //       this._userService.uploadImage(this.uploadedImage).subscribe({
-    //         next: (res) => {
-    //           this._userService.user$.subscribe((user) => {
-    //             user.avatar = res.url;
-    //             this._toastService.createSuccessToast(
-    //               this._translocoService.translate('confirmationDialog.titles.profilePicture'),
-    //               'addSuccess'
-    //             );
-    //             this._cd.markForCheck();
-    //             this._cd.detectChanges();
-    //           });
-    //         },
-    //       });
-    //     }
-    //   });
-    // }
+                this._userService.uploadImage(this.uploadedImage).subscribe({
+                    next: (res) => {
+                        this._userService.user$.subscribe((user) => {
+                            user.avatar = res.url;
+                            this._toastService.createSuccessToast(
+                                this._translocoService.translate('confirmationDialog.titles.profilePicture'),
+                                'addSuccess'
+                            );
+                            this._cd.markForCheck();
+                            this._cd.detectChanges();
+                        });
+                    },
+                });
+            }
+        });
+    }
 
     remove() {
         const profilePicTranslation = this._translocoService.translate(
@@ -310,31 +311,83 @@ export class SettingsAccountComponent implements OnInit {
             },
             dismissible: true,
         });
-        // dialogRef.afterClosed().subscribe((result) => {
-        //   if (result === 'confirmed') {
-        //     // we need to decode the blob name to remove it
-        //     // example: https://talent.blob.core.windows.net/images/encodedBlobName
-        //     let parts = this.user.profilePicture.split('/');
-        //     let encodedBlobName = parts[parts.length - 1];
-        //     let blobName = decodeURIComponent(encodedBlobName);
-        //     this._userService
-        //       .removeAvatar(blobName)
-        //       .pipe(
-        //         concatMap(() => {
-        //           return this._userService.user$;
-        //         })
-        //       )
-        //       .subscribe({
-        //         next: (user) => {
-        //           user.profilePicture = null;
-        //           this._toastService.createSuccessToast(
-        //             this._translocoService.translate('confirmationDialog.titles.profilePicture'),
-        //             'deleteSuccess'
-        //           );
-        //           this._cd.markForCheck();
-        //         },
-        //       });
-        //   }
-        // });
+       
+        dialogRef.afterClosed().subscribe((result) => {
+            if (result === 'confirmed') {
+                // we need to decode the blob name to remove it
+                // example: https://talent.blob.core.windows.net/images/encodedBlobName
+                let parts = this.user.image.split('/');
+                let encodedBlobName = parts[parts.length - 1];
+                let blobName = decodeURIComponent(encodedBlobName);
+                this._userService
+                    .getImage(blobName)
+                    .pipe(
+                        concatMap(() => {
+                            return this._userService.user$;
+                        })
+                    )
+                    .subscribe({
+                        next: (user) => {
+                            user.image = null;
+                            this._toastService.createSuccessToast(
+                                this._translocoService.translate('confirmationDialog.titles.profilePicture'),
+                                'deleteSuccess'
+                            );
+                            this._cd.markForCheck();
+                        },
+                    });
+            }
+        });
     }
+    images: string;
+    selectImage(event) {
+        if (event.target.files.length > 0) {
+          const file = event.target.files[0];
+          this.images = file;
+        }
+      }
+      triggerFileInput() {
+        const fileInput = document.getElementById('fileInput') as HTMLInputElement;
+        fileInput.click();
+      }
+      openImageCropperDialog(file: File) {
+        const dialogRef = this.dialog.open(ImageCropperComponent, {
+          data: { file }
+        });
+    
+        dialogRef.afterClosed().subscribe((result) => {
+          if (result !== undefined) {
+            this.uploadedImage = result;
+            const reader = new FileReader();
+            reader.onloadend = () => {
+              // Add any logic needed after the file is loaded
+            };
+            if (this.uploadedImage instanceof Blob && this.uploadedImage) {
+              reader.readAsDataURL(this.uploadedImage);
+            }
+    
+            this._userService.uploadImage(this.uploadedImage).subscribe({
+              next: (res) => {
+                this._userService.user$.subscribe((user) => {
+                  user.avatar = res.url;
+                  this._toastService.createSuccessToast(
+                    this._translocoService.translate('confirmationDialog.titles.profilePicture'),
+                    'addSuccess'
+                  );
+                  this._cd.markForCheck();
+                  this._cd.detectChanges();
+                });
+              },
+              error: (err) => {
+                this._toastService.createErrorToast(
+                  this._translocoService.translate('errorDialog.titles.uploadFailed'),
+                  'uploadError'
+                );
+              }
+            });
+          }
+        });
+      }
+    
+     
 }

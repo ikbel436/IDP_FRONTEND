@@ -15,26 +15,26 @@ export class UserService
     constructor(private _httpClient: HttpClient)
     {
     }
-    // getImage(imageName: string ): Observable<Blob> {
-    //   const userId = this.getUserID();
-    //   //const imageName = this.getImageid();
-    //   return new Observable<Blob>(observer => {
-    //     fetch(`${this.apiUrl}/image/${userId}/${imageName}`)
-    //       .then(response => {
-    //         if (!response.ok) {
-    //           throw new Error('Network response was not ok');
-    //         }
-    //         return response.blob();
-    //       })
-    //       .then(blob => {
-    //         observer.next(blob);
-    //         observer.complete();
-    //       })
-    //       .catch(error => {
-    //         observer.error(error);
-    //       });
-    //   });
-    // }
+    getImage(imageName: string ): Observable<Blob> {
+      const userId = this.getUserID();
+      //const imageName = this.getImageid();
+      return new Observable<Blob>(observer => {
+        fetch(`${this.apiUrl}/image/${userId}/${imageName}`)
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Network response was not ok');
+            }
+            return response.blob();
+          })
+          .then(blob => {
+            observer.next(blob);
+            observer.complete();
+          })
+          .catch(error => {
+            observer.error(error);
+          });
+      });
+    }
     // getImage1(): Observable<Blob> {
     //   const userId = this.getUserID();
     //  const imageName = this.getImageid();

@@ -20,12 +20,12 @@
                     alt="avatar"
                     class="w-40 h-40 object-cover mx-auto"
                     [src]="
-                        user.profilePicture ||
+                        user.image||
                         'https://cdn-icons-png.flaticon.com/512/149/149071.png'
                     "
                 />
             </div>
-            <button
+            <!-- <button
                 title="Upload"
                 color="primary"
                 type="button"
@@ -38,9 +38,28 @@
                     class="icon-size-4"
                     svgIcon="feather:camera"
                 ></mat-icon>
-            </button>
-
-            @if(user.profilePicture){
+            </button> -->
+            <div>
+                <input
+                  type="file"
+                  name="image"
+                  id="fileInput"
+                  (change)="selectImage($event)"
+                  style="display: none;"
+                />
+                <button
+                  title="Upload"
+                  color="primary"
+                  type="button"
+                  (click)="triggerFileInput()"
+                  alt="upload profile pic"
+                  mat-mini-fab
+                  class="absolute bottom-0 right-0 rounded-full z-40"
+                >
+                  <mat-icon class="icon-size-4" svgIcon="feather:camera"></mat-icon>
+                </button>
+              </div>
+            @if(user.image){
             <button
                 title="Upload"
                 color="primary"
