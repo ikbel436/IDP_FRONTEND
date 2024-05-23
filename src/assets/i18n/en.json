@@ -406,7 +406,7 @@
         }
       },
       "account":{
-        "name":"Name",
+        "name":"name",
         "phoneNumber":"Phone number",
         "email":"Email not verified",
         "description":"Update your personal information",

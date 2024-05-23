@@ -35,6 +35,10 @@ export class UserService {
           });
       });
     }
+    removeImage(): Observable<any> {
+      const userId = this.getUserID();
+      return this._httpClient.delete<any>(`${this.apiUrl}/remove/${userId}`);
+    }
     // getImage1(): Observable<Blob> {
     //   const userId = this.getUserID();
     //  const imageName = this.getImageid();
@@ -130,15 +134,10 @@ export class UserService {
     }
 
     uploadImage(image: File): Observable<any> {
-        // Extract user ID from token
-        const userId = this.getUserID();
-
-        const formData = new FormData();
-        formData.append('image', image); // Make sure 'image' matches the field name expected by the backend
-
-        return this._httpClient.put<any>(
-            `${this.apiUrl}/upload/${userId}`,
-            formData
-        );
+      const userId = this.getUserID();
+      const formData = new FormData();
+      formData.append('image', image); // Ensure 'image' matches the backend expected field name
+  
+      return this._httpClient.put<any>(`${this.apiUrl}/upload/${userId}`, formData);
     }
 }

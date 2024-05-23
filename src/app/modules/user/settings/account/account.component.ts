@@ -74,9 +74,10 @@ export class SettingsAccountComponent implements OnInit {
     countries: Country[];
     user: User;
     uploadedImage: File | undefined;
+   // uploadedImage: Blob | File;
     form: FormGroup;
     emailUpdated = false;
-
+    imagePreviewUrl: string | ArrayBuffer | null = '';
     // -----------------------------------------------------------------------------------------------------
     // @ Observables
     // -----------------------------------------------------------------------------------------------------
@@ -113,7 +114,7 @@ export class SettingsAccountComponent implements OnInit {
             birthDate: [''],
             city: [''],
             description: [''],
-            about: [''],
+            
             email: ['', [Validators.email, Validators.required]],
             phoneNumber: [
                 '',
@@ -125,6 +126,7 @@ export class SettingsAccountComponent implements OnInit {
             ],
             countryCode: [''],
             country: [''],
+            codePostal:[''],
             // gender: [''],
         });
 
@@ -205,9 +207,10 @@ export class SettingsAccountComponent implements OnInit {
             phoneNumber: formValue.phoneNumber,
             birthDate: DateTime.fromISO(formValue.birthDate).toFormat('yyyy-MM-dd'),
             country: formValue.country,
-            descrption : formValue.description,
+            description : formValue.description,
             city : formValue.city,
             codePostal : formValue.codePostal,
+           
 
 
            
@@ -238,6 +241,10 @@ export class SettingsAccountComponent implements OnInit {
                     user.email = payload.email;
                     user.name = payload.name;
                     user.phoneNumber = payload.phoneNumber;
+                    user.description= payload.description;
+                    user.codePostal=payload.codePostal;
+                   
+                    window.location.reload();
                 },
                 error: () => {
                     this.accountForm.enable();
@@ -245,34 +252,35 @@ export class SettingsAccountComponent implements OnInit {
             });
     }
 
-    openDialog() {
-        const dialogRef = this.dialog.open(ImageCropperComponent);
-
-        dialogRef.afterClosed().subscribe((result) => {
-            if (result !== undefined) {
-                this.uploadedImage = result;
-                const reader = new FileReader();
-                reader.onloadend = () => { };
-                if (this.uploadedImage instanceof Blob && this.uploadedImage) {
-                    reader.readAsDataURL(this.uploadedImage);
-                }
-
-                this._userService.uploadImage(this.uploadedImage).subscribe({
-                    next: (res) => {
-                        this._userService.user$.subscribe((user) => {
-                            user.image = res.url;
-                            this._toastService.createSuccessToast(
-                                this._translocoService.translate('confirmationDialog.titles.profilePicture'),
-                                'addSuccess'
-                            );
-                            this._cd.markForCheck();
-                            this._cd.detectChanges();
-                        });
-                    },
-                });
-            }
-        });
-    }
+    // openDialog() {
+    //     const dialogRef = this.dialog.open(ImageCropperComponent);
+    
+    //     dialogRef.afterClosed().subscribe((result) => {
+    //       if (result !== undefined) {
+    //         this.uploadedImage = result as File;
+    //         const reader = new FileReader();
+    //         reader.onloadend = () => { };
+    //         if (this.uploadedImage instanceof File && this.uploadedImage) {
+    //           reader.readAsDataURL(this.uploadedImage);
+    //         }
+    
+    //         this._userService.uploadImage(this.uploadedImage).subscribe({
+    //           next: (res) => {
+    //             this._userService.user$.subscribe((user) => {
+    //               user.image = res.url;
+    //               this._toastService.createSuccessToast(
+    //                 this._translocoService.translate('confirmationDialog.titles.profilePicture'),
+    //                 'addSuccess'
+    //               );
+    //               this._cd.markForCheck();
+    //               this._cd.detectChanges();
+    //             });
+    //           },
+    //         });
+    //       }
+    //     });
+    //   }
+      
 
     // remove() {
     //     const profilePicTranslation = this._translocoService.translate(
@@ -335,54 +343,101 @@ export class SettingsAccountComponent implements OnInit {
     //     });
     // }
     images: string;
-    selectImage(event) {
-        if (event.target.files.length > 0) {
-          const file = event.target.files[0];
-          this.images = file;
-        }
-      }
-      triggerFileInput() {
+    triggerFileInput() {
         const fileInput = document.getElementById('fileInput') as HTMLInputElement;
         fileInput.click();
       }
-      openImageCropperDialog(file: File) {
-        const dialogRef = this.dialog.open(ImageCropperComponent, {
-          data: { file }
+      remove() {
+        const profilePicTranslation = this._translocoService.translate('settings.account.profilePic.title');
+        const dialogRef = this._fuseConfirmationService.open({
+          title: this._translocoService.translate('buttons.remove') + ' ' + profilePicTranslation,
+          message: this._translocoService.translate('confirmationDialog.deleteProfilePicture', {
+            title: profilePicTranslation,
+          }),
+          icon: {
+            show: true,
+            name: 'heroicons_outline:exclamation-triangle',
+            color: 'warn',
+          },
+          actions: {
+            confirm: {
+              label: this._translocoService.translate('buttons.confirm'),
+              color: 'warn',
+            },
+            cancel: {
+              show: true,
+              label: this._translocoService.translate('buttons.cancel'),
+            },
+          },
+          dismissible: true,
         });
-    
         dialogRef.afterClosed().subscribe((result) => {
-          if (result !== undefined) {
-            this.uploadedImage = result;
-            const reader = new FileReader();
-            reader.onloadend = () => {
-              // Add any logic needed after the file is loaded
-            };
-            if (this.uploadedImage instanceof Blob && this.uploadedImage) {
-              reader.readAsDataURL(this.uploadedImage);
-            }
-    
-            this._userService.uploadImage(this.uploadedImage).subscribe({
+          if (result === 'confirmed') {
+            this._userService.removeImage().subscribe({
               next: (res) => {
-                this._userService.user$.subscribe((user) => {
-                  user.image = res.url;
-                  this._toastService.createSuccessToast(
-                    this._translocoService.translate('confirmationDialog.titles.profilePicture'),
-                    'addSuccess'
-                  );
-                  this._cd.markForCheck();
-                  this._cd.detectChanges();
-                });
+                this.imagePreviewUrl = '';
+                this.uploadedImage = undefined;
+                this.user.image = '';
+                this._toastService.createSuccessToast(
+                  this._translocoService.translate('confirmationDialog.titles.profilePictureRemoved'),
+                  'removeSuccess'
+                );
+                this._cd.markForCheck();
               },
               error: (err) => {
                 this._toastService.createErrorToast(
-                  this._translocoService.translate('errorDialog.titles.uploadFailed'),
-                  'uploadError'
+                  this._translocoService.translate('errorDialog.titles.removeFailed'),
+                  'removeError'
                 );
               }
             });
           }
         });
       }
+    
+    
+    
+  selectImage(event: any) {
+    if (event.target.files.length > 0) {
+      const file = event.target.files[0];
+      this.uploadedImage = file;
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.imagePreviewUrl = reader.result;
+        
+        this.uploadImage();
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+      uploadImage() {
+        if (!this.uploadedImage) {
+         console.log("error")
+          return;
+        }
+    
+        this._userService.uploadImage(this.uploadedImage).subscribe({
+            next: (res) => {
+              this._userService.user$.subscribe((user) => {
+                user.image = res.url;
+                this._toastService.createSuccessToast(
+                  this._translocoService.translate('confirmationDialog.titles.profilePicture'),
+                  'addSuccess'
+                );
+                this._cd.markForCheck();
+                this._cd.detectChanges();
+              });
+            },
+            error: (err) => {
+              this._toastService.createErrorToast(
+                this._translocoService.translate('errorDialog.titles.uploadFailed'),
+                'uploadError'
+              );
+            }
+          });
+        }
+    
+     
     
      
 }
