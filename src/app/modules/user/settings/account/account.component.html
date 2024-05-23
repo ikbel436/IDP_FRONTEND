@@ -1,413 +1,387 @@
 @if (user$ | async; as user) {
-<div class="w-full max-w-3xl" *transloco="let t; read: 'settings.account'">
-    <!-- Form -->
-    <form [formGroup]="accountForm">
-        <!-- Section -->
-        <div class="w-full">
-            <div class="text-xl">{{ t("name") }}</div>
-            <div class="text-secondary">{{ t("description") }}</div>
-
-            <div class="text-sm">
-                {{ t("createdAt") }} : {{ user?.createdAt | date : "short" }}
+    <div class="w-full max-w-3xl" *transloco="let t; read: 'settings.account'">
+        <!-- Form -->
+        <form [formGroup]="accountForm">
+            <!-- Section -->
+            <div class="w-full">
+                <div class="text-xl">{{ t("name") }}</div>
+                <div class="text-secondary">{{ t("description") }}</div>
+    
+                <div class="text-sm">
+                    {{ t("createdAt") }} : {{ user?.createdAt | date : "short" }}
+                </div>
             </div>
-        </div>
-
-        <div class="relative w-40 mt-4 h-40">
-            <div
-                class="flex border-2 border-white rounded-full overflow-hidden"
-            >
-                <img
-                    alt="avatar"
-                    class="w-40 h-40 object-cover mx-auto"
-                    [src]="
-                        user.profilePicture ||
-                        'https://cdn-icons-png.flaticon.com/512/149/149071.png'
-                    "
-                />
-            </div>
-            <button
-                title="Upload"
-                color="primary"
-                type="button"
-                (click)="openDialog()"
-                alt="upload profile pic"
-                mat-mini-fab
-                class="absolute bottom-0 right-0 rounded-full z-40"
-            >
-                <mat-icon
-                    class="icon-size-4"
-                    svgIcon="feather:camera"
-                ></mat-icon>
-            </button>
-
-            @if(user.profilePicture){
-            <button
-                title="Upload"
-                color="primary"
-                type="button"
-                (click)="remove()"
-                alt="upload profile pic"
-                mat-mini-fab
-                class="absolute bottom-0 left-0 rounded-full z-40 bg-red-500"
-            >
-                <mat-icon
-                    class="icon-size-4"
-                    svgIcon="feather:trash"
-                ></mat-icon>
-            </button>
-            }
-        </div>
-
-        <div class="grid sm:grid-cols-4 gap-6 w-full mt-8">
-            <!-- name -->
-            <div class="sm:col-span-2">
-                <mat-form-field
-                    class="fuse-mat-emphasized-affix fuse-mat-emphasized-affix w-full"
-                    [subscriptSizing]="'dynamic'"
+    
+            <div class="relative w-40 mt-4 h-40">
+                <div
+                    class="flex border-2 border-white rounded-full overflow-hidden"
                 >
-                    <mat-label>{{ t("name") }}</mat-label>
+                    <img
+                        alt="avatar"
+                        class="w-40 h-40 object-cover mx-auto"
+                        [src]="
+                            user.profilePicture ||
+                            'https://cdn-icons-png.flaticon.com/512/149/149071.png'
+                        "
+                    />
+                </div>
+                <button
+                    title="Upload"
+                    color="primary"
+                    type="button"
+                    (click)="openDialog()"
+                    alt="upload profile pic"
+                    mat-mini-fab
+                    class="absolute bottom-0 right-0 rounded-full z-40"
+                >
                     <mat-icon
-                        class="icon-size-5"
-                        [svgIcon]="'heroicons_solid:user'"
-                        matPrefix
+                        class="icon-size-4"
+                        svgIcon="feather:camera"
                     ></mat-icon>
-                    <input title="name" [formControlName]="'name'" matInput />
-                </mat-form-field>
-            </div>
-
-            <!-- Email -->
-            <div class="sm:col-span-2">
-                <mat-form-field
-                    class="fuse-mat-emphasized-affix w-full"
-                    [hideRequiredMarker]="true"
-                    [subscriptSizing]="'dynamic'"
+                </button>
+    
+                @if(user.profilePicture){
+                <button
+                    title="Upload"
+                    color="primary"
+                    type="button"
+                    (click)="remove()"
+                    alt="upload profile pic"
+                    mat-mini-fab
+                    class="absolute bottom-0 left-0 rounded-full z-40 bg-red-500"
                 >
-                    <mat-label
-                        >Email @if (user.emailVerified===false) {
-                        <span class="text-red-500">
-                            (
-                            <mat-icon class="icon-size-3 text-red-500">
-                                warning</mat-icon
+                    <mat-icon
+                        class="icon-size-4"
+                        svgIcon="feather:trash"
+                    ></mat-icon>
+                </button>
+                }
+            </div>
+    
+            <div class="grid sm:grid-cols-4 gap-6 w-full mt-8">
+                <!-- name -->
+                <div class="sm:col-span-2">
+                    <mat-form-field
+                        class="fuse-mat-emphasized-affix fuse-mat-emphasized-affix w-full"
+                        [subscriptSizing]="'dynamic'"
+                    >
+                        <mat-label>{{ t("name")  }} </mat-label>
+                        <mat-icon
+                            class="icon-size-5"
+                            [svgIcon]="'heroicons_solid:user'"
+                            matPrefix
+                        ></mat-icon>
+                        <input title="name" [formControlName]="'name'" matInput *transloco="let t; read: 'settings.account'" placeholder="{{ t('name') }}" />
+                    </mat-form-field>
+                </div>
+    
+                <!-- Email -->
+                <div class="sm:col-span-2">
+                    <mat-form-field
+                        class="fuse-mat-emphasized-affix w-full"
+                        [hideRequiredMarker]="true"
+                        [subscriptSizing]="'dynamic'"
+                    >
+                        <mat-label
+                            >Email @if (user.emailVerified===false) {
+                            <span class="text-red-500">
+                                (
+                                <mat-icon class="icon-size-3 text-red-500">
+                                    warning</mat-icon
+                                >
+                                {{ t("emailNotVerified") }})</span
                             >
-                            {{ t("emailNotVerified") }})</span
+                            }
+                        </mat-label>
+                        <mat-icon
+                            class="icon-size-5"
+                            [svgIcon]="'heroicons_solid:envelope'"
+                            matPrefix
+                        ></mat-icon>
+                        <input title="email" [formControlName]="'email'" matInput />
+                        @if (accountForm.get('email').hasError('required')) {
+                        <mat-error
+                            >Email
+                            <span *transloco="let t; read: 'validators'">{{
+                                t("isRequired")
+                            }}</span>
+                        </mat-error>
+                        }
+                        <!--  -->
+    
+                        @if (accountForm.get('email').hasError('email')) {
+                        <mat-error>
+                            <span *transloco="let t; read: 'validators'">{{
+                                t("invalidEmail")
+                            }}</span></mat-error
                         >
+                        } @if(emailUpdated===true){
+                        <mat-hint
+                            align="start"
+                            class="text-hint mt-1 gap-1 text-base font-bold flex items-center"
+                        >
+                            <mat-icon svgIcon="mat_solid:info"></mat-icon>
+                            <span *transloco="let t; read: 'hints'">{{
+                                t("emailUpdated")
+                            }}</span>
+                        </mat-hint>
                         }
-                    </mat-label>
-                    <mat-icon
-                        class="icon-size-5"
-                        [svgIcon]="'heroicons_solid:envelope'"
-                        matPrefix
-                    ></mat-icon>
-                    <input title="email" [formControlName]="'email'" matInput />
-                    @if (accountForm.get('email').hasError('required')) {
-                    <mat-error
-                        >Email
-                        <span *transloco="let t; read: 'validators'">{{
-                            t("isRequired")
-                        }}</span>
-                    </mat-error>
-                    }
-                    <!--  -->
-
-                    @if (accountForm.get('email').hasError('email')) {
-                    <mat-error>
-                        <span *transloco="let t; read: 'validators'">{{
-                            t("invalidEmail")
-                        }}</span></mat-error
-                    >
-                    } @if(emailUpdated===true){
-                    <mat-hint
-                        align="start"
-                        class="text-hint mt-1 gap-1 text-base font-bold flex items-center"
-                    >
-                        <mat-icon svgIcon="mat_solid:info"></mat-icon>
-                        <span *transloco="let t; read: 'hints'">{{
-                            t("emailUpdated")
-                        }}</span>
-                    </mat-hint>
-                    }
-                </mat-form-field>
-            </div>
-
-            <!-- Phone -->
-            <div class="sm:col-span-2">
-                <mat-form-field class="fuse-mat-emphasized-affix w-full">
-                    <mat-label> {{ t("phoneNumber") }}</mat-label>
-                    <input
-                        matInput
-                        formControlName="phoneNumber"
-                        *transloco="let t; read: 'placeholders'"
-                        placeholder="{{ t('phoneNumber') }}"
-                    />
-                    <mat-select
-                        class="mr-1.5"
-                        #countrySelect
-                        formControlName="countryCode"
-                        matPrefix
-                        (openedChange)="onOpenedChange($event)"
-                        matAuto
-                        (selectionChange)="onCountryChange($event)"
-                        [value]="selectedCountry?.code"
-                    >
-                        <mat-select-trigger>
-                            <span class="flex items-center">
-                                <span
-                                    class="hidden sm:flex w-6 h-4 mr-1 overflow-hidden"
-                                    id="countryFlag"
-                                    [style.background]="
-                                        'url(\'/assets/images/flags/flags.png\') no-repeat 0 0'
-                                    "
-                                    [style.backgroundSize]="'24px 3876px'"
-                                    [style.backgroundPosition]="
-                                        selectedCountry?.flagImagePos
-                                    "
-                                >
+                    </mat-form-field>
+                </div>
+    
+                <!-- Phone -->
+                <div class="sm:col-span-2">
+                    <mat-form-field class="fuse-mat-emphasized-affix w-full">
+                        <mat-label> {{ t("phoneNumber") }}</mat-label>
+                        <input
+                            matInput
+                            formControlName="phoneNumber"
+                            *transloco="let t; read: 'placeholders'"
+                            placeholder="{{ t('phoneNumber') }}"
+                        />
+                        <mat-select
+                            class="mr-1.5"
+                            #countrySelect
+                            formControlName="countryCode"
+                            matPrefix
+                            (openedChange)="onOpenedChange($event)"
+                            matAuto
+                            (selectionChange)="onCountryChange($event)"
+                            [value]="selectedCountry?.code"
+                            
+                        >
+                            <mat-select-trigger>
+                                <span class="flex items-center">
+                                    <span
+                                        class="hidden sm:flex w-6 h-4 mr-1 overflow-hidden"
+                                        id="countryFlag"
+                                        [style.background]="
+                                            'url(\'/assets/images/flags/flags.png\') no-repeat 0 0'
+                                        "
+                                        [style.backgroundSize]="'24px 3876px'"
+                                        [style.backgroundPosition]="
+                                            selectedCountry?.flagImagePos
+                                        "
+                                    >
+                                    </span>
+                                    <span
+                                        class="sm:mx-0.5 font-medium text-default"
+                                        >{{ selectedCountry?.code }}</span
+                                    >
                                 </span>
-                                <span
-                                    class="sm:mx-0.5 font-medium text-default"
-                                    >{{ selectedCountry?.code }}</span
-                                >
-                            </span>
-                        </mat-select-trigger>
-                        @for (country of countries; track $index) {
-                        <mat-option value="{{ country.code }}">
-                            <span class="flex items-center">
-                                <span
-                                    class="w-6 h-4 overflow-hidden"
-                                    [style.background]="
-                                        'url(\'/assets/images/flags/flags.png\') no-repeat 0 0'
-                                    "
-                                    [style.backgroundSize]="'24px 3876px'"
-                                    [style.backgroundPosition]="
-                                        country.flagImagePos
-                                    "
-                                >
+                            </mat-select-trigger>
+                            @for (country of countries; track $index) {
+                            <mat-option value="{{ country.code }}">
+                                <span class="flex items-center">
+                                    <span
+                                        class="w-6 h-4 overflow-hidden"
+                                        [style.background]="
+                                            'url(\'/assets/images/flags/flags.png\') no-repeat 0 0'
+                                        "
+                                        [style.backgroundSize]="'24px 3876px'"
+                                        [style.backgroundPosition]="
+                                            country.flagImagePos
+                                        "
+                                    >
+                                    </span>
+                                    <span class="ml-2">{{
+                                        country.name[ActiveLang]
+                                    }}</span>
+                                    <span class="ml-2 font-medium">{{
+                                        country.code
+                                    }}</span>
                                 </span>
-                                <span class="ml-2">{{
-                                    country.name[ActiveLang]
-                                }}</span>
-                                <span class="ml-2 font-medium">{{
-                                    country.code
-                                }}</span>
-                            </span>
-                        </mat-option>
-
+                            </mat-option>
+    
+                            }
+                        </mat-select>
+                        <!-- Additional error handling for phone number -->
+                        @if(accountForm.get('phoneNumber').hasError('required') ||
+                        accountForm.get('phoneNumber').hasError('pattern') ||
+                        accountForm.get('phoneNumber').hasError('minlength') ||
+                        accountForm.get('phoneNumber').hasError('maxlength')){
+                        <mat-error>
+                            <span *transloco="let t; read: 'validators'">{{
+                                t("invalidPhoneNumber")
+                            }}</span>
+                        </mat-error>
                         }
-                    </mat-select>
-                    <!-- Additional error handling for phone number -->
-                    @if(accountForm.get('phoneNumber').hasError('required') ||
-                    accountForm.get('phoneNumber').hasError('pattern') ||
-                    accountForm.get('phoneNumber').hasError('minlength') ||
-                    accountForm.get('phoneNumber').hasError('maxlength')){
-                    <mat-error>
-                        <span *transloco="let t; read: 'validators'">{{
-                            t("invalidPhoneNumber")
-                        }}</span>
-                    </mat-error>
-                    }
-                </mat-form-field>
-            </div>
-            <!-- BirthDate -->
-            <div
-                class="sm:col-span-2"
-                *transloco="
-                    let t;
-                    read: 'additionalInformation.form.basicInformation'
-                "
-            >
-                <mat-form-field
-                    class="fuse-mat-emphasized-affix w-full"
-                    [subscriptSizing]="'dynamic'"
-                >
-                    <mat-label>{{ t("birthDate") }}</mat-label>
-                    <mat-icon
-                        class="icon-size-5"
-                        [svgIcon]="'heroicons_solid:calendar'"
-                        matPrefix
-                    ></mat-icon>
-                    <input
-                        title="birthDate"
-                        [formControlName]="'birthDate'"
-                        matInput
-                        [matDatepicker]="picker"
-                    />
-                    <mat-datepicker-toggle
-                        matSuffix
-                        [for]="picker"
-                    ></mat-datepicker-toggle>
-                    <mat-datepicker #picker></mat-datepicker>
-                </mat-form-field>
-            </div>
-        </div>
-
-        <!-- Divider -->
-        <div class="my-10 border-t"></div>
-
-        <div class="grid sm:grid-cols-4 gap-6 w-full mt-8">
-            <!-- About -->
-            <div class="sm:col-span-4">
-                <mat-form-field class="w-full" [subscriptSizing]="'dynamic'">
-                    <mat-label>{{ t("description") }}</mat-label>
-                    <textarea
-                        title="bio"
-                        matInput
-                        [formControlName]="'about'"
-                        cdkTextareaAutosize
-                        cdkAutosizeMinRows="3"
-                        cdkAutosizeMaxRows="4"
-                        maxlength="2000"
-                    ></textarea>
-                    <mat-icon
-                        class="icon-size-5"
-                        matPrefix
-                        [svgIcon]="'heroicons_solid:bars-3-center-left'"
-                    ></mat-icon>
-                    <mat-hint
-                        align="end"
-                        *transloco="let t; read: 'validators'"
-                        class="mt-1 text-md text-hint"
-                    >
-                        {{ 2000 - accountForm.get("about").value?.length }}
-                        {{ t("maxCharacters") }}
-                    </mat-hint>
-                </mat-form-field>
-            </div>
-
-            <!-- City -->
-            <div class="sm:col-span-2">
-                <mat-form-field
-                    class="fuse-mat-emphasized-affix w-full"
-                    [subscriptSizing]="'dynamic'"
-                >
-                    <mat-label>{{ t("city") }}</mat-label>
-                    <mat-icon
-                        class="icon-size-5"
-                        [svgIcon]="'mat_solid:location_city'"
-                        matPrefix
-                    ></mat-icon>
-                    <input
-                        title="company"
-                        [formControlName]="'city'"
-                        matInput
-                    />
-                </mat-form-field>
-            </div>
-            <!-- Code postal -->
-            <div class="sm:col-span-2">
-                <mat-form-field
-                    class="fuse-mat-emphasized-affix w-full"
-                    [subscriptSizing]="'dynamic'"
-                >
-                    <mat-label>{{ t("postalCode") }}</mat-label>
-                    <mat-icon
-                        class="icon-size-5"
-                        [svgIcon]="'mat_solid:local_post_office'"
-                        matPrefix
-                    ></mat-icon>
-                    <input
-                        title="title"
-                        [formControlName]="'codePostal'"
-                        matInput
-                    />
-                </mat-form-field>
-            </div>
-            <!-- Country -->
-            <div
-                class="sm:col-span-2"
-                *transloco="
-                    let t;
-                    read: 'additionalInformation.form.basicInformation'
-                "
-            >
-                <mat-form-field
-                    class="fuse-mat-emphasized-affix w-full"
-                    [subscriptSizing]="'dynamic'"
-                >
-                    <mat-label> {{ t("country") }}</mat-label>
-                    <mat-icon
-                        class="icon-size-5"
-                        [svgIcon]="'heroicons_solid:flag'"
-                        matPrefix
-                    ></mat-icon>
-                    <mat-select formControlName="country">
-                        @for (country of countries; track $index) {
-                        <mat-option value="{{ country.iso }}">
-                            <div class="flex items-center justify-center">
-                                <span
-                                    class="hidden sm:flex w-6 h-4 mr-1 overflow-hidden"
-                                    id="countryFlag"
-                                    priority
-                                    [style.background]="
-                                        'url(\'/assets/images/flags/flags.png\') no-repeat 0 0'
-                                    "
-                                    [style.backgroundSize]="'24px 3876px'"
-                                    [style.backgroundPosition]="
-                                        country?.flagImagePos
-                                    "
-                                >
-                                </span>
-
-                                {{ country.name[ActiveLang] }}
-                            </div>
-                        </mat-option>
-                        }
-                    </mat-select>
-                </mat-form-field>
-            </div>
-            <!-- Gender -->
-            <div class="sm:col-span-2">
-                <mat-form-field
+                    </mat-form-field>
+                </div>
+                <!-- BirthDate -->
+                <div
+                    class="sm:col-span-2"
                     *transloco="
                         let t;
-                        read: 'additionalInformation.form.basicInformation'
+                        read: 'settings.account'
+                        
                     "
-                    class="fuse-mat-emphasized-affix w-full"
-                    [subscriptSizing]="'dynamic'"
                 >
-                    <mat-label>{{ t("gender.title") }}</mat-label>
-                    <mat-icon
-                        class="icon-size-5"
-                        [svgIcon]="'feather:genders'"
-                        matPrefix
-                    ></mat-icon>
-                    <mat-select formControlName="gender">
-                        <mat-option value="MALE">{{
-                            t("gender.male")
-                        }}</mat-option>
-                        <mat-option value="FEMALE"
-                            >{{ t("gender.female") }}
-                        </mat-option>
-                        <mat-option value="OTHER">{{
-                            t("gender.other")
-                        }}</mat-option>
-                    </mat-select>
-                </mat-form-field>
+                    <mat-form-field
+                        class="fuse-mat-emphasized-affix w-full"
+                        [subscriptSizing]="'dynamic'"
+                    >
+                        <mat-label>{{ t("birthDate") }}</mat-label>
+                        <mat-icon
+                            class="icon-size-5"
+                            [svgIcon]="'heroicons_solid:calendar'"
+                            matPrefix
+                        ></mat-icon>
+                        <input
+                            title="birthDate"
+                            [formControlName]="'birthDate'"
+                            matInput
+                            [matDatepicker]="picker"
+                        />
+                        <mat-datepicker-toggle
+                            matSuffix
+                            [for]="picker"
+                        ></mat-datepicker-toggle>
+                        <mat-datepicker #picker></mat-datepicker>
+                    </mat-form-field>
+                </div>
             </div>
-        </div>
-
-        <!-- Divider -->
-        <div class="mt-11 mb-10 border-t"></div>
-
-        <!-- Actions -->
-        <div
-            class="flex items-center justify-end"
-            *transloco="let t; read: 'buttons'"
-        >
-            <button mat-stroked-button type="button">{{ t("cancel") }}</button>
-            <button
-                class="ml-4"
-                mat-flat-button
-                (click)="save()"
-                type="button"
-                [color]="'primary'"
+    
+            <!-- Divider -->
+            <div class="my-10 border-t"></div>
+    
+            <div class="grid sm:grid-cols-4 gap-6 w-full mt-8">
+                <!-- About -->
+                <div class="sm:col-span-4">
+                    <mat-form-field class="w-full" [subscriptSizing]="'dynamic'">
+                        <mat-label>{{ t("description") }}</mat-label>
+                        <textarea
+                            title="bio"
+                            matInput
+                            [formControlName]="'about'"
+                            cdkTextareaAutosize
+                            cdkAutosizeMinRows="3"
+                            cdkAutosizeMaxRows="4"
+                            maxlength="2000"
+                        ></textarea>
+                        <mat-icon
+                            class="icon-size-5"
+                            matPrefix
+                            [svgIcon]="'heroicons_solid:bars-3-center-left'"
+                        ></mat-icon>
+                        <mat-hint
+                            align="end"
+                            *transloco="let t; read: 'validators'"
+                            class="mt-1 text-md text-hint"
+                        >
+                            {{ 2000 - accountForm.get("about").value?.length }}
+                            {{ t("maxCharacters") }}
+                        </mat-hint>
+                    </mat-form-field>
+                </div>
+    
+                <!-- City -->
+                <div class="sm:col-span-2">
+                    <mat-form-field
+                        class="fuse-mat-emphasized-affix w-full"
+                        [subscriptSizing]="'dynamic'"
+                    >
+                        <mat-label>{{ t("city") }}</mat-label>
+                        <mat-icon
+                            class="icon-size-5"
+                            [svgIcon]="'mat_solid:location_city'"
+                            matPrefix
+                        ></mat-icon>
+                        <input
+                            title="company"
+                            [formControlName]="'city'"
+                            matInput
+                        />
+                    </mat-form-field>
+                </div>
+                <!-- Code postal -->
+                <div class="sm:col-span-2">
+                    <mat-form-field
+                        class="fuse-mat-emphasized-affix w-full"
+                        [subscriptSizing]="'dynamic'"
+                    >
+                        <mat-label>{{ t("postalCode") }}</mat-label>
+                        <mat-icon
+                            class="icon-size-5"
+                            [svgIcon]="'mat_solid:local_post_office'"
+                            matPrefix
+                        ></mat-icon>
+                        <input
+                            title="title"
+                            [formControlName]="'codePostal'"
+                            matInput
+                        />
+                    </mat-form-field>
+                </div>
+                <!-- Country -->
+                <div
+                    class="sm:col-span-2"
+                    *transloco="
+                        let t;
+                        read: 'settings.account'
+                    "
+                >
+                    <mat-form-field
+                        class="fuse-mat-emphasized-affix w-full"
+                        [subscriptSizing]="'dynamic'"
+                    >
+                        <mat-label> {{ t("country") }}</mat-label>
+                        <mat-icon
+                            class="icon-size-5"
+                            [svgIcon]="'heroicons_solid:flag'"
+                            matPrefix
+                        ></mat-icon>
+                        <mat-select formControlName="country">
+                            @for (country of countries; track $index) {
+                            <mat-option value="{{ country.iso }}">
+                                <div class="flex items-center justify-center">
+                                    <span
+                                        class="hidden sm:flex w-6 h-4 mr-1 overflow-hidden"
+                                        id="countryFlag"
+                                        priority
+                                        [style.background]="
+                                            'url(\'/assets/images/flags/flags.png\') no-repeat 0 0'
+                                        "
+                                        [style.backgroundSize]="'24px 3876px'"
+                                        [style.backgroundPosition]="
+                                            country?.flagImagePos
+                                        "
+                                    >
+                                    </span>
+    
+                                    {{ country.name[ActiveLang] }}
+                                </div>
+                            </mat-option>
+                            }
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </div>
+    
+            <!-- Divider -->
+            <div class="mt-11 mb-10 border-t"></div>
+    
+            <!-- Actions -->
+            <div
+                class="flex items-center justify-end"
+                *transloco="let t; read: 'buttons'"
             >
-                {{ t("save") }}
-            </button>
-        </div>
-    </form>
-</div>
-} @else {
-<div class="flex items-center justify-center h-full w-full">
-    <mat-spinner diameter="50"></mat-spinner>
-</div>
-}
+                <button mat-stroked-button type="button">{{ t("cancel") }}</button>
+                <button
+                    class="ml-4"
+                    mat-flat-button
+                    (click)="save()"
+                    type="button"
+                    [color]="'primary'"
+                >
+                    {{ t("save") }}
+                </button>
+            </div>
+        </form>
+    </div>
+    } @else {
+    <div class="flex items-center justify-center h-full w-full">
+        <mat-spinner diameter="50"></mat-spinner>
+    </div>
+    }
+    
