@@ -60,14 +60,16 @@ export class ProfileComponent implements OnInit {
     image: '',
     phoneNumber: '',
     password: '',
-    createdAt: undefined,
-    Role: '',
-    Fonction: '',
-    resetLink: {
-      data: ''
-    },
+
     status: '',
-    description: ''
+    description: '',
+    id: '',
+    role: '',
+    address: undefined,
+    birthDate: undefined,
+    codePostal: undefined,
+    country: undefined,
+    city: undefined
   };
   user$: Observable<User>;
   imageUrl: string;

@@ -136,15 +136,18 @@ export class SettingsAccountComponent implements OnInit {
                 switchMap((user) => {
                     this.user = user;
                     this.accountForm.patchValue({
-                        name: user.name,
-                        description: user.description,
-                        email: user.email,
+                        name: user.name ? user.name : '',
+                        description: user.description ? user.description : '',
+                        email: user.email ? user.email : '',
                         phoneNumber: user.phoneNumber ? user.phoneNumber : '',
                         countryCode: user.phoneNumber ? user.phoneNumber : '',
-                        image:user.image,
-                        // gender: user.additionalInformation.gender,
+                        birthDate: user.birthDate ? user.birthDate : '',
+                        codePostal: user.codePostal ? user.codePostal : '',
+                        country: user.country ? user.country : '',
+                        city: user.city ? user.city : '',
+                        //comment aaaaaaaa
+                        
                     });
-
                     return this._countryService.getCountries();
                 })
             )
@@ -199,23 +202,15 @@ export class SettingsAccountComponent implements OnInit {
         const payload = {
             ...this.user,
             name: formValue.name,
-            email: formValue.email.toLowerCase(),
-            description: formValue.description,
             phoneNumber: formValue.phoneNumber,
-            image:formValue.image,
-            // additionalInformation: {
-            //   address: formValue.address,
-            //   title: formValue.title,
-            //   city: formValue.city,
-            //   codePostal: formValue.codePostal,
+            birthDate: DateTime.fromISO(formValue.birthDate).toFormat('yyyy-MM-dd'),
             country: formValue.country,
-            //   bio: formValue.about,
-            //   gender: formValue.gender,
-            //   birthDate: DateTime.fromISO(formValue.birthDate).toFormat('yyyy-MM-dd'),
-            //   // notificationsAgreements: this.user.additionalInformation.notificationsAgreements,
-            // },
-            // enabled: this.user.enabled,
-            // emailVerified: this.user.emailVerified,
+            descrption : formValue.description,
+            city : formValue.city,
+            codePostal : formValue.codePostal,
+
+
+           
         };
 
         this._userService
@@ -265,7 +260,7 @@ export class SettingsAccountComponent implements OnInit {
                 this._userService.uploadImage(this.uploadedImage).subscribe({
                     next: (res) => {
                         this._userService.user$.subscribe((user) => {
-                            user.avatar = res.url;
+                            user.image = res.url;
                             this._toastService.createSuccessToast(
                                 this._translocoService.translate('confirmationDialog.titles.profilePicture'),
                                 'addSuccess'
@@ -279,66 +274,66 @@ export class SettingsAccountComponent implements OnInit {
         });
     }
 
-    remove() {
-        const profilePicTranslation = this._translocoService.translate(
-            'settings.account.profilePic.title'
-        );
-        const dialogRef = this._fuseConfirmationService.open({
-            title:
-                this._translocoService.translate('buttons.remove') +
-                ' ' +
-                profilePicTranslation,
-            message: this._translocoService.translate(
-                'confirmationDialog.deleteProfilePicture',
-                {
-                    title: profilePicTranslation,
-                }
-            ),
-            icon: {
-                show: true,
-                name: 'heroicons_outline:exclamation-triangle',
-                color: 'warn',
-            },
-            actions: {
-                confirm: {
-                    label: this._translocoService.translate('buttons.confirm'),
-                    color: 'warn',
-                },
-                cancel: {
-                    show: true,
-                    label: this._translocoService.translate('buttons.cancel'),
-                },
-            },
-            dismissible: true,
-        });
+    // remove() {
+    //     const profilePicTranslation = this._translocoService.translate(
+    //         'settings.account.profilePic.title'
+    //     );
+    //     const dialogRef = this._fuseConfirmationService.open({
+    //         title:
+    //             this._translocoService.translate('buttons.remove') +
+    //             ' ' +
+    //             profilePicTranslation,
+    //         message: this._translocoService.translate(
+    //             'confirmationDialog.deleteProfilePicture',
+    //             {
+    //                 title: profilePicTranslation,
+    //             }
+    //         ),
+    //         icon: {
+    //             show: true,
+    //             name: 'heroicons_outline:exclamation-triangle',
+    //             color: 'warn',
+    //         },
+    //         actions: {
+    //             confirm: {
+    //                 label: this._translocoService.translate('buttons.confirm'),
+    //                 color: 'warn',
+    //             },
+    //             cancel: {
+    //                 show: true,
+    //                 label: this._translocoService.translate('buttons.cancel'),
+    //             },
+    //         },
+    //         dismissible: true,
+    //     });
        
-        dialogRef.afterClosed().subscribe((result) => {
-            if (result === 'confirmed') {
-                // we need to decode the blob name to remove it
-                // example: https://talent.blob.core.windows.net/images/encodedBlobName
-                let parts = this.user.image.split('/');
-                let encodedBlobName = parts[parts.length - 1];
-                let blobName = decodeURIComponent(encodedBlobName);
-                this._userService
-                    .getImage(blobName)
-                    .pipe(
-                        concatMap(() => {
-                            return this._userService.user$;
-                        })
-                    )
-                    .subscribe({
-                        next: (user) => {
-                            user.image = null;
-                            this._toastService.createSuccessToast(
-                                this._translocoService.translate('confirmationDialog.titles.profilePicture'),
-                                'deleteSuccess'
-                            );
-                            this._cd.markForCheck();
-                        },
-                    });
-            }
-        });
-    }
+    //     dialogRef.afterClosed().subscribe((result) => {
+    //         if (result === 'confirmed') {
+    //             // we need to decode the blob name to remove it
+    //             // example: https://talent.blob.core.windows.net/images/encodedBlobName
+    //             let parts = this.user.image.split('/');
+    //             let encodedBlobName = parts[parts.length - 1];
+    //             let blobName = decodeURIComponent(encodedBlobName);
+    //             this._userService
+    //                 .getImage(blobName)
+    //                 .pipe(
+    //                     concatMap(() => {
+    //                         return this._userService.user$;
+    //                     })
+    //                 )
+    //                 .subscribe({
+    //                     next: (user) => {
+    //                         user.image = null;
+    //                         this._toastService.createSuccessToast(
+    //                             this._translocoService.translate('confirmationDialog.titles.profilePicture'),
+    //                             'deleteSuccess'
+    //                         );
+    //                         this._cd.markForCheck();
+    //                     },
+    //                 });
+    //         }
+    //     });
+    // }
     images: string;
     selectImage(event) {
         if (event.target.files.length > 0) {
@@ -369,7 +364,7 @@ export class SettingsAccountComponent implements OnInit {
             this._userService.uploadImage(this.uploadedImage).subscribe({
               next: (res) => {
                 this._userService.user$.subscribe((user) => {
-                  user.avatar = res.url;
+                  user.image = res.url;
                   this._toastService.createSuccessToast(
                     this._translocoService.translate('confirmationDialog.titles.profilePicture'),
                     'addSuccess'
