@@ -145,10 +145,9 @@ export class SettingsAccountComponent implements OnInit {
                         codePostal: user.codePostal ? user.codePostal : '',
                         country: user.country ? user.country : '',
                         city: user.city ? user.city : '',
-                        
+                        //comment aaaaaaaa
                         
                     });
-
                     return this._countryService.getCountries();
                 })
             )
