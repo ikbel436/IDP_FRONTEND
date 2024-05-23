@@ -136,12 +136,17 @@ export class SettingsAccountComponent implements OnInit {
                 switchMap((user) => {
                     this.user = user;
                     this.accountForm.patchValue({
-                        lastName: user.name,
-                        description: user.description,
-                        email: user.email,
+                        name: user.name ? user.name : '',
+                        description: user.description ? user.description : '',
+                        email: user.email ? user.email : '',
                         phoneNumber: user.phoneNumber ? user.phoneNumber : '',
                         countryCode: user.phoneNumber ? user.phoneNumber : '',
-                        // gender: user.additionalInformation.gender,
+                        birthDate: user.birthDate ? user.birthDate : '',
+                        codePostal: user.codePostal ? user.codePostal : '',
+                        country: user.country ? user.country : '',
+                        city: user.city ? user.city : '',
+                        
+                        
                     });
 
                     return this._countryService.getCountries();
@@ -199,22 +204,15 @@ export class SettingsAccountComponent implements OnInit {
             ...this.user,
             email: formValue.email.toLowerCase(),
             name: formValue.name,
-
             phoneNumber: formValue.phoneNumber,
-
-            // additionalInformation: {
-            //   address: formValue.address,
-            //   title: formValue.title,
-            //   city: formValue.city,
-            //   codePostal: formValue.codePostal,
+            birthDate: DateTime.fromISO(formValue.birthDate).toFormat('yyyy-MM-dd'),
             country: formValue.country,
-            //   bio: formValue.about,
-            //   gender: formValue.gender,
-            //   birthDate: DateTime.fromISO(formValue.birthDate).toFormat('yyyy-MM-dd'),
-            //   // notificationsAgreements: this.user.additionalInformation.notificationsAgreements,
-            // },
-            // enabled: this.user.enabled,
-            // emailVerified: this.user.emailVerified,
+            descrption : formValue.description,
+            city : formValue.city,
+            codePostal : formValue.codePostal,
+
+
+           
         };
 
         this._userService
