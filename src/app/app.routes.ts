@@ -25,11 +25,11 @@ export const appRoutes: Route[] = [
         canActivate: [AuthGuard],
         component: LayoutComponent,
         resolve: {
-          initialData: initialDataResolver,
+            initialData: initialDataResolver,
         },
-    
+
         loadChildren: () => import('app/modules/user/settings/settings.routes'),
-      },
+    },
 
     // Auth routes for guests
     {
@@ -60,7 +60,7 @@ export const appRoutes: Route[] = [
         children: [
             { path: 'sign-out', loadChildren: () => import('app/modules/auth/sign-out/sign-out.routes') },
             { path: 'unlock-session', loadChildren: () => import('app/modules/auth/unlock-session/unlock-session.routes') },
-           
+
 
         ]
     },
@@ -94,6 +94,7 @@ export const appRoutes: Route[] = [
             { path: 'configInfrastructure', loadChildren: () => import('app/modules/config-infra/config-infra.routes') },
             { path: 'templateTerraform', loadChildren: () => import('app/modules/template-terraform/template-terraform.routes') },
             { path: 'project', loadChildren: () => import('app/modules/details-project/details-project.routes') },
+            { path: 'gitProvider', loadChildren: () => import('app/modules/git-provider/get-projects/get-project.routes') },
             // Apps
 
 
