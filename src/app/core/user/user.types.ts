@@ -12,4 +12,5 @@ export class User {
     country: String;
     city: String;
     password:String;
+    createdAt:Date;
 }

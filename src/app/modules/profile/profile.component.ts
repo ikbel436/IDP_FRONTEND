@@ -68,7 +68,8 @@ export class ProfileComponent implements OnInit {
     birthDate: undefined,
     codePostal: undefined,
     country: undefined,
-    city: undefined
+    city: undefined,
+    createdAt: undefined
   };
   user$: Observable<User>;
   imageUrl: string;

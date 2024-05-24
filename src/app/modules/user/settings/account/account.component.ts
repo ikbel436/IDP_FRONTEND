@@ -247,6 +247,7 @@ export class SettingsAccountComponent implements OnInit {
             user.country=payload.country
             user.codePostal=payload.codePostal
             user.image=payload.image
+            user.createdAt=payload.createdAt
            
          
             this.patchFormWithUserData(this.user); 
