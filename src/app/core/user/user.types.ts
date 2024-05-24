@@ -7,7 +7,6 @@ export class User {
     phoneNumber: string;
     description: string;
     role: string;
-    address: String;
     birthDate: String;
     codePostal: String;
     country: String;

@@ -22,6 +22,7 @@ import { MatSelectModule } from '@angular/material/select';
   styleUrl: './create-project.component.scss'
 })
 export class CreateProjectComponent {
+  
   databaseOptions: string[] = ['MySQL', 'MongoDB', 'PostgreSQL', 'SQLite', 'Other'];
   
   providerOptions: string[] = ['AWS', 'Azure', 'GCP'];

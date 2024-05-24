@@ -20,11 +20,13 @@ import {
     RECAPTCHA_LOADER_OPTIONS,
     RecaptchaLoaderOptions,
   } from 'ng-recaptcha';
+import { provideHotToastConfig } from '@ngxpert/hot-toast';
+
   const RECAPTCHA_V3_STACKBLITZ_KEY = '6Lc4yOQpAAAAAEz55qmvhdLt2XdR6MA98qr2LDCG';
 const RECAPTCHA_V2_DUMMY_KEY = '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI';
 export const appConfig: ApplicationConfig = {
     providers: [
-      
+        provideHotToastConfig(),
         provideAnimations(),
         provideHttpClient(),
         provideRouter(appRoutes,

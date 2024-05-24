@@ -49,7 +49,8 @@
             "delete-goal": "Delete Goal",
             "delete-language": "Delete Language",
             "deleteEmployee":"Delete Employee",
-            "deleteJobOffer":"Delete Job Offer"
+            "deleteJobOffer":"Delete Job Offer",
+            "deleteProfilePicture":"Delete your picture"
         },
         "addSuccess": " {{name}} added Successfully ",
         "updateSuccess": " {{name}} updated Successfully ",
@@ -218,7 +219,8 @@
       "finish": "Finish",
       "delete": "Delete",
       "cancel": "Cancel",
-      "close": "Close"
+      "close": "Close",
+      "confirm": "Confirm"
   },
 
   "array-labels":{
@@ -296,7 +298,9 @@
           "delete-goal": "Delete Goal",
           "delete-language": "Delete Language",
           "deleteEmployee":"Delete Employee",
-          "deleteJobOffer":"Delete Job Offer"
+          "deleteJobOffer":"Delete Job Offer",
+          "deleteProfilePicture" : "Delete your picture",
+          "account": "save"
       },
       "addSuccess": " {{title}} added Successfully ",
       "updateSuccess": " {{title}} updated Successfully ",
@@ -328,9 +332,9 @@
       }
   },
   "toasts":{
-      "addSuccess": " {{title}} has been saved Successfully ",
-      "updateSuccess": " {{title}} has been updated Successfully ",
-      "deleteSuccess": " {{title}} has been deleted Successfully ",
+      "addSuccess": " {{name}} has been saved Successfully ",
+      "updateSuccess": " {{name}} has been updated Successfully ",
+      "deleteSuccess": " {{name}} has been deleted Successfully ",
       "titles":{
           "company": "Company",
           "employee":"Employee",

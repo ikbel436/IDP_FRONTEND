@@ -65,7 +65,6 @@ export class ProfileComponent implements OnInit {
     description: '',
     id: '',
     role: '',
-    address: undefined,
     birthDate: undefined,
     codePostal: undefined,
     country: undefined,
