@@ -1,0 +1,61 @@
+<div class="w-full max-w-3xl">
+  <!-- Form -->
+  <form [formGroup]="notificationsForm" *transloco="let t; read: 'additionalInformation.form.notifications'">
+    <!-- Section -->
+    <div class="w-full text-xl">{{ t('byEmail.title') }}</div>
+    <div class="grid grid-cols-1 gap-6 w-full mt-8">
+      <!-- Communication -->
+      <div class="flex items-center justify-between">
+        <div class="flex-auto cursor-pointer" (click)="companyNewsToggle.toggle()" (keydown)="handleKeyPress($event)">
+          <div class="leading-6 font-medium">{{ t('byEmail.companyNews') }}</div>
+          <div class="text-md text-secondary">{{ t('byEmail.companyNewsDescription') }}</div>
+        </div>
+        <mat-checkbox #companyNewsToggle formControlName="companyNews" class="ml-2" [checked]="true" [color]="'primary'"> </mat-checkbox>
+      </div>
+      <!-- Security -->
+      <div class="flex items-center justify-between">
+        <div class="flex-auto cursor-pointer" (click)="productsToggle.toggle()" (keydown)="handleKeyPress($event)">
+          <div class="leading-6 font-medium">{{ t('byEmail.featuredProducts') }}</div>
+          <div class="text-md text-secondary">{{ t('byEmail.featuredProductsDescription') }}</div>
+        </div>
+        <mat-checkbox #productsToggle formControlName="featuredProducts" class="ml-2" [color]="'primary'"> </mat-checkbox>
+      </div>
+      <!-- Meetups -->
+      <div class="flex items-center justify-between">
+        <div class="flex-auto cursor-pointer" (click)="messagesToggle.toggle()" (keydown)="handleKeyPress($event)">
+          <div class="leading-6 font-medium">{{ t('byEmail.messages') }}</div>
+          <div class="text-md text-secondary">{{ t('byEmail.messagesDescription') }}</div>
+        </div>
+        <mat-checkbox #messagesToggle formControlName="messages" class="ml-2" [color]="'primary'"> </mat-checkbox>
+      </div>
+    </div>
+
+    <!-- Divider -->
+    <div class="my-10 border-t"></div>
+
+    <!-- Section -->
+    <div class="w-full text-xl">{{ t('pushNotifications.title') }}</div>
+    <div class="grid grid-cols-1 gap-4 w-full mt-4">
+      <mat-radio-group class="flex flex-col" [color]="'primary'" [value]="'just-good'" formControlName="pushNotifications">
+        <mat-radio-button class="mb-2" [value]="'everything'">
+          {{ t('pushNotifications.everything') }}
+        </mat-radio-button>
+        <mat-radio-button class="mb-2" [value]="'just-good'">
+          {{ t('pushNotifications.goodStuff') }}
+        </mat-radio-button>
+        <mat-radio-button [value]="'no-push'">
+          {{ t('pushNotifications.noPush') }}
+        </mat-radio-button>
+      </mat-radio-group>
+    </div>
+
+    <!-- Divider -->
+    <div class="my-10 border-t"></div>
+
+    <!-- Actions -->
+    <div class="flex items-center justify-end" *transloco="let t; read: 'buttons'">
+      <button mat-stroked-button type="button">{{ t('cancel') }}</button>
+      <button class="ml-4" mat-flat-button type="button" (click)="save()" [color]="'primary'">{{ t('save') }}</button>
+    </div>
+  </form>
+</div>

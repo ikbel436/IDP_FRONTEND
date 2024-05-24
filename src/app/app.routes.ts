@@ -19,7 +19,17 @@ export const appRoutes: Route[] = [
     // After the user signs in, the sign-in page will redirect the user to the 'signed-in-redirect'
     // path. Below is another redirection for that path to redirect the user to the desired
     // location. This is a small convenience to keep all main routes together here on this file.
-    { path: 'signed-in-redirect', pathMatch: 'full', redirectTo: '/profile' },
+    { path: 'signed-in-redirect', pathMatch: 'full', redirectTo: '/settings' },
+    {
+        path: 'settings',
+        canActivate: [AuthGuard],
+        component: LayoutComponent,
+        resolve: {
+            initialData: initialDataResolver,
+        },
+
+        loadChildren: () => import('app/modules/user/settings/settings.routes'),
+    },
 
     // Auth routes for guests
     {
@@ -50,7 +60,7 @@ export const appRoutes: Route[] = [
         children: [
             { path: 'sign-out', loadChildren: () => import('app/modules/auth/sign-out/sign-out.routes') },
             { path: 'unlock-session', loadChildren: () => import('app/modules/auth/unlock-session/unlock-session.routes') },
-           
+
 
         ]
     },
@@ -84,6 +94,7 @@ export const appRoutes: Route[] = [
             { path: 'configInfrastructure', loadChildren: () => import('app/modules/config-infra/config-infra.routes') },
             { path: 'templateTerraform', loadChildren: () => import('app/modules/template-terraform/template-terraform.routes') },
             { path: 'project', loadChildren: () => import('app/modules/details-project/details-project.routes') },
+            { path: 'gitProvider', loadChildren: () => import('app/modules/git-provider/get-projects/get-project.routes') },
             // Apps
 
 

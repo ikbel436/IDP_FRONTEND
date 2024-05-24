@@ -1,0 +1,31 @@
+<form [formGroup]="bitbucketForm" (ngSubmit)="onSubmit()"
+    class="flex flex-col mt-8 p-8 pb-4 bg-card rounded-2xl shadow overflow-hidden">
+    <img src="./assets/images/logo/insparklogodark.svg" alt="Bitbucket Logo" class="mx-auto my-4" style="width: 300px;">
+
+    <mat-form-field>
+        <mat-label>Git Provider</mat-label>
+        <mat-select [(value)]="selected">
+            <mat-option value="option1">GitHub</mat-option>
+            <mat-option value="option2">Bitbucket</mat-option>
+            <mat-option value="option3">Gitlab</mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <div class="flex flex-col gt-xs:flex-row">
+        <mat-form-field [ngClass]="formFieldHelpers" class="flex-auto gt-xs:pr-3">
+            <mat-label>Workspace name</mat-label>
+            <input matInput formControlName="workspace" placeholder="Enter Workspace name">
+            <mat-icon class="icon-size-5" matSuffix [svgIcon]="'heroicons_outline:code-bracket'"></mat-icon>
+        </mat-form-field>
+        <mat-form-field [ngClass]="formFieldHelpers" class="flex-auto gt-xs:pl-3">
+            <mat-label>Access Token</mat-label>
+            <input matInput formControlName="accessToken" type="password" placeholder="Enter Access Token">
+            <mat-icon class="icon-size-5" matSuffix [svgIcon]="'heroicons_solid:eye-slash'"></mat-icon>
+        </mat-form-field>
+    </div>
+
+    <div class="flex flex-row justify-center w-full">
+        <button type="submit" mat-raised-button color="primary">Validate</button>
+        <button mat-raised-button color="warn" (click)="onCancel()">Cancel</button>
+    </div>
+</form>

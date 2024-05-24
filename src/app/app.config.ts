@@ -11,10 +11,20 @@ import { appRoutes } from 'app/app.routes';
 import { provideAuth } from 'app/core/auth/auth.provider';
 import { provideIcons } from 'app/core/icons/icons.provider';
 import { mockApiServices } from 'app/mock-api';
-import { TranslocoHttpLoader } from './core/transloco/transloco.http-loader';
 
+import { TranslocoHttpLoader } from './core/transloco/transloco.http-loader';
+import {
+    RECAPTCHA_V3_SITE_KEY,
+    RECAPTCHA_SETTINGS,
+    RecaptchaSettings,
+    RECAPTCHA_LOADER_OPTIONS,
+    RecaptchaLoaderOptions,
+  } from 'ng-recaptcha';
+  const RECAPTCHA_V3_STACKBLITZ_KEY = '6Lc4yOQpAAAAAEz55qmvhdLt2XdR6MA98qr2LDCG';
+const RECAPTCHA_V2_DUMMY_KEY = '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI';
 export const appConfig: ApplicationConfig = {
     providers: [
+      
         provideAnimations(),
         provideHttpClient(),
         provideRouter(appRoutes,
@@ -99,5 +109,25 @@ export const appConfig: ApplicationConfig = {
                 ],
             },
         }),
+        {
+            provide: RECAPTCHA_V3_SITE_KEY,
+            useValue: RECAPTCHA_V3_STACKBLITZ_KEY,
+          },
+          {
+            provide: RECAPTCHA_SETTINGS,
+            useValue: {
+              siteKey: RECAPTCHA_V2_DUMMY_KEY,
+            } as RecaptchaSettings,
+          },
+          {
+            provide: RECAPTCHA_LOADER_OPTIONS,
+            useValue: {
+              onBeforeLoad(url) {
+                const langOverride = localStorage.getItem('activeLang') === 'fr' ? 'fr' : null;
+                if (langOverride) url.searchParams.set('hl', langOverride);
+                return { url };
+              },
+            } as RecaptchaLoaderOptions,
+        },
     ],
 };

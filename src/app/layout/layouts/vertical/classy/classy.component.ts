@@ -71,7 +71,7 @@ export class ClassyLayoutComponent implements OnInit, OnDestroy {
             user => {
                 this.currentUser = user;
                 // Call fetchImage once currentUser is defined
-                this.fetchImage(this.currentUser?.avatar); // Use optional chaining to avoid errors if currentUser is undefined
+                // this.fetchImage(this.currentUser?.avatar); // Use optional chaining to avoid errors if currentUser is undefined
             },
             error => {
                 console.error('Error fetching current user:', error);
@@ -90,7 +90,7 @@ export class ClassyLayoutComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((user: User) => {
                 this.currentUser = user;
-                this.fetchImage(this.currentUser?.avatar);
+                // this.fetchImage(this.currentUser?.avatar);
             });
 
         // Subscribe to media changes
@@ -103,20 +103,20 @@ export class ClassyLayoutComponent implements OnInit, OnDestroy {
     }
 
 
-    fetchImage(imageName: string): void {
-        // Vérifier si imageName est défini avant d'appeler userService.getImage
-        if (imageName) {
-            this._userService.getImage(imageName).subscribe(
-                (image: Blob) => {
-                    // Créez une URL d'objet pour afficher l'image
-                    this.imageUrl = URL.createObjectURL(image);
-                },
-                (error) => {
-                    console.error('Error fetching image:', error);
-                }
-            );
-        }
-    }
+    // fetchImage(imageName: string): void {
+    //     // Vérifier si imageName est défini avant d'appeler userService.getImage
+    //     if (imageName) {
+    //         this._userService.getImage(imageName).subscribe(
+    //             (image: Blob) => {
+    //                 // Créez une URL d'objet pour afficher l'image
+    //                 this.imageUrl = URL.createObjectURL(image);
+    //             },
+    //             (error) => {
+    //                 console.error('Error fetching image:', error);
+    //             }
+    //         );
+    //     }
+    // }
     /**
      * On destroy
      */

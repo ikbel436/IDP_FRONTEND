@@ -15,6 +15,16 @@ import { FuseCardComponent } from '@fuse/components/card';
 import { UserService } from 'app/core/user/user.service';
 import { User } from 'app/core/user/user.types';
 import { FormsModule } from '@angular/forms';
+import { Observable } from 'rxjs';
+
+import { MatDrawer, MatSidenavModule } from '@angular/material/sidenav';
+import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
+
+import { RouterModule, ActivatedRoute } from '@angular/router';
+import { LanguagesComponent } from 'app/layout/common/languages/languages.component';
+import { UserComponent } from 'app/layout/common/user/user.component';
+import { TranslocoService } from '@ngneat/transloco';
+
 
 @Component({
   selector: 'profile',
@@ -32,10 +42,10 @@ export class ProfileComponent implements OnInit {
   fixedSubscriptInputWithHint: FormControl = new FormControl('', [Validators.required]);
   dynamicSubscriptInputWithHint: FormControl = new FormControl('', [Validators.required]);
   user: User; // Initialize with the user's data
-  // name: string;
-  // email: string;
-  // phoneNumber: number;
-  // description: string
+  name: string;
+  email: string;
+  phoneNumber: string;
+  description: string
   images: string;
   title = 'fileUpload';
   Fonction: string;
@@ -44,25 +54,45 @@ export class ProfileComponent implements OnInit {
    */
   constructor(private _formBuilder: UntypedFormBuilder, private userService: UserService, private _httpClient: HttpClient, private cdRef: ChangeDetectorRef) {
   }
-  currentUser: any
+  currentUser: User = {
+    name: '',
+    email: '',
+    image: '',
+    phoneNumber: '',
+    password: '',
+
+    status: '',
+    description: '',
+    id: '',
+    role: '',
+    address: undefined,
+    birthDate: undefined,
+    codePostal: undefined,
+    country: undefined,
+    city: undefined
+  };
+  user$: Observable<User>;
+  imageUrl: string;
   ngOnInit(): void {
+
     this.userService.get().subscribe(
       user => {
-        // this.getUserData(user);
+        console.log('User fetched:', user);
         this.currentUser = user;
-        this.ctx = user;
-        // Ensure currentUser is defined before calling fetchImage
-        if (this.currentUser) {
-          this.imageUrl = 'hello'
-          // this.fetchImage(this.currentUser.image);
+       
+        if (this.currentUser && this.currentUser.image) {
+          const transformedUrl = this.currentUser.image.replace('/upload/', '/upload/w_128,h_128,c_fill/');
+          this.imageUrl = transformedUrl;
+          console.log(this.imageUrl); // Check if URL is logged
         }
-        // Fetch user data after currentUser is set
       },
       error => {
         console.error('Error fetching current user:', error);
       }
     );
+    this.user$ = this.userService.get();
   }
+  
 
 
   // -----------------------------------------------------------------------------------------------------
@@ -120,73 +150,106 @@ export class ProfileComponent implements OnInit {
       this.images = file;
     }
   }
-  selectedImage: any
-  selectImage1(event) {
-    if (event.target.files.length > 0) {
-      const file = event.target.files[0];
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        this.selectedImage = e.target.result as string;
-      };
-      reader.readAsDataURL(file);
-    }
-  }
-  getUserID(): string {
-    const token = localStorage.getItem('accessToken');
-    if (token) {
-      const decodedToken = JSON.parse(atob(token.split('.')[1]));
-      return decodedToken.id;
-    } else {
-      console.error('Token not found in local storage.');
-      return null;
-    }
-  }
-  onSubmit() {
+    // -----------------------------------------------------------------------------------------------------
+    // @ Public methods
+    // -----------------------------------------------------------------------------------------------------
 
-    const userId = this.getUserID();
-    const formData = new FormData();
-    formData.append('file', this.images);
+    getUserData(): void {
+        this.userService.get().subscribe(
+            (response) => {
+                this.user = response;
+                // Initialize form fields with old values
+                this.name = this.user.name;
+                this.email = this.user.email;
+                this.phoneNumber = this.user.phoneNumber;
+                this.description = this.user.description;
+            },
+            (error) => {
+                console.error('Error fetching user data:', error);
+            }
+        );
+    }
+    // updateUserInfo(): void {
+    //     // Prepare updated user object
+    //     const updatedUser = {
+    //         name: this.name,
+    //         email: this.email,
+    //         phoneNumber: this.phoneNumber,
+    //         description: this.description,
+    //     };
 
-    this._httpClient.put<any>(`http://localhost:3000/auth/upload/${userId}`, formData).subscribe(
-      (res) => console.log(res),
-      (err) => console.log(err)
-    );
-  }
-  onFileSelected(files: FileList): void {
-    if (files.length > 0) {
-      const file = files[0];
-      this.userService.uploadImage(file).subscribe(
-        (response) => {
-          console.log('Image uploaded successfully:', response);
-          // Handle success (if needed)
-        },
-        (error) => {
-          console.error('Error uploading image:', error);
-          // Handle error (if needed)
+    //     // Call the service method to update user info
+    //     this.userService.update(updatedUser).subscribe(
+    //         (response) => {
+    //             console.log('User updated successfully:', response);
+    //             this.getUserData();
+    //             this.currentUser = response;
+    //             window.location.reload();
+    //         },
+    //         (error) => {
+    //             console.error('Error updating user:', error);
+    //         }
+    //     );
+    // }
+    // selectImage(event) {
+    //     if (event.target.files.length > 0) {
+    //         const file = event.target.files[0];
+    //         this.images = file;
+    //     }
+    // }
+    selectedImage: any;
+    selectImage1(event) {
+        if (event.target.files.length > 0) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                this.selectedImage = e.target.result as string;
+            };
+            reader.readAsDataURL(file);
         }
-      );
     }
-  }
-  imageUrl: string;
-  fetchImage(imageName: string): void {
-    // Vérifier si imageName est défini avant d'appeler userService.getImage
-    if (imageName) {
-      this.userService.getImage(imageName).subscribe(
-        (image: Blob) => {
-          // Créez une URL d'objet pour afficher l'image
-          this.imageUrl = URL.createObjectURL(image);
-        },
-        (error) => {
-          console.error('Error fetching image:', error);
+    getUserID(): string {
+        const token = localStorage.getItem('accessToken');
+        if (token) {
+            const decodedToken = JSON.parse(atob(token.split('.')[1]));
+            return decodedToken.id;
+        } else {
+            console.error('Token not found in local storage.');
+            return null;
         }
-      );
     }
-  }
-  /**
-   * Get the form field helpers as string
-   */
-  getFormFieldHelpersAsString(): string {
-    return this.formFieldHelpers.join(' ');
-  }
+    onSubmit() {
+        const userId = this.getUserID();
+        const formData = new FormData();
+        formData.append('file', this.images);
 
+        this._httpClient
+            .put<any>(`http://localhost:3000/auth/upload/${userId}`, formData)
+            .subscribe(
+                (res) => console.log(res),
+                (err) => console.log(err)
+            );
+    }
+    onFileSelected(files: FileList): void {
+        if (files.length > 0) {
+            const file = files[0];
+            this.userService.uploadImage(file).subscribe(
+                (response) => {
+                    console.log('Image uploaded successfully:', response);
+                    // Handle success (if needed)
+                },
+                (error) => {
+                    console.error('Error uploading image:', error);
+                    // Handle error (if needed)
+                }
+            );
+        }
+    }
+
+    /**
+     * Get the form field helpers as string
+     */
+    getFormFieldHelpersAsString(): string {
+        return this.formFieldHelpers.join(' ');
+    }
 }

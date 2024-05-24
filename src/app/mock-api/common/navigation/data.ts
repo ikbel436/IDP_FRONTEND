@@ -16,16 +16,23 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 icon: 'heroicons_outline:square-3-stack-3d',
                 link: '/createProject',
             },
-
-
-
             {
-                id: 'dashboards.finance',
-                title: 'Projects',
+                id: 'dashboards.project',
+                title: 'Git Provider ',
                 type: 'basic',
-                icon: 'heroicons_outline:banknotes',
-                link: '/project',
+                icon: 'heroicons_outline:code-bracket-square',
+                link: '/gitProvider',
             },
+
+
+
+            // {
+            //     id: 'dashboards.finance',
+            //     title: 'Projects',
+            //     type: 'basic',
+            //     icon: 'heroicons_outline:banknotes',
+            //     link: '/project',
+            // },
 
 
         ],
@@ -47,8 +54,8 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 id: 'user.profile',
                 title: 'Settings',
                 type: 'basic',
-                icon: 'heroicons_outline:cog-8-tooth',
-                link: '',
+                icon: 'heroicons_outline:user-circle',
+                link: '/settings',
             },
         ]
     },
@@ -63,7 +70,7 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 id: 'user-interface.cards',
                 title: 'Configure Infrastructure',
                 type: 'basic',
-                icon: 'heroicons_outline:cog-6-tooth',
+                icon: 'heroicons_outline:cloud',
                 link: 'configInfrastructure',
             },
             {
@@ -77,21 +84,21 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 id: 'user-interface.cards',
                 title: 'Download Terrafrom Templates',
                 type: 'basic',
-                icon: 'heroicons_outline:folder-arrow-down',
+                icon: 'heroicons_outline:cloud',
                 link: '/ui/cards',
             },
             {
                 id: 'user-interface.cards',
                 title: 'Gitlab CI Templates',
                 type: 'basic',
-                icon: 'heroicons_outline:document-magnifying-glass',
+                icon: 'heroicons_outline:cloud',
                 link: '/ui/cards',
             },
             {
                 id: 'user-interface.cards',
                 title: 'Create your infrastructure',
                 type: 'basic',
-                icon: 'heroicons_outline:cloud-arrow-down',
+                icon: 'heroicons_outline:cloud',
                 link: '/ui/forms/layouts',
             },
 
