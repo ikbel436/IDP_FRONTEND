@@ -11,8 +11,52 @@
                     {{ t("createdAt") }} : {{ user?.createdAt | date : "short" }}
                 </div>
             </div>
-    
             <div class="relative w-40 mt-4 h-40">
+                <div class="flex border-2 border-white rounded-full overflow-hidden">
+                  <img
+                    alt="avatar"
+                    class="w-40 h-40 object-cover mx-auto"
+                    [src]="imagePreviewUrl || user.image || 'https://cdn-icons-png.flaticon.com/512/149/149071.png'"
+                  />
+                </div>
+                
+                <div>
+                  <input
+                    type="file"
+                    name="image"
+                    id="fileInput"
+                    (change)="selectImage($event)"
+                    style="display: none;"
+                  />
+                  <button
+                    title="Upload"
+                    color="primary"
+                    type="button"
+                    (click)="triggerFileInput()"
+                    alt="upload profile pic"
+                    mat-mini-fab
+                    class="absolute bottom-0 right-0 rounded-full z-40"
+                  >
+                    <mat-icon class="icon-size-4" svgIcon="feather:camera"></mat-icon>
+                  </button>
+                </div>
+                
+                <ng-container *ngIf="imagePreviewUrl || user.image">
+                  <button
+                    title="Remove"
+                    color="primary"
+                    type="button"
+                    (click)="remove()"
+                    alt="remove profile pic"
+                    mat-mini-fab
+                    class="absolute bottom-0 left-0 rounded-full z-40 bg-red-500"
+                  >
+                    <mat-icon class="icon-size-4" svgIcon="feather:trash"></mat-icon>
+                  </button>
+                </ng-container>
+              </div>
+              
+            <!-- <div class="relative w-40 mt-4 h-40">
                 <div
                     class="flex border-2 border-white rounded-full overflow-hidden"
                 >
@@ -20,27 +64,33 @@
                         alt="avatar"
                         class="w-40 h-40 object-cover mx-auto"
                         [src]="
-                            user.profilePicture ||
+                            user.image ||
                             'https://cdn-icons-png.flaticon.com/512/149/149071.png'
                         "
                     />
                 </div>
-                <button
-                    title="Upload"
-                    color="primary"
-                    type="button"
-                    (click)="openDialog()"
-                    alt="upload profile pic"
-                    mat-mini-fab
-                    class="absolute bottom-0 right-0 rounded-full z-40"
-                >
-                    <mat-icon
-                        class="icon-size-4"
-                        svgIcon="feather:camera"
-                    ></mat-icon>
-                </button>
-    
-                @if(user.profilePicture){
+               
+                <div>
+                    <input
+                      type="file"
+                      name="image"
+                      id="fileInput"
+                      (change)="selectImage($event)"
+                      style="display: none;"
+                    />
+                    <button
+                      title="Upload"
+                      color="primary"
+                      type="button"
+                      (click)="triggerFileInput()"
+                      alt="upload profile pic"
+                      mat-mini-fab
+                      class="absolute bottom-0 right-0 rounded-full z-40"
+                    >
+                      <mat-icon class="icon-size-4" svgIcon="feather:camera"></mat-icon>
+                    </button>
+                  </div>
+                @if(user.image){
                 <button
                     title="Upload"
                     color="primary"
@@ -56,7 +106,7 @@
                     ></mat-icon>
                 </button>
                 }
-            </div>
+            </div> -->
     
             <div class="grid sm:grid-cols-4 gap-6 w-full mt-8">
                 <!-- name -->
@@ -253,7 +303,7 @@
                         <textarea
                             title="bio"
                             matInput
-                            [formControlName]="'about'"
+                            [formControlName]="'description'"
                             cdkTextareaAutosize
                             cdkAutosizeMinRows="3"
                             cdkAutosizeMaxRows="4"
@@ -269,7 +319,7 @@
                             *transloco="let t; read: 'validators'"
                             class="mt-1 text-md text-hint"
                         >
-                            {{ 2000 - accountForm.get("about").value?.length }}
+                            {{ 2000 - accountForm.get("description").value?.length }}
                             {{ t("maxCharacters") }}
                         </mat-hint>
                     </mat-form-field>

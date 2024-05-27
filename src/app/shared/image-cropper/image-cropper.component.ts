@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, Inject, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DomSanitizer } from '@angular/platform-browser';
+import { BrowserModule,DomSanitizer, HAMMER_GESTURE_CONFIG, HammerModule } from '@angular/platform-browser';
 import { Dimensions, ImageCroppedEvent, ImageCropperModule, ImageTransform } from 'ngx-image-cropper';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -10,7 +10,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSliderModule } from '@angular/material/slider';
 import { HotToastService } from '@ngneat/hot-toast';
-
+import { HammerGestureConfig } from '@angular/platform-browser';
 @Component({
   selector: 'app-image-cropper',
   standalone: true,
@@ -23,6 +23,8 @@ import { HotToastService } from '@ngneat/hot-toast';
     TranslocoModule,
     MatProgressSpinnerModule,
     MatSliderModule,
+    BrowserModule,
+    HammerModule
   ],
   templateUrl: './image-cropper.component.html',
   styles: [
@@ -135,5 +137,11 @@ export class ImageCropperComponent {
 
   close() {
     this.dialogRef.close();
+  }
+  blobToFile(blob: Blob, fileName: string): File {
+    const file: any = blob;
+    file.lastModifiedDate = new Date();
+    file.name = fileName;
+    return <File>blob;
   }
 }

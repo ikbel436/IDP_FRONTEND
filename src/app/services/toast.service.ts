@@ -1,6 +1,7 @@
 import { inject, Injectable } from '@angular/core';
-import { HotToastService } from '@ngneat/hot-toast';
+
 import { TranslocoService } from '@ngneat/transloco';
+import { HotToastService } from '@ngxpert/hot-toast';
 
 @Injectable({
   providedIn: 'root',

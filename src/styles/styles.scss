@@ -2,3 +2,10 @@
 /*  @ Import/write your custom styles here.
 /*  @ Styles from this file will override 'vendors.scss' and Fuse's base styles.
 /* ----------------------------------------------------------------------------------------------------- */
+.dark .ql-snow .ql-stroke {   
+    stroke: #d7d1d1!important;
+}
+
+.dark .ql-snow .ql-fill, .ql-snow .ql-stroke.ql-fill {
+   fill: #d7d1d1 !important;
+}
