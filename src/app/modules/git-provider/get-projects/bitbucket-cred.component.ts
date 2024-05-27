@@ -59,14 +59,16 @@ export class BitbucketCredComponent {
     dynamicSubscriptInput: FormControl = new FormControl('', [Validators.required]);
     fixedSubscriptInputWithHint: FormControl = new FormControl('', [Validators.required]);
     dynamicSubscriptInputWithHint: FormControl = new FormControl('', [Validators.required]);
-    selected = 'option2';
+    selectedProvider: 'github' | 'bitbucket' ;
     bitbucketForm: FormGroup;
     constructor(private formBuilder: FormBuilder, private gitProviderService: GitProviderService, private router: Router,
         public dialogRef: MatDialogRef<BitbucketCredComponent>,
         @Inject(MAT_DIALOG_DATA) public data: any) {
+            this.selectedProvider = data.selectedProvider || 'github'; 
         this.bitbucketForm = this.formBuilder.group({
             accessToken: ['', Validators.required],
-            workspace: ['', Validators.required]
+            workspace: ['', Validators.required],
+            selectedProvider: [this.selectedProvider, Validators.required] 
         });
     }
     onSubmit() {
@@ -77,4 +79,11 @@ export class BitbucketCredComponent {
     onCancel(): void {
         this.dialogRef.close();
     }
+
+    handleProviderChange(provider: 'github' | 'bitbucket'): void {
+        this.selectedProvider = provider;
+        this.bitbucketForm.patchValue({ selectedProvider: provider }); 
+    }
+   
+      
 }
