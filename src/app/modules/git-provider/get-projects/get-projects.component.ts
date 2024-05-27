@@ -99,19 +99,7 @@ export class GetProjectsComponent {
         }
     }
 
-    openDialog(): void {
-        const dialogRef = this.dialog.open(BitbucketCredComponent, {
-            width: '400px',
-        });
-        dialogRef.afterClosed().subscribe((result) => {
-            if (result) {
-                const { accessToken, workspace } = result;
-                this.gitProviderService.setCredentials(accessToken, workspace);
-                console.log(result);
-                this.loadRepositories();
-            }
-        });
-    }
+
 
     copyToClipboard(url: string) {
         navigator.clipboard
@@ -122,5 +110,53 @@ export class GetProjectsComponent {
             .catch((err) => {
                 alert('Failed to copy URL');
             });
+    }
+
+    fetchRepositories(): void {
+        console.log(this.selectedProvider); 
+        const methodCall =
+            this.selectedProvider === 'github'
+                ? this.gitProviderService.getRepositoriesGit()
+                : this.gitProviderService.getRepositoriesBitbucket();
+    
+        methodCall.subscribe({
+            next: (response) => {
+                if (response && Array.isArray(response)) {
+                    const mappedResponse = response.map((repo) => ({
+                        name: repo.name || repo.full_name,
+                        description: repo.description,
+                        createdAt: repo.createdAt || repo.created_at,
+                        lastUpdated: repo.updatedAt || repo.updated_at,
+                        cloneUrl: repo.cloneUrl || repo.url,
+                        language: repo.language,
+                    }));
+    
+                    this.dataSource.data = mappedResponse;
+                    this.localStorageService.saveData('repositories', this.dataSource.data);
+                } else {
+                    this.errorMessage = 'No repositories found.';
+                }
+                this.errorMessage = '';
+            },
+            error: () => {
+                this.errorMessage = 'Failed to fetch repositories. Please try again.';
+            },
+        });
+    }
+
+    openDialog(): void {
+        const dialogRef = this.dialog.open(BitbucketCredComponent, {
+            width: '400px',
+            data: { selectedProvider: this.selectedProvider } 
+        });
+    
+        dialogRef.afterClosed().subscribe((result) => {
+            if (result) {
+                const { accessToken, workspace, selectedProvider } = result;
+                this.gitProviderService.setCredentials(accessToken, workspace);
+                this.selectedProvider = selectedProvider; 
+                this.fetchRepositories();
+            }
+        })
     }
 }

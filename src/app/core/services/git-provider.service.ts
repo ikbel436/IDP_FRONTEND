@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
     providedIn: 'root',
 })
 export class GitProviderService {
-    private apiUrl = 'http://localhost:3000/connect/bitbucket';
+    private apiUrl = 'http://localhost:3000/connect/connect_bitbucket';
     private accessToken: string | null = null;
     private workspace: string | null = null;
 

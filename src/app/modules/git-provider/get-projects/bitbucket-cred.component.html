@@ -1,10 +1,9 @@
-<form [formGroup]="bitbucketForm" (ngSubmit)="onSubmit()"
-    class="flex flex-col mt-8 p-8 pb-4 bg-card rounded-2xl shadow overflow-hidden">
+<form [formGroup]="bitbucketForm" (ngSubmit)="onSubmit()" class="flex flex-col mt-8 p-8 pb-4 bg-card rounded-2xl shadow overflow-hidden">
     <img src="./assets/images/logo/insparklogodark.svg" alt="Bitbucket Logo" class="mx-auto my-4" style="width: 300px;">
 
     <mat-form-field>
-        <mat-label >Git Provider</mat-label>
-        <mat-select [(value)]="selectedProvider" (selectionChange)="handleProviderChange($event)">
+        <mat-label>Git Provider</mat-label>
+        <mat-select formControlName="selectedProvider" (selectionChange)="handleProviderChange($event.value)">
             <mat-option value="github">GitHub</mat-option>
             <mat-option value="bitbucket">Bitbucket</mat-option>
             <mat-option value="gitlab">Gitlab</mat-option>
@@ -26,7 +25,6 @@
 
     <div class="flex flex-row justify-center w-full">
         <button type="submit" mat-raised-button color="primary">Validate</button>
-        
+        <button mat-raised-button color="warn" (click)="onCancel()">Cancel</button>
     </div>
 </form>
-<button mat-raised-button color="warn" (click)="onCancel()">Cancel</button>
