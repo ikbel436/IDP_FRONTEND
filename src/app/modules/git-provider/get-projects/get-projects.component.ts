@@ -77,12 +77,8 @@ export class GetProjectsComponent {
         private gitProviderService: GitProviderService,
         private localStorageService: LocalStorageService
     ) {
-
         this.loadRepositories();
-
     }
-
-    
 
     ngOnInit() {
         this.openDialog();
@@ -93,81 +89,8 @@ export class GetProjectsComponent {
         if (Array.isArray(repositories)) {
             this.dataSource.data = repositories;
         } else {
-            this.fetchRepositories();
+            this.errorMessage = 'No repositories found.';
         }
-    }
-
-    // fetchRepositories() {
-    //     let methodCall =
-    //         this.selectedProvider === 'github'
-    //             ? this.gitProviderService.getRepositoriesGit()
-    //             : this.gitProviderService.getRepositoriesBitbucket();
-    //     methodCall.subscribe({
-    //         next: (response) => {
-    //             if (response && Array.isArray(response)) {
-    //                 this.dataSource.data = response;
-    //             } else {
-    //                 this.errorMessage = 'No repositories found.';
-    //             }
-    //             this.errorMessage = '';
-    //         },
-    //         error: (error) => {
-    //             this.errorMessage =
-    //                 'Failed to fetch repositories. Please try again.';
-    //         },
-    //     });
-    // }
-
-    fetchRepositories() {
-        
-        let methodCall = this.selectedProvider === 'github'
-           ? this.gitProviderService.getRepositoriesGit()
-            : this.gitProviderService.getRepositoriesBitbucket();
-    
-        methodCall.subscribe({
-            next: (response) => {
-                if (response && Array.isArray(response)) {
-                    // Map the response to match the expected structure
-                    const mappedResponse = response.map(repo => ({
-                        name: repo.name || repo.full_name, 
-                        description: repo.description,
-                        createdAt: repo.createdAt || repo.created_at, 
-                        lastUpdated: repo.updatedAt || repo.updated_at, 
-                        cloneUrl: repo.cloneUrl || repo.url, 
-                        language: repo.language,
-                    }));
-    
-                    this.dataSource.data = mappedResponse;
-                    this.localStorageService.saveData('repositories', this.dataSource.data);
-
-                } else {
-                    this.errorMessage = 'No repositories found.';
-                }
-                this.errorMessage = '';
-            },
-            error: (error) => {
-                this.errorMessage = 'Failed to fetch repositories. Please try again.';
-            },
-        });
-    }
-    
-
-    fetchRepositoriesGit() {
-        this.gitProviderService.getRepositoriesGit().subscribe({
-            next: (response) => {
-                if (response && response.length > 0) {
-                    this.projects = response;
-                    this.dataSource.data = this.projects;
-                } else {
-                    this.errorMessage = 'No repositories found.';
-                }
-                this.errorMessage = '';
-            },
-            error: (error) => {
-                this.errorMessage =
-                    'Failed to fetch repositories. Please try again.';
-            },
-        });
     }
 
     ngOnDestroy(): void {
@@ -182,13 +105,10 @@ export class GetProjectsComponent {
         });
         dialogRef.afterClosed().subscribe((result) => {
             if (result) {
-                const { accessToken, workspace, token } = result;
-                this.gitProviderService.setCredentials(
-                    accessToken,
-                    workspace,
-                    token
-                );
-                this.fetchRepositories();
+                const { accessToken, workspace } = result;
+                this.gitProviderService.setCredentials(accessToken, workspace);
+                console.log(result);
+                this.loadRepositories();
             }
         });
     }
@@ -203,6 +123,4 @@ export class GetProjectsComponent {
                 alert('Failed to copy URL');
             });
     }
-
-  
 }

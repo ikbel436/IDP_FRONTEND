@@ -20,9 +20,11 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
+import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { GitProviderService } from 'app/core/services/git-provider.service';
 import { Router } from '@angular/router';
+import { LocalStorageService } from 'app/modules/auth/utils/localStorage.service';
+import { MatTableDataSource } from '@angular/material/table';
 
 
 export interface DialogData {
@@ -59,13 +61,17 @@ export class BitbucketCredComponent {
     dynamicSubscriptInput: FormControl = new FormControl('', [Validators.required]);
     fixedSubscriptInputWithHint: FormControl = new FormControl('', [Validators.required]);
     dynamicSubscriptInputWithHint: FormControl = new FormControl('', [Validators.required]);
-    selectedProvider: 'github' | 'bitbucket' = 'github';
+    selectedProvider: 'github' | 'bitbucket';
+    dataSource = new MatTableDataSource<any>();
+
+    errorMessage: string = '';
     bitbucketForm: FormGroup;
     constructor(private formBuilder: FormBuilder, private gitProviderService: GitProviderService, private router: Router,
         public dialogRef: MatDialogRef<BitbucketCredComponent>,
+        private localStorageService: LocalStorageService,
         @Inject(MAT_DIALOG_DATA) public data: any) {
         this.bitbucketForm = this.formBuilder.group({
-            accessToken: ['', Validators.required],
+            accessToken: ['nothing', Validators.required],
             workspace: ['', Validators.required]
         });
     }
@@ -73,16 +79,57 @@ export class BitbucketCredComponent {
         if (this.bitbucketForm.valid) {
             this.dialogRef.close(this.bitbucketForm.value);
         }
+          this.fetchRepositories();
     }
     onCancel(): void {
         this.dialogRef.close();
     }
 
-    handleProviderChange(provider: 'github' | 'bitbucket') {
-        this.selectedProvider = provider;
-        // this.fetchRepositories();
-      }
+    handleProviderChange(event: MatSelectChange) {
+        this.selectedProvider = event.value as 'github' | 'bitbucket'; // Cast the value to the expected type
+        console.log(this.selectedProvider);
+         this.fetchRepositories();
+    }
 
-   
-      
+    
+    
+
+    fetchRepositories() {
+        let methodCall =
+            this.selectedProvider 
+                ? this.gitProviderService.getRepositoriesGit()
+                : this.gitProviderService.getRepositoriesBitbucket();
+
+        methodCall.subscribe({
+            next: (response) => {
+                if (response && Array.isArray(response)) {
+                    // Map the response to match the expected structure
+                    const mappedResponse = response.map((repo) => ({
+                        name: repo.name || repo.full_name,
+                        description: repo.description,
+                        createdAt: repo.createdAt || repo.created_at,
+                        lastUpdated: repo.updatedAt || repo.updated_at,
+                        cloneUrl: repo.cloneUrl || repo.url,
+                        language: repo.language,
+                    }));
+
+                    this.dataSource.data = mappedResponse;
+                    this.localStorageService.saveData(
+                        'repositories',
+                        this.dataSource.data
+                    );
+                } else {
+                    this.errorMessage = 'No repositories found.';
+                }
+                this.errorMessage = '';
+            },
+            error: (error) => {
+                this.errorMessage =
+                    'Failed to fetch repositories. Please try again.';
+            },
+        });
+    }
+
+
+    
 }

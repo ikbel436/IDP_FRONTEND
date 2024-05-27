@@ -4,10 +4,10 @@
 
     <mat-form-field>
         <mat-label >Git Provider</mat-label>
-        <mat-select [(value)]="selectedProvider" (selectionChange)="handleProviderChange($event.value)" >
-            <mat-option value="option1">GitHub</mat-option>
-            <mat-option value="option2">Bitbucket</mat-option>
-            <mat-option value="option3">Gitlab</mat-option>
+        <mat-select [(value)]="selectedProvider" (selectionChange)="handleProviderChange($event)">
+            <mat-option value="github">GitHub</mat-option>
+            <mat-option value="bitbucket">Bitbucket</mat-option>
+            <mat-option value="gitlab">Gitlab</mat-option>
         </mat-select>
     </mat-form-field>
 
@@ -26,6 +26,7 @@
 
     <div class="flex flex-row justify-center w-full">
         <button type="submit" mat-raised-button color="primary">Validate</button>
-        <button mat-raised-button color="warn" (click)="onCancel()">Cancel</button>
+        
     </div>
 </form>
+<button mat-raised-button color="warn" (click)="onCancel()">Cancel</button>
