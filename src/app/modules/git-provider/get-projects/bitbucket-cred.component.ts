@@ -68,7 +68,7 @@ export class BitbucketCredComponent {
             this.selectedProvider = data.selectedProvider || 'github'; 
         this.bitbucketForm = this.formBuilder.group({
             accessToken: ['', Validators.required],
-            workspace: ['', Validators.required],
+            workspace: [''],
             selectedProvider: [this.selectedProvider, Validators.required] 
         });
        
