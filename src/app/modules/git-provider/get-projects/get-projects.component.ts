@@ -81,7 +81,12 @@ export class GetProjectsComponent {
     }
 
     ngOnInit() {
-        this.openDialog();
+        this.loadRepositories();
+
+        const repositories = this.localStorageService.getData('repositories');
+        if (!Array.isArray(repositories) || repositories.length === 0) {
+            this.openDialog();
+        }
     }
 
     loadRepositories(): void {
@@ -99,8 +104,6 @@ export class GetProjectsComponent {
         }
     }
 
-
-
     copyToClipboard(url: string) {
         navigator.clipboard
             .writeText(url)
@@ -113,12 +116,12 @@ export class GetProjectsComponent {
     }
 
     fetchRepositories(): void {
-        console.log(this.selectedProvider); 
+        console.log(this.selectedProvider);
         const methodCall =
             this.selectedProvider === 'github'
                 ? this.gitProviderService.getRepositoriesGit()
                 : this.gitProviderService.getRepositoriesBitbucket();
-    
+
         methodCall.subscribe({
             next: (response) => {
                 if (response && Array.isArray(response)) {
@@ -130,33 +133,37 @@ export class GetProjectsComponent {
                         cloneUrl: repo.cloneUrl || repo.url,
                         language: repo.language,
                     }));
-    
+
                     this.dataSource.data = mappedResponse;
-                    this.localStorageService.saveData('repositories', this.dataSource.data);
+                    this.localStorageService.saveData(
+                        'repositories',
+                        this.dataSource.data
+                    );
                 } else {
                     this.errorMessage = 'No repositories found.';
                 }
                 this.errorMessage = '';
             },
             error: () => {
-                this.errorMessage = 'Failed to fetch repositories. Please try again.';
+                this.errorMessage =
+                    'Failed to fetch repositories. Please try again.';
             },
         });
     }
 
     openDialog(): void {
         const dialogRef = this.dialog.open(BitbucketCredComponent, {
-            width: '400px',
-            data: { selectedProvider: this.selectedProvider } 
+             width: '400px',
+            data: { selectedProvider: this.selectedProvider },
         });
-    
+
         dialogRef.afterClosed().subscribe((result) => {
             if (result) {
                 const { accessToken, workspace, selectedProvider } = result;
                 this.gitProviderService.setCredentials(accessToken, workspace);
-                this.selectedProvider = selectedProvider; 
+                this.selectedProvider = selectedProvider;
                 this.fetchRepositories();
             }
-        })
+        });
     }
 }

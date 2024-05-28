@@ -9,7 +9,7 @@ import {
     MatDialogClose,
 } from '@angular/material/dialog';
 import { TextFieldModule } from '@angular/cdk/text-field';
-import { NgClass } from '@angular/common';
+import { CommonModule, NgClass } from '@angular/common';
 import { ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, UntypedFormBuilder, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -48,7 +48,7 @@ export interface DialogData {
         ReactiveFormsModule,
         NgClass,
         TextFieldModule,
-
+        CommonModule,
 
 
     ],
@@ -63,6 +63,7 @@ export class BitbucketCredComponent {
     bitbucketForm: FormGroup;
     constructor(private formBuilder: FormBuilder, private gitProviderService: GitProviderService, private router: Router,
         public dialogRef: MatDialogRef<BitbucketCredComponent>,
+        
         @Inject(MAT_DIALOG_DATA) public data: any) {
             this.selectedProvider = data.selectedProvider || 'github'; 
         this.bitbucketForm = this.formBuilder.group({
@@ -70,6 +71,8 @@ export class BitbucketCredComponent {
             workspace: ['', Validators.required],
             selectedProvider: [this.selectedProvider, Validators.required] 
         });
+       
+
     }
     onSubmit() {
         if (this.bitbucketForm.valid) {

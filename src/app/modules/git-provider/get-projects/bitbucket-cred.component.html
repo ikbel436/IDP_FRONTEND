@@ -10,8 +10,8 @@
         </mat-select>
     </mat-form-field>
 
-    <div class="flex flex-col gt-xs:flex-row">
-        <mat-form-field [ngClass]="formFieldHelpers" class="flex-auto gt-xs:pr-3">
+    <div class="flex flex-col gt-xs:flex-row"  >
+        <mat-form-field [ngClass]="formFieldHelpers" class="flex-auto gt-xs:pr-3" *ngIf="selectedProvider!== 'github'">
             <mat-label>Workspace name</mat-label>
             <input matInput formControlName="workspace" placeholder="Enter Workspace name">
             <mat-icon class="icon-size-5" matSuffix [svgIcon]="'heroicons_outline:code-bracket'"></mat-icon>
