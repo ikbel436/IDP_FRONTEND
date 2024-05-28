@@ -9,7 +9,7 @@
   </div>
 
   <!-- Compose form -->
-  <form class="flex flex-col p-6 sm:p-8 overflow-y-auto flex-grow" [formGroup]="projectForm" (ngSubmit)="onSubmit()">
+  <form class="flex flex-col p-6 sm:p-8 overflow-y-auto flex-grow" [formGroup]="projectForm" (ngSubmit)="save()">
     <!-- Project Name -->
     <mat-form-field class="w-full mb-6" appearance="outline" floatLabel="always">
       <mat-label>Project Name</mat-label>
@@ -17,12 +17,13 @@
     </mat-form-field>
 
     <!-- Provider Type -->
-    <mat-form-field class="w-full mb-6" appearance="outline" floatLabel="always">
-      <mat-label>Provider Type</mat-label>
-      <mat-select formControlName="provider">
-        <mat-option *ngFor="let option of providerOptions" [value]="option">{{ option }}</mat-option>
+    <mat-form-field class="w-full mb-6">
+      <mat-select formControlName="provider" placeholder="Select Provider">
+          <mat-option value="AWS">AWS</mat-option>
+          <mat-option value="azure">Azure</mat-option>
+          <mat-option value="gcp">GCP</mat-option>
       </mat-select>
-    </mat-form-field>
+  </mat-form-field>
 
     <!-- Project Link -->
     <mat-form-field class="w-full mb-6" appearance="outline" floatLabel="always">
