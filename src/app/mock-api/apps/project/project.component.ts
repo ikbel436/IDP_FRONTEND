@@ -28,6 +28,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { CreateProjectComponent } from 'app/modules/create-project/create-project.component';
 
 
+
 @Component({
 selector: 'app-project',
 standalone: true,
@@ -107,21 +108,103 @@ constructor(
 { 
 }
 
-openComposeDialog(): void
-{
-    // Open the dialog
-    const dialogRef = this._matDialog.open(CreateProjectComponent, {
-        width: '600px',
-  maxHeight: '80vh',
-  panelClass: 'custom-dialog-container'
-      });
+// openComposeDialog(): void
+// {
+//     // Open the dialog
+//     const dialogRef = this._matDialog.open(CreateProjectComponent, {
+//         width: '600px',
+//   maxHeight: '80vh',
+//   panelClass: 'custom-dialog-container',
+  
+  
+//       });
 
-    dialogRef.afterClosed()
-        .subscribe((result) =>
-        {
-            console.log('Compose dialog was closed!');
+//     dialogRef.afterClosed()
+//         .subscribe((result) =>
+//         {
+//             console.log('Compose dialog was closed!');
+//         });
+// }
+deleteSelectedProduct1(project: InventoryProject): void {
+    // Open the confirmation dialog
+    const confirmation = this._fuseConfirmationService.open({
+      title: 'Delete project',
+      message: 'Are you sure you want to remove this project? This action cannot be undone!',
+      actions: {
+        confirm: {
+          label: 'Delete',
+        },
+      },
+    });
+  
+    // Subscribe to the confirmation dialog closed action
+    confirmation.afterClosed().subscribe((result) => {
+      // If the confirm button pressed...
+      if (result === 'confirmed') {
+        // Delete the project on the server
+        this._inventoryService.deleteProduct(project._id).subscribe(() => {
+          // Close the details
+          this.closeDetails();
+          
+          // Remove the project from the local array
+          const index = this.testProjects.findIndex(p => p._id === project._id);
+          if (index !== -1) {
+            this.testProjects.splice(index, 1);
+          }
+          
+          // Refresh the project list
+          this.fetchProjects();
         });
-}
+      }
+    });
+  }
+openComposeDialog(project?: any): void {
+    const dialogRef = this._matDialog.open(CreateProjectComponent, {
+      width: '600px',
+      maxHeight: '80vh',
+      panelClass: 'custom-dialog-container',
+      data: { project: project || {} }
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        if (project) {
+          this.updateSelectedProduct1(result, project._id);
+        } else {
+            this.createProject1(result);
+        }
+      }
+    });
+  }
+  createProject1(newProject: any): void {
+    this._inventoryService.createProject(newProject).subscribe((createdProject) => {
+        this.selectProject = createdProject;
+        this.selectProjectForm.patchValue(createdProject);
+        this._changeDetectorRef.markForCheck();
+        this.fetchProjects();
+      });
+  }
+  updateSelectedProduct1(updatedProject: any, projectId: string): void {
+    this._inventoryService.updateProject1(projectId, updatedProject).subscribe(
+      (result) => {
+        this.selectProjectForm.patchValue(result);
+        console.log("projectupdated", this.selectProjectForm.value);
+
+        this._changeDetectorRef.detectChanges();
+
+        const index = this.testProjects.findIndex(p => p._id === projectId);
+        if (index !== -1) {
+          this.testProjects[index] = result;
+        }
+
+        this.showFlashMessage('success');
+      },
+      (error) => {
+        console.error('Update failed:', error);
+        this.showFlashMessage('error');
+      }
+    );
+  }
 // -----------------------------------------------------------------------------------------------------
 // @ Lifecycle hooks
 // -----------------------------------------------------------------------------------------------------
@@ -154,7 +237,7 @@ copyToClipboard(text: string): void {
 ngOnInit(): void
 { 
     this.fetchProjects();
-    this.projects$ = this._inventoryService.products$;
+    this.projects$ = this._inventoryService.projects$;
     // this.projects$ = this._inventoryService.products$;
     // console.log(this.projects$);
     // Create the selected product form
@@ -187,7 +270,7 @@ ngOnInit(): void
             }),
         )
         .subscribe();
-        this.projects$ = this._inventoryService.products$;
+        this.projects$ = this._inventoryService.projects$;
 }
 
 /**
@@ -326,7 +409,7 @@ toggleTagsEditMode(): void
  */
 createProject(): void {
     // Create the product
-    this._inventoryService.createProject(this.name, this.description, this.provider, this.lien).subscribe((newProject) => {
+    this._inventoryService.createProject(this.selectProject).subscribe((newProject) => {
         // Go to new product
         this.selectProject = newProject;
       

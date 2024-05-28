@@ -15,6 +15,7 @@ import { FuseVerticalNavigationGroupItemComponent } from '@fuse/components/navig
 import { FuseVerticalNavigationSpacerItemComponent } from '@fuse/components/navigation/vertical/components/spacer/spacer.component';
 import { FuseScrollbarDirective } from '@fuse/directives/scrollbar/scrollbar.directive';
 import { FuseUtilsService } from '@fuse/services/utils/utils.service';
+
 import { delay, filter, merge, ReplaySubject, Subject, Subscription, takeUntil } from 'rxjs';
 
 @Component({
@@ -81,6 +82,7 @@ export class FuseVerticalNavigationComponent implements OnChanges, OnInit, After
         private _scrollStrategyOptions: ScrollStrategyOptions,
         private _fuseNavigationService: FuseNavigationService,
         private _fuseUtilsService: FuseUtilsService,
+        private navigationService: FuseNavigationService
     )
     {
         this._handleAsideOverlayClick = (): void =>
@@ -92,7 +94,18 @@ export class FuseVerticalNavigationComponent implements OnChanges, OnInit, After
             this.close();
         };
     }
-
+   
+  loadNavigation(): void {
+    if (this.navigationService.isAdmin()) {
+      this.navigation = this.navigationService.getAdminNavigation();
+    } else if (this.navigationService.isUser()) {
+      this.navigation = this.navigationService.getUserNavigation();
+    }
+  }
+    
+     
+    
+     
     // -----------------------------------------------------------------------------------------------------
     // @ Accessors
     // -----------------------------------------------------------------------------------------------------
@@ -306,7 +319,7 @@ export class FuseVerticalNavigationComponent implements OnChanges, OnInit, After
      * On init
      */
     ngOnInit(): void
-    {
+    {    this.loadNavigation();
         // Make sure the name input is not an empty string
         if ( this.name === '' )
         {

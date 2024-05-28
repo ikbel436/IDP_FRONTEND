@@ -1,8 +1,8 @@
 import { CommonModule, NgIf } from '@angular/common';
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, Inject, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -30,17 +30,19 @@ export class CreateProjectComponent {
   constructor(
     public matDialogRef: MatDialogRef<ProjectComponent>,
     private fb: FormBuilder,
-    private projectSerivce:DetailsProjectService
+    private projectSerivce:DetailsProjectService,
+    @Inject(MAT_DIALOG_DATA) public data: any
 )
-{   this.projectForm = this.fb.group({
-  name: ['', Validators.required],
-  description: ['', Validators.required],
-  provider: ['', Validators.required],
-  lien: ['', Validators.required],
-  backendDockerImage: ['', Validators.required],
-  frontendDockerImage: ['', Validators.required],
-  databaseType: ['', Validators.required]
-});
+{ 
+//     this.projectForm = this.fb.group({
+//   name: ['', Validators.required],
+//   description: ['', Validators.required],
+//   provider: ['', Validators.required],
+//   lien: ['', Validators.required],
+//   backendDockerImage: ['', Validators.required],
+//   frontendDockerImage: ['', Validators.required],
+//   databaseType: ['', Validators.required]
+// });
 }
 selectProjectForm: UntypedFormGroup;
     quillModules: any = {
@@ -58,8 +60,22 @@ selectProjectForm: UntypedFormGroup;
  * On init
  */
 ngOnInit(): void
-{
+{  
+  this.projectForm = this.fb.group({
+  name: [this.data?.project?.name || ''],
+  provider: [this.data?.project?.provider || ''],
+  lien: [this.data?.project?.lien || ''],
+  description: [this.data?.project?.description || ''],
+  backendDockerImage: [this.data?.project?.backendDockerImage || ''],
+  frontendDockerImage: [this.data?.project?.frontendDockerImage || ''],
+  databaseType: [this.data?.project?.databaseType || '']
+});
   
+}
+save(): void {
+  if (this.projectForm.valid) {
+    this.matDialogRef.close(this.projectForm.value);
+  }
 }
 onSubmit() {
   if (this.projectForm.valid) {

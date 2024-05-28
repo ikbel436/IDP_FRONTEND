@@ -13,7 +13,39 @@ export class FuseNavigationService
     constructor()
     {
     }
+    getUserRole(): string {
+        return localStorage.getItem('userRole') ?? '';
+    }
 
+    isAdmin(): boolean {
+        return this.getUserRole() === 'admin';
+    }
+
+    isUser(): boolean {
+        return this.getUserRole() === 'User';
+    }
+
+    getAdminNavigation(): any[] {
+        return [
+            { type: 'basic', title: 'Settings', icon: 'heroicons_outline:user-circle', link: '/settings' },
+            { type: 'basic', title: 'Profile', icon: 'heroicons_outline:user-circle', link: '/profile' },
+           
+           
+          
+        ];
+    }
+
+    getUserNavigation(): any[] {
+        return [
+          
+            { type: 'basic', title: 'Settings', icon: 'heroicons_outline:user-circle', link: '/settings' },
+            { type: 'basic', title: 'Profile', icon: 'heroicons_outline:user-circle', link: '/profile' },
+            { type: 'basic', title: 'Create Project', icon: 'heroicons_outline:square-3-stack-3d', link: '/createProject' },
+            { type: 'basic', title: 'Git Provider', icon: 'heroicons_outline:code-bracket-square', link: '/gitProvider' },
+            { type: 'basic', title: 'Configure Infrastructure', icon: 'heroicons_outline:cloud', link: '/configInfrastructure' },
+            { type: 'basic', title: 'Cloud Infrastructure Templates', icon: 'heroicons_outline:cloud', link: '/templateTerraform' },
+        ];
+    }
     // -----------------------------------------------------------------------------------------------------
     // @ Public methods
     // -----------------------------------------------------------------------------------------------------
