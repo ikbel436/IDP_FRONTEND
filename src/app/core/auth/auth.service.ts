@@ -89,6 +89,33 @@ export class AuthService
     
     }
 
+    
+    /**
+ * Change password
+ *
+ * @param credentials
+ */
+changePassword(credentials: { currentPassword: string; newPassword: string }): Observable<any> {
+    const url = `${this.apiUrl}/changepassword`;
+    return this._httpClient.put(url, credentials).pipe(
+        switchMap((response: any) => {
+            if (response && response.msg === "Password successfully changed") {
+               
+                return of(response);
+            } else {
+                // Handle error case
+                return throwError('Failed to change password.');
+            }
+        }),
+        catchError(error => {
+            // Handle network errors or unexpected server responses
+            console.error('Error changing password:', error);
+            return throwError(error);
+        })
+    );
+}
+
+
 
     /**
      * Sign in
