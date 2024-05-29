@@ -17,15 +17,23 @@ import { Observable, Subject, map, takeUntil, tap } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { DetailsProjectService } from './details-project.service';
 import { UserService } from 'app/core/user/user.service';
+import { FuseCardComponent } from '@fuse/components/card';
 @Component({
   selector: 'app-details-project',
   encapsulation  : ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush,
     standalone     : true,
-    imports        : [TranslocoModule,AsyncPipe,CommonModule, MatIconModule, MatButtonModule, MatRippleModule, MatMenuModule, MatTabsModule, MatButtonToggleModule, NgApexchartsModule, NgFor, NgIf, MatTableModule, NgClass, CurrencyPipe],
+    imports        : [FuseCardComponent ,TranslocoModule,AsyncPipe,CommonModule, MatIconModule, MatButtonModule, MatRippleModule, MatMenuModule, MatTabsModule, MatButtonToggleModule, NgApexchartsModule, NgFor, NgIf, MatTableModule, NgClass, CurrencyPipe],
 
   templateUrl: './details-project.component.html',
-  styleUrl: './details-project.component.scss'
+  styleUrl: './details-project.component.scss',
+  styles         : [
+    `
+        cards fuse-card {
+            margin: 16px;
+        }
+    `,
+],
 })
 export class DetailsProjectComponent {
   chartGithubIssues: ApexOptions = {};
