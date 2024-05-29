@@ -71,6 +71,18 @@
                         <mat-icon class="icon-size-5 mr-3" svgIcon="heroicons_outline:phone"></mat-icon>
                         <span class="leading-none">{{currentUser?.phoneNumber}}</span>
                     </div>
+                    <div class="flex items-center mt-4">
+                        <mat-icon
+                            class="icon-size-5 mr-3"
+                            [svgIcon]="'heroicons_solid:cake'"></mat-icon>
+                        <span class="leading-none">{{currentUser?.birthDate}}</span>
+                    </div>
+                    <div class="flex items-center">
+                        <mat-icon
+                            class="icon-size-5 mr-3"
+                            [svgIcon]="'heroicons_solid:map-pin'"></mat-icon>
+                        <span class="leading-none">{{currentUser?.city}}</span>
+                    </div>
                     <!--div class="flex items-center mt-4">
                         <mat-icon class="icon-size-5 mr-3" svgIcon="heroicons_outline:briefcase"></mat-icon>
                         <span class="leading-none">{{currentUser?.Fonction}}</span>
@@ -149,58 +161,44 @@
         <div class="flex flex-col items-start">
 
             <!-- Post 1 -->
-            <fuse-card class="flex flex-col max-w-160 w-full p-8 sm:p-10 pb-8">
-                <div class="flex items-center justify-between">
-                    <div class="text-2xl font-semibold leading-tight"> Edit Profile Informations </div>
+            <fuse-card class="flex flex-col items-center max-w-80 w-full p-8 filter-info">
+                <mat-icon
+                    class="icon-size-16 text-red-500"
+                    [svgIcon]="'heroicons_solid:light-bulb'"></mat-icon>
+                <div class="text-2xl font-semibold leading-tight text-center mt-6">Branding & Product Design</div>
+                <div class="text-center text-secondary mt-1 mb-8">Brand strategy, purpose, and product positioning</div>
+                <div class="flex items-center">
+                    <img
+                        class="w-8 h-8 rounded-full text-card ring-2 ring-bg-card"
+                        src="assets/images/avatars/female-02.jpg"
+                        alt="Card cover image">
+                    <img
+                        class="w-8 h-8 rounded-full -ml-2 text-card ring-2 ring-bg-card"
+                        src="assets/images/avatars/female-04.jpg"
+                        alt="Card cover image">
+                    <img
+                        class="w-8 h-8 rounded-full -ml-2 text-card ring-2 ring-bg-card"
+                        src="assets/images/avatars/male-09.jpg"
+                        alt="Card cover image">
+                    <img
+                        class="w-8 h-8 rounded-full -ml-2 text-card ring-2 ring-bg-card"
+                        src="assets/images/avatars/male-07.jpg"
+                        alt="Card cover image">
+                    <img
+                        class="w-8 h-8 rounded-full -ml-2 text-card ring-2 ring-bg-card"
+                        src="assets/images/avatars/female-12.jpg"
+                        alt="Card cover image">
                 </div>
-                <form
-                    class="flex flex-col mt-8 p-8 pb-4 bg-card rounded-2xl shadow overflow-hidden custom-width-form mx-auto my-auto"
-                    (ngSubmit)="updateUserInfo()">
-                    <div class="flex flex-col gt-xs:flex-row">
-                        <mat-form-field [ngClass]="formFieldHelpers" class="flex-auto gt-xs:pr-3">
-                            <mat-label>Name</mat-label>
-                            <input matInput [(ngModel)]="currentUser.name" name="name" placeholder="name" required>
-                            <mat-icon class="icon-size-5" matSuffix
-                                [svgIcon]="'heroicons_solid:user-circle'"></mat-icon>
-                        </mat-form-field>
-                        <mat-form-field [ngClass]="formFieldHelpers" class="flex-auto gt-xs:pl-3">
-                            <mat-label>Email</mat-label>
-                            <input matInput [(ngModel)]="currentUser.email" name="email" placeholder="email" required>
-                            <mat-icon class="icon-size-5" matSuffix [svgIcon]="'heroicons_solid:envelope'"></mat-icon>
-                        </mat-form-field>
-                        <mat-form-field [ngClass]="formFieldHelpers" class="flex-auto gt-xs:pl-3">
-                            <mat-label>Phone</mat-label>
-                            <input matInput [(ngModel)]="currentUser.phoneNumber" name="phoneNumber"
-                                placeholder="phoneNumber" required>
-                            <mat-icon class="icon-size-5" matSuffix [svgIcon]="'heroicons_outline:phone'"></mat-icon>
-                        </mat-form-field>
-                        <!--mat-form-field [ngClass]="formFieldHelpers" class="flex-auto gt-xs:pl-3">
-                            <mat-label>Profile title</mat-label>
-                            <input matInput [(ngModel)]="Fonction" name="Fonction" placeholder="Fonction" required>
-                            <mat-icon class="icon-size-5" matSuffix svgIcon="heroicons_outline:briefcase"></mat-icon>
-                        </mat-form-field-->
-                    </div>
-                    <div class="flex">
-                        <mat-form-field [ngClass]="formFieldHelpers" class="flex-auto">
-                            <mat-label>Description</mat-label>
-                            <textarea matInput [(ngModel)]="currentUser.description" name="description"
-                                placeholder="description" cdkTextareaAutosize [cdkAutosizeMinRows]="3"
-                                required></textarea>
-                        </mat-form-field>
-                    </div>
-                    <div style="text-align: center">
-
-                        <div>
-                            <input type="file" name="image" (change)="selectImage($event)" />
-                        </div>
-                        <br>
-                        <div>
-                            <button type="submit" mat-flat-button color="primary" (click)="onSubmit()">Confirm</button>
-                        </div>
-
-                    </div>
-                </form>
+                <div class="text-sm font-medium text-secondary mt-2">+13 more</div>
+                <a
+                    class="px-6 mt-8"
+                    mat-flat-button
+                    [color]="'primary'"
+                    [routerLink]="['./']">
+                    View Project
+                </a>
             </fuse-card>
+
         </div>
 
     </div>
