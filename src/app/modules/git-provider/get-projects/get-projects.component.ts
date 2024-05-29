@@ -153,7 +153,7 @@ export class GetProjectsComponent {
 
     openDialog(): void {
         const dialogRef = this.dialog.open(BitbucketCredComponent, {
-             width: '400px',
+            width: '400px',
             data: { selectedProvider: this.selectedProvider },
         });
 
