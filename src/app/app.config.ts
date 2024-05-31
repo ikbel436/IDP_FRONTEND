@@ -19,10 +19,10 @@ import {
     RecaptchaSettings,
     RECAPTCHA_LOADER_OPTIONS,
     RecaptchaLoaderOptions,
-  } from 'ng-recaptcha';
+} from 'ng-recaptcha';
 import { provideHotToastConfig } from '@ngxpert/hot-toast';
 
-  const RECAPTCHA_V3_STACKBLITZ_KEY = '6Lc4yOQpAAAAAEz55qmvhdLt2XdR6MA98qr2LDCG';
+const RECAPTCHA_V3_STACKBLITZ_KEY = '6Lc4yOQpAAAAAEz55qmvhdLt2XdR6MA98qr2LDCG';
 const RECAPTCHA_V2_DUMMY_KEY = '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI';
 export const appConfig: ApplicationConfig = {
     providers: [
@@ -93,7 +93,7 @@ export const appConfig: ApplicationConfig = {
                 services: mockApiServices,
             },
             fuse: {
-                layout: 'dense',
+                layout: 'centered',
                 scheme: 'dark',
                 screens: {
                     sm: '600px',
@@ -104,8 +104,8 @@ export const appConfig: ApplicationConfig = {
                 theme: 'theme-default',
                 themes: [
                     {
-                        id: 'theme-default',
-                        name: 'Default',
+                        id: 'theme-purple',
+                        name: 'Purple',
                     },
 
                 ],
@@ -114,21 +114,21 @@ export const appConfig: ApplicationConfig = {
         {
             provide: RECAPTCHA_V3_SITE_KEY,
             useValue: RECAPTCHA_V3_STACKBLITZ_KEY,
-          },
-          {
+        },
+        {
             provide: RECAPTCHA_SETTINGS,
             useValue: {
-              siteKey: RECAPTCHA_V2_DUMMY_KEY,
+                siteKey: RECAPTCHA_V2_DUMMY_KEY,
             } as RecaptchaSettings,
-          },
-          {
+        },
+        {
             provide: RECAPTCHA_LOADER_OPTIONS,
             useValue: {
-              onBeforeLoad(url) {
-                const langOverride = localStorage.getItem('activeLang') === 'fr' ? 'fr' : null;
-                if (langOverride) url.searchParams.set('hl', langOverride);
-                return { url };
-              },
+                onBeforeLoad(url) {
+                    const langOverride = localStorage.getItem('activeLang') === 'fr' ? 'fr' : null;
+                    if (langOverride) url.searchParams.set('hl', langOverride);
+                    return { url };
+                },
             } as RecaptchaLoaderOptions,
         },
     ],

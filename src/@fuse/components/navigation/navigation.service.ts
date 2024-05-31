@@ -40,6 +40,7 @@ export class FuseNavigationService {
             {
                 id: 'Project',
                 title: 'Project',
+                icon: 'heroicons_outline:clipboard-document-list',
                 type: 'group', children: [
                     { type: 'basic', title: 'Create Project', icon: 'heroicons_outline:square-3-stack-3d', link: '/createProject' },
                     { type: 'basic', title: 'Git Provider', icon: 'heroicons_outline:code-bracket-square', link: '/gitProvider' },
@@ -48,7 +49,8 @@ export class FuseNavigationService {
 
             {
                 id: 'Cloud',
-                title: 'Services',
+                title: 'Self-Service',
+                icon: 'heroicons_outline:bolt',
                 type: 'group', children: [
                     { type: 'basic', title: 'Configure Infrastructure', icon: 'heroicons_outline:cloud', link: '/configInfrastructure' },
                     { type: 'basic', title: 'Cloud Infrastructure Templates', icon: 'heroicons_outline:cloud', link: '/templateTerraform' },
@@ -56,14 +58,14 @@ export class FuseNavigationService {
             },
 
 
-            {
-                id: 'User',
-                title: 'Personal Informations',
-                type: 'group',
-                icon: 'heroicons_outline:home', children: [
-                    { type: 'basic', title: 'Profile', icon: 'heroicons_outline:user-circle', link: '/profile' },
-                    { type: 'basic', title: 'Settings', icon: 'heroicons_outline:cog-8-tooth', link: '/settings' },]
-            },
+            // {
+            //     id: 'User',
+            //     title: 'Personal Informations',
+            //     type: 'group',
+            //     icon: 'heroicons_outline:home', children: [
+            //         { type: 'basic', title: 'Profile', icon: 'heroicons_outline:user-circle', link: '/profile' },
+            //       { type: 'basic', title: 'Settings', icon: 'heroicons_outline:cog-8-tooth', link: '/settings' },]
+            // },
 
 
 
