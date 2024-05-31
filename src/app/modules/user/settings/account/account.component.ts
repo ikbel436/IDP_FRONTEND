@@ -98,7 +98,11 @@ export class SettingsAccountComponent implements OnInit {
     private _toastService: ToastService,
     private _fuseConfirmationService: FuseConfirmationService,
     public dialog: MatDialog
-  ) { }
+  ) {
+    this.form = this._formBuilder.group({
+      phoneNumber: ['', [Validators.required]]
+    });
+  }
 
   // -----------------------------------------------------------------------------------------------------
   // @ Lifecycle hooks
@@ -201,67 +205,67 @@ export class SettingsAccountComponent implements OnInit {
     this.accountForm.disable();
     const formValue = this.accountForm.value;
     const payload = {
-        ...this.user,
-        name: formValue.name,
-        birthDate: DateTime.fromISO(formValue.birthDate).toFormat('yyyy-MM-dd'),
-        city: formValue.city,
-        description: formValue.description,
-        email: formValue.email,
-        phoneNumber: formValue.phoneNumber,
-        countryCode:formValue.phoneNumber,
-        country: formValue.country,
-        codePostal: formValue.codePostal,
-        image: this.user.image,
-       
+      ...this.user,
+      name: formValue.name,
+      birthDate: DateTime.fromISO(formValue.birthDate).toFormat('yyyy-MM-dd'),
+      city: formValue.city,
+      description: formValue.description,
+      email: formValue.email,
+      phoneNumber: formValue.phoneNumber,
+      countryCode: formValue.phoneNumber,
+      country: formValue.country,
+      codePostal: formValue.codePostal,
+      image: this.user.image,
+
     };
-   
+
 
     this._userService
-        .update(payload)
-        .pipe(
-            takeUntilDestroyed(this.destroyRef),
-            concatMap(() => {
-                this.accountForm.enable();
-                return this._userService.user$;
-            })
-        )
-        .subscribe({
-            next: (user) => {
-                this._toastService.createSuccessToast(
-                    this._translocoService.translate(
-                        'confirmationDialog.titles.account'
-                    ),
-                    'updateSuccess'
-                );
-              //  this.patchFormWithUserData(user); 
-              if (this.user.email !== payload.email) {
-                this.emailUpdated = true;
-              //  user.emailVerified = false;
-              }
-              user.name = payload.name;
-              user.birthDate=payload.birthDate;
-              user.city=payload.city;
-              user.description=payload.description;
-              user.email = payload.email;
-              user.phoneNumber=payload.phoneNumber
-            user.country=payload.country
-            user.codePostal=payload.codePostal
-            user.image=payload.image
-            user.createdAt=payload.createdAt
-           
-         
-            this.patchFormWithUserData(this.user); 
-                    console.log("Updated user data:", user);
-            },
-          
+      .update(payload)
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        concatMap(() => {
+          this.accountForm.enable();
+          return this._userService.user$;
+        })
+      )
+      .subscribe({
+        next: (user) => {
+          this._toastService.createSuccessToast(
+            this._translocoService.translate(
+              'confirmationDialog.titles.account'
+            ),
+            'updateSuccess'
+          );
+          //  this.patchFormWithUserData(user); 
+          if (this.user.email !== payload.email) {
+            this.emailUpdated = true;
+            //  user.emailVerified = false;
+          }
+          user.name = payload.name;
+          user.birthDate = payload.birthDate;
+          user.city = payload.city;
+          user.description = payload.description;
+          user.email = payload.email;
+          user.phoneNumber = payload.phoneNumber
+          user.country = payload.country
+          user.codePostal = payload.codePostal
+          user.image = payload.image
+          user.createdAt = payload.createdAt
 
-            error: () => {
-                this.accountForm.enable();
-            },
-        });
-}
-patchFormWithUserData(user: User) {
-  this.accountForm.patchValue({
+
+          this.patchFormWithUserData(this.user);
+          console.log("Updated user data:", user);
+        },
+
+
+        error: () => {
+          this.accountForm.enable();
+        },
+      });
+  }
+  patchFormWithUserData(user: User) {
+    this.accountForm.patchValue({
       name: user.name,
       description: user.description,
       email: user.email,
@@ -271,19 +275,19 @@ patchFormWithUserData(user: User) {
       codePostal: user.codePostal,
       country: user.country,
       city: user.city,
-   
-  });
-  this._cd.detectChanges();
-}
-updateUserData(user: User, payload: any) {
+
+    });
+    this._cd.detectChanges();
+  }
+  updateUserData(user: User, payload: any) {
     if (this.user.email !== payload.email) {
-        this.emailUpdated = true;
+      this.emailUpdated = true;
     }
     this.user = {
-        ...user,
-        ...payload
+      ...user,
+      ...payload
     };
-}
+  }
 
 
   images: string;
@@ -379,6 +383,17 @@ updateUserData(user: User, payload: any) {
         );
       }
     });
+  }
+
+  validatePhoneNumber(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    input.value = input.value.replace(/[^0-9]/g, '');
+  }
+
+  preventNonNumeric(event: KeyboardEvent): void {
+    if (event.key && !/[0-9]/.test(event.key)) {
+      event.preventDefault();
+    }
   }
 
 
