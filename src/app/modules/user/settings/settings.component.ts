@@ -65,7 +65,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
     private _router: Router,
     private _ActivatedRoute: ActivatedRoute,
     private _translocoService: TranslocoService
-  ) {}
+  ) { }
 
   // -----------------------------------------------------------------------------------------------------
   // @ Lifecycle hooks
@@ -84,10 +84,6 @@ export class SettingsComponent implements OnInit, OnDestroy {
       {
         id: 'security',
         icon: 'heroicons_outline:lock-closed',
-      },
-      {
-        id: 'goals',
-        icon: 'feather:target',
       },
       {
         id: 'plan-billing',
