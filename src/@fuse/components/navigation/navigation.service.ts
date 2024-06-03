@@ -37,10 +37,6 @@ export class FuseNavigationService {
 
     getUserNavigation(): any[] {
         return [
-
-            { type: 'basic', title: 'Settings', icon: 'heroicons_outline:user-circle', link: '/settings' },
-            { type: 'basic', title: 'Profile', icon: 'heroicons_outline:user-circle', link: '/profile' },
-
             {
                 id: 'Project',
                 title: 'Project',
