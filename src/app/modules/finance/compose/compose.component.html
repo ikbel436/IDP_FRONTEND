@@ -1,0 +1,102 @@
+<div class="flex flex-col max-w-240 md:min-w-160 max-h-screen -m-6">
+    <!-- Header -->
+    <div
+        class="flex flex-0 items-center justify-between h-16 pr-3 sm:pr-5 pl-6 sm:pl-8 bg-primary text-on-primary"
+    >
+        <div class="text-lg font-medium">New Service</div>
+        <button mat-icon-button (click)="saveAndClose()" [tabIndex]="-1">
+            <mat-icon
+                class="text-current"
+                [svgIcon]="'heroicons_outline:x-mark'"
+            ></mat-icon>
+        </button>
+    </div>
+
+    <!-- Compose form -->
+    <form
+        class="flex flex-col flex-auto p-6 sm:p-8 overflow-y-auto"
+        [formGroup]="composeForm"
+    >
+        <!-- Name -->
+        <mat-form-field>
+            <mat-label>Name</mat-label>
+            <input matInput [formControlName]="'name'" />
+        </mat-form-field>
+
+        <!-- Github Repo -->
+        <!-- <mat-form-field class="w-full mb-6">
+            <mat-select [formControlName]="'provider'" placeholder="Select Provider">
+                <mat-option value="AWS">AWS</mat-option>
+                <mat-option value="azure">Azure</mat-option>
+                <mat-option value="gcp">GCP</mat-option>
+            </mat-select>
+        </mat-form-field> -->
+        <mat-form-field>
+            <mat-label>Provider</mat-label>
+            <input matInput [formControlName]="'provider'" />
+        </mat-form-field>
+        <!-- SonarQube Project -->
+        <mat-form-field>
+            <mat-label>SonarQube Project</mat-label>
+            <input matInput [formControlName]="'SonarQubeproject'" />
+        </mat-form-field>
+
+        <!-- Production K8s Workload -->
+        <mat-form-field>
+            <mat-label>Production K8s Workload</mat-label>
+            <input matInput [formControlName]="'K8s'" />
+        </mat-form-field>
+        <!-- Test ArgoCD App -->
+        <mat-form-field>
+            <mat-label>Test ArgoCD App</mat-label>
+            <input matInput [formControlName]="'ArgoCD'" />
+        </mat-form-field>
+
+        <!-- Docker Image -->
+        <mat-form-field>
+            <mat-label>Docker Image</mat-label>
+            <input matInput [formControlName]="'Dockerimg'" />
+        </mat-form-field>
+
+         <!-- DB Type -->
+         <mat-form-field>
+            <mat-label>DB Type</mat-label>
+            <input matInput [formControlName]="'databaseType'" />
+        </mat-form-field>
+
+        <!-- Actions -->
+        <div
+            class="flex flex-col sm:flex-row sm:items-center justify-between mt-4 sm:mt-6"
+        >
+            <div class="-ml-2">
+                <!-- Json Mode -->
+                <button mat-icon-button>
+                    <mat-icon
+                        class="icon-size-5"
+                        [svgIcon]="'heroicons_solid:code-bracket'"
+                    ></mat-icon>
+                </button>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2 content-start mt-4 sm:mt-0 c">
+                <!-- Discard -->
+                <button
+                    class="ml-auto sm:ml-0"
+                    mat-stroked-button
+                    (click)="discard()"
+                >
+                    Discard
+                </button>
+                <!-- Send -->
+                <button
+                    class="order-first sm:order-last"
+                    mat-flat-button
+                    [color]="'primary'"
+                    (click)="send()"
+                >
+                    Send
+                </button>
+            </div>
+        </div>
+    </form>
+</div>

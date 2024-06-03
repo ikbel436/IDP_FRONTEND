@@ -43,6 +43,8 @@ export class FuseNavigationService {
             { type: 'basic', title: 'Git Provider', icon: 'heroicons_outline:code-bracket-square', link: '/gitProvider' },
             { type: 'basic', title: 'Configure Infrastructure', icon: 'heroicons_outline:cloud', link: '/configInfrastructure' },
             { type: 'basic', title: 'Cloud Infrastructure Templates', icon: 'heroicons_outline:cloud', link: '/templateTerraform' },
+            { type: 'basic', title: 'Finance', icon: 'heroicons_outline:cloud', link: '/finance' },
+
         ];
     }
     // -----------------------------------------------------------------------------------------------------
