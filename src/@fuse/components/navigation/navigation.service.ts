@@ -25,6 +25,7 @@ export class FuseNavigationService {
 
     getAdminNavigation(): any[] {
         return [
+
             { type: 'basic', title: 'Settings', icon: 'heroicons_outline:cog-8-tooth', link: '/settings' },
             { type: 'basic', title: 'Profile', icon: 'heroicons_outline:user-circle', link: '/profile' },
             { type: 'basic', title: 'Cloud Providers Services', icon: 'heroicons_outline:cloud', link: '/cloudProviderServices' },
@@ -36,14 +37,27 @@ export class FuseNavigationService {
 
     getUserNavigation(): any[] {
         return [
+            {
+                id: 'Project',
+                title: 'Project',
+                icon: 'heroicons_outline:clipboard-document-list',
+                type: 'group', children: [
+                    { type: 'basic', title: 'Create Project', icon: 'heroicons_outline:square-3-stack-3d', link: '/createProject' },
+                    { type: 'basic', title: 'Git Provider', icon: 'heroicons_outline:code-bracket-square', link: '/gitProvider' },
+                ]
+            },
 
-            { type: 'basic', title: 'Settings', icon: 'heroicons_outline:user-circle', link: '/settings' },
-            { type: 'basic', title: 'Profile', icon: 'heroicons_outline:user-circle', link: '/profile' },
-            { type: 'basic', title: 'Create Project', icon: 'heroicons_outline:square-3-stack-3d', link: '/createProject' },
-            { type: 'basic', title: 'Git Provider', icon: 'heroicons_outline:code-bracket-square', link: '/gitProvider' },
-            { type: 'basic', title: 'Configure Infrastructure', icon: 'heroicons_outline:cloud', link: '/configInfrastructure' },
-            { type: 'basic', title: 'Cloud Infrastructure Templates', icon: 'heroicons_outline:cloud', link: '/templateTerraform' },
+            {
+                id: 'Cloud',
+                title: 'Self-Service',
+                icon: 'heroicons_outline:bolt',
+                type: 'group', children: [
+                    { type: 'basic', title: 'Configure Infrastructure', icon: 'heroicons_outline:cloud', link: '/configInfrastructure' },
+                    { type: 'basic', title: 'Cloud Infrastructure Templates', icon: 'heroicons_outline:cloud', link: '/templateTerraform' },
             { type: 'basic', title: 'Finance', icon: 'heroicons_outline:cloud', link: '/finance' },
+
+                ]
+            },
 
         ];
     }

@@ -24,6 +24,7 @@ import { RouterModule, ActivatedRoute } from '@angular/router';
 import { LanguagesComponent } from 'app/layout/common/languages/languages.component';
 import { UserComponent } from 'app/layout/common/user/user.component';
 import { TranslocoService } from '@ngneat/transloco';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 
 @Component({
@@ -32,7 +33,7 @@ import { TranslocoService } from '@ngneat/transloco';
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, FuseCardComponent, MatIconModule, MatButtonModule, MatMenuModule, MatFormFieldModule, MatInputModule, TextFieldModule, MatDividerModule, MatTooltipModule, NgClass],
+  imports: [MatProgressBarModule, CommonModule, FormsModule, RouterLink, FuseCardComponent, MatIconModule, MatButtonModule, MatMenuModule, MatFormFieldModule, MatInputModule, TextFieldModule, MatDividerModule, MatTooltipModule, NgClass],
 })
 export class ProfileComponent implements OnInit {
   ctx = {};
@@ -79,7 +80,7 @@ export class ProfileComponent implements OnInit {
       user => {
         console.log('User fetched:', user);
         this.currentUser = user;
-       
+
         if (this.currentUser && this.currentUser.image) {
           const transformedUrl = this.currentUser.image.replace('/upload/', '/upload/w_128,h_128,c_fill/');
           this.imageUrl = transformedUrl;
@@ -92,7 +93,7 @@ export class ProfileComponent implements OnInit {
     );
     this.user$ = this.userService.get();
   }
-  
+
 
 
   // -----------------------------------------------------------------------------------------------------
@@ -150,106 +151,106 @@ export class ProfileComponent implements OnInit {
       this.images = file;
     }
   }
-    // -----------------------------------------------------------------------------------------------------
-    // @ Public methods
-    // -----------------------------------------------------------------------------------------------------
+  // -----------------------------------------------------------------------------------------------------
+  // @ Public methods
+  // -----------------------------------------------------------------------------------------------------
 
-    getUserData(): void {
-        this.userService.get().subscribe(
-            (response) => {
-                this.user = response;
-                // Initialize form fields with old values
-                this.name = this.user.name;
-                this.email = this.user.email;
-                this.phoneNumber = this.user.phoneNumber;
-                this.description = this.user.description;
-            },
-            (error) => {
-                console.error('Error fetching user data:', error);
-            }
-        );
+  getUserData(): void {
+    this.userService.get().subscribe(
+      (response) => {
+        this.user = response;
+        // Initialize form fields with old values
+        this.name = this.user.name;
+        this.email = this.user.email;
+        this.phoneNumber = this.user.phoneNumber;
+        this.description = this.user.description;
+      },
+      (error) => {
+        console.error('Error fetching user data:', error);
+      }
+    );
+  }
+  // updateUserInfo(): void {
+  //     // Prepare updated user object
+  //     const updatedUser = {
+  //         name: this.name,
+  //         email: this.email,
+  //         phoneNumber: this.phoneNumber,
+  //         description: this.description,
+  //     };
+
+  //     // Call the service method to update user info
+  //     this.userService.update(updatedUser).subscribe(
+  //         (response) => {
+  //             console.log('User updated successfully:', response);
+  //             this.getUserData();
+  //             this.currentUser = response;
+  //             window.location.reload();
+  //         },
+  //         (error) => {
+  //             console.error('Error updating user:', error);
+  //         }
+  //     );
+  // }
+  // selectImage(event) {
+  //     if (event.target.files.length > 0) {
+  //         const file = event.target.files[0];
+  //         this.images = file;
+  //     }
+  // }
+  selectedImage: any;
+  selectImage1(event) {
+    if (event.target.files.length > 0) {
+      const file = event.target.files[0];
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.selectedImage = e.target.result as string;
+      };
+      reader.readAsDataURL(file);
     }
-    // updateUserInfo(): void {
-    //     // Prepare updated user object
-    //     const updatedUser = {
-    //         name: this.name,
-    //         email: this.email,
-    //         phoneNumber: this.phoneNumber,
-    //         description: this.description,
-    //     };
+  }
+  getUserID(): string {
+    const token = localStorage.getItem('accessToken');
+    if (token) {
+      const decodedToken = JSON.parse(atob(token.split('.')[1]));
+      return decodedToken.id;
+    } else {
+      console.error('Token not found in local storage.');
+      return null;
+    }
+  }
+  onSubmit() {
+    const userId = this.getUserID();
+    const formData = new FormData();
+    formData.append('file', this.images);
 
-    //     // Call the service method to update user info
-    //     this.userService.update(updatedUser).subscribe(
-    //         (response) => {
-    //             console.log('User updated successfully:', response);
-    //             this.getUserData();
-    //             this.currentUser = response;
-    //             window.location.reload();
-    //         },
-    //         (error) => {
-    //             console.error('Error updating user:', error);
-    //         }
-    //     );
-    // }
-    // selectImage(event) {
-    //     if (event.target.files.length > 0) {
-    //         const file = event.target.files[0];
-    //         this.images = file;
-    //     }
-    // }
-    selectedImage: any;
-    selectImage1(event) {
-        if (event.target.files.length > 0) {
-            const file = event.target.files[0];
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                this.selectedImage = e.target.result as string;
-            };
-            reader.readAsDataURL(file);
+    this._httpClient
+      .put<any>(`http://localhost:3000/auth/upload/${userId}`, formData)
+      .subscribe(
+        (res) => console.log(res),
+        (err) => console.log(err)
+      );
+  }
+  onFileSelected(files: FileList): void {
+    if (files.length > 0) {
+      const file = files[0];
+      this.userService.uploadImage(file).subscribe(
+        (response) => {
+          console.log('Image uploaded successfully:', response);
+          // Handle success (if needed)
+        },
+        (error) => {
+          console.error('Error uploading image:', error);
+          // Handle error (if needed)
         }
+      );
     }
-    getUserID(): string {
-        const token = localStorage.getItem('accessToken');
-        if (token) {
-            const decodedToken = JSON.parse(atob(token.split('.')[1]));
-            return decodedToken.id;
-        } else {
-            console.error('Token not found in local storage.');
-            return null;
-        }
-    }
-    onSubmit() {
-        const userId = this.getUserID();
-        const formData = new FormData();
-        formData.append('file', this.images);
+  }
 
-        this._httpClient
-            .put<any>(`http://localhost:3000/auth/upload/${userId}`, formData)
-            .subscribe(
-                (res) => console.log(res),
-                (err) => console.log(err)
-            );
-    }
-    onFileSelected(files: FileList): void {
-        if (files.length > 0) {
-            const file = files[0];
-            this.userService.uploadImage(file).subscribe(
-                (response) => {
-                    console.log('Image uploaded successfully:', response);
-                    // Handle success (if needed)
-                },
-                (error) => {
-                    console.error('Error uploading image:', error);
-                    // Handle error (if needed)
-                }
-            );
-        }
-    }
-
-    /**
-     * Get the form field helpers as string
-     */
-    getFormFieldHelpersAsString(): string {
-        return this.formFieldHelpers.join(' ');
-    }
+  /**
+   * Get the form field helpers as string
+   */
+  getFormFieldHelpersAsString(): string {
+    return this.formFieldHelpers.join(' ');
+  }
 }
