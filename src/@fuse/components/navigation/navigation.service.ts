@@ -26,8 +26,8 @@ export class FuseNavigationService {
     getAdminNavigation(): any[] {
         return [
 
-            // { type: 'basic', title: 'Profile', icon: 'heroicons_outline:user-circle', link: '/profile' },
             { type: 'basic', title: 'Settings', icon: 'heroicons_outline:cog-8-tooth', link: '/settings' },
+            { type: 'basic', title: 'Profile', icon: 'heroicons_outline:user-circle', link: '/profile' },
             { type: 'basic', title: 'Cloud Providers Services', icon: 'heroicons_outline:cloud', link: '/cloudProviderServices' },
 
 
