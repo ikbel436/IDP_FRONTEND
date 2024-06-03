@@ -37,6 +37,10 @@ export class FuseNavigationService {
 
     getUserNavigation(): any[] {
         return [
+
+            { type: 'basic', title: 'Settings', icon: 'heroicons_outline:user-circle', link: '/settings' },
+            { type: 'basic', title: 'Profile', icon: 'heroicons_outline:user-circle', link: '/profile' },
+
             {
                 id: 'Project',
                 title: 'Project',
@@ -56,18 +60,6 @@ export class FuseNavigationService {
                     { type: 'basic', title: 'Cloud Infrastructure Templates', icon: 'heroicons_outline:cloud', link: '/templateTerraform' },
                 ]
             },
-
-
-            // {
-            //     id: 'User',
-            //     title: 'Personal Informations',
-            //     type: 'group',
-            //     icon: 'heroicons_outline:home', children: [
-            //         { type: 'basic', title: 'Profile', icon: 'heroicons_outline:user-circle', link: '/profile' },
-            //       { type: 'basic', title: 'Settings', icon: 'heroicons_outline:cog-8-tooth', link: '/settings' },]
-            // },
-
-
 
         ];
     }
