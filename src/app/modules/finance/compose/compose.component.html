@@ -23,18 +23,27 @@
             <input matInput [formControlName]="'name'" />
         </mat-form-field>
 
-        <!-- Github Repo -->
-        <!-- <mat-form-field class="w-full mb-6">
-            <mat-select [formControlName]="'provider'" placeholder="Select Provider">
-                <mat-option value="AWS">AWS</mat-option>
-                <mat-option value="azure">Azure</mat-option>
-                <mat-option value="gcp">GCP</mat-option>
+        <!-- Provider Type -->
+        <mat-form-field class="w-full mb-6">
+            <mat-select
+                formControlName="provider"
+                placeholder="Select Provider"
+            >
+                <ng-container
+                    *ngIf="composeForm.controls.provider.value as options"
+                >
+                    <!-- Ensure options is an array -->
+                    <!-- <pre>{{ options | json }}</pre> -->
+                    <mat-option
+                        *ngFor="let option of options; trackBy: trackByFn"
+                        [value]="option.value"
+                    >
+                        {{ option.viewValue }}
+                    </mat-option>
+                </ng-container>
             </mat-select>
-        </mat-form-field> -->
-        <mat-form-field>
-            <mat-label>Provider</mat-label>
-            <input matInput [formControlName]="'provider'" />
         </mat-form-field>
+
         <!-- SonarQube Project -->
         <mat-form-field>
             <mat-label>SonarQube Project</mat-label>
@@ -58,8 +67,8 @@
             <input matInput [formControlName]="'Dockerimg'" />
         </mat-form-field>
 
-         <!-- DB Type -->
-         <mat-form-field>
+        <!-- DB Type -->
+        <mat-form-field>
             <mat-label>DB Type</mat-label>
             <input matInput [formControlName]="'databaseType'" />
         </mat-form-field>

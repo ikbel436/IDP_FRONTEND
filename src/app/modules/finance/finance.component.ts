@@ -2,6 +2,7 @@ import { CommonModule, CurrencyPipe, DatePipe, NgClass } from '@angular/common';
 import {
     AfterViewInit,
     ChangeDetectionStrategy,
+    ChangeDetectorRef,
     Component,
     OnDestroy,
     OnInit,
@@ -22,8 +23,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { MailboxComposeComponent } from './compose/compose.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 
-
-
 export interface Repository {
     name: string;
     description?: string;
@@ -31,9 +30,7 @@ export interface Repository {
     lastUpdated: Date;
     cloneUrl: string;
     language: string;
-  }
-
-
+}
 
 @Component({
     selector: 'finance',
@@ -53,18 +50,15 @@ export interface Repository {
         CurrencyPipe,
         DatePipe,
         CommonModule,
-        MatFormFieldModule
+        MatFormFieldModule,
     ],
 })
-
-
 export class FinanceComponent implements OnInit, AfterViewInit, OnDestroy {
     @ViewChild('displayedColumns', { read: MatSort })
     displayedColumnsMatSort: MatSort;
     dataSource = new MatTableDataSource<any>();
     errorMessage: string = '';
     isloaded: boolean = false;
-
 
     // displayedColumns: string[] = ['position', 'name', 'weight', 'symbol'];
     // dataSource = ELEMENT_DATA;
@@ -73,7 +67,6 @@ export class FinanceComponent implements OnInit, AfterViewInit, OnDestroy {
         'description',
         'createdAt',
         'lastUpdated',
-        
     ];
     data: any;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
@@ -85,11 +78,8 @@ export class FinanceComponent implements OnInit, AfterViewInit, OnDestroy {
         private gitProviderService: GitProviderService,
         private http: HttpClient,
         private _matDialog: MatDialog,
-
-    ) {
-      
-        
-    }
+        private cd: ChangeDetectorRef
+    ) {}
 
     // -----------------------------------------------------------------------------------------------------
     // @ Lifecycle hooks
@@ -98,11 +88,7 @@ export class FinanceComponent implements OnInit, AfterViewInit, OnDestroy {
     /**
      * On init
      */
-    ngOnInit(): void {
-         this.loadRepositories();
-
-      
-    }
+    ngOnInit(): void {}
 
     /**
      * After view init
@@ -139,47 +125,19 @@ export class FinanceComponent implements OnInit, AfterViewInit, OnDestroy {
     /**
      * Open compose dialog
      */
- 
 
-   openComposeDialog(): void
-{
-    // Open the dialog
-    const dialogRef = this._matDialog.open(MailboxComposeComponent, {
-      
-  panelClass: 'custom-dialog-container',
-  
-  
-      });
+    openComposeDialog(): void {
+        // Open the dialog
+        const dialogRef = this._matDialog.open(MailboxComposeComponent, {
+            panelClass: 'custom-dialog-container',
+        });
 
-    dialogRef.afterClosed()
-        .subscribe((result) =>
-        {
+        dialogRef.afterClosed().subscribe((result) => {
             console.log('Compose dialog was closed!');
         });
-}
+    }
 
     // -----------------------------------------------------------------------------------------------------
     // @ Private methods
     // -----------------------------------------------------------------------------------------------------
-
-    loadRepositories(): void {
-        this.http.get('http://localhost:3000/Repos/Allrepos').subscribe({
-          next: (repositories) => {
-            console.log("azerty", Array.isArray(repositories));
-            
-            if (Array.isArray(repositories)) {                
-              this.dataSource.data = repositories;
-             this.isloaded = true;
-            } else {
-                this.isloaded = true;
-
-              this.errorMessage = 'No repositories found.';
-            }
-          },
-          error: (error) => {
-            console.error(error);
-            this.errorMessage = 'Failed to load repositories.';
-          },
-        });
-      }
 }
