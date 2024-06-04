@@ -38,6 +38,13 @@ export class FuseNavigationService {
     getUserNavigation(): any[] {
         return [
             {
+                id: 'Home',
+                title: 'Home',
+                icon: 'heroicons_outline:home',
+                type: 'basic',
+                link: '/createProject/inventory'
+            },
+            {
                 id: 'Project',
                 title: 'Project',
                 icon: 'heroicons_outline:clipboard-document-list',

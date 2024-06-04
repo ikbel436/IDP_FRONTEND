@@ -102,17 +102,7 @@ export class SettingsAccountComponent implements OnInit {
     this.form = this._formBuilder.group({
       phoneNumber: ['', [Validators.required]]
     });
-  }
 
-  // -----------------------------------------------------------------------------------------------------
-  // @ Lifecycle hooks
-  // -----------------------------------------------------------------------------------------------------
-
-  /**
-   * On init
-   */
-  ngOnInit(): void {
-    // Create the form
     this.accountForm = this._formBuilder.group({
       name: [''],
       birthDate: [''],
@@ -133,6 +123,18 @@ export class SettingsAccountComponent implements OnInit {
       codePostal: [''],
       // gender: [''],
     });
+  }
+
+  // -----------------------------------------------------------------------------------------------------
+  // @ Lifecycle hooks
+  // -----------------------------------------------------------------------------------------------------
+
+  /**
+   * On init
+   */
+  ngOnInit(): void {
+    // Create the form
+
 
     this.user$ = this._userService.user$;
 
@@ -140,6 +142,8 @@ export class SettingsAccountComponent implements OnInit {
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         switchMap((user) => {
+          console.log("user", user);
+
           this.user = user;
           this.accountForm.patchValue({
             name: user.name ? user.name : '',
@@ -148,7 +152,7 @@ export class SettingsAccountComponent implements OnInit {
             description: user.description ? user.description : '',
             email: user.email ? user.email : '',
             phoneNumber: user.phoneNumber ? user.phoneNumber : '',
-            countryCode: user.phoneNumber ? user.phoneNumber : '',
+            countryCode: user.countryCode ? user.countryCode : '',
             country: user.country ? user.country : '',
             codePostal: user.codePostal ? user.codePostal : '',
 
@@ -160,7 +164,7 @@ export class SettingsAccountComponent implements OnInit {
         this.countries = countries;
         if (this.user.phoneNumber) {
           this.selectedCountry = this.getCountryByCode(
-            this.user.phoneNumber
+            this.user.countryCode
           );
         } else {
           this.selectedCountry = this.getCountryByCode('+216');
@@ -168,8 +172,17 @@ export class SettingsAccountComponent implements OnInit {
 
         this._cd.markForCheck();
       });
+    this.accountForm.get('countryCode').valueChanges.subscribe(() => this.updateFullPhoneNumber());
+    this.accountForm.get('phoneNumber').valueChanges.subscribe(() => this.updateFullPhoneNumber());
   }
+  updateFullPhoneNumber() {
+    const countryCode = this.accountForm.get('countryCode').value || '';
+    const phoneNumber = this.accountForm.get('phoneNumber').value || '';
+    const fullPhoneNumber = `${countryCode}${phoneNumber}`;
+    this.user.phoneNumber = fullPhoneNumber;
+    console.log('Full phone number:', fullPhoneNumber);
 
+  }
   // -----------------------------------------------------------------------------------------------------
   // @ Accessors
   // -----------------------------------------------------------------------------------------------------
@@ -212,7 +225,7 @@ export class SettingsAccountComponent implements OnInit {
       description: formValue.description,
       email: formValue.email,
       phoneNumber: formValue.phoneNumber,
-      countryCode: formValue.phoneNumber,
+      countryCode: formValue.countryCode,
       country: formValue.country,
       codePostal: formValue.codePostal,
       image: this.user.image,
@@ -252,6 +265,7 @@ export class SettingsAccountComponent implements OnInit {
           user.codePostal = payload.codePostal
           user.image = payload.image
           user.createdAt = payload.createdAt
+          user.countryCode = payload.countryCode
 
 
           this.patchFormWithUserData(this.user);
