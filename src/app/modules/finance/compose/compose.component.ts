@@ -39,6 +39,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { TextFieldModule } from '@angular/cdk/text-field';
+import { FinanceService } from '../finance.service';
 
 interface RepositoryItem {
     _id: string;
@@ -91,7 +92,7 @@ export class MailboxComposeComponent implements OnInit {
     dataSource = new MatTableDataSource<any>();
     errorMessage: string = '';
     isloaded: boolean = false;
-    // selectedRepository: any;
+    providerOptions: any[] = [];
     isLoading: boolean;
     @Input() repositories: any[] = [];
     @Output() selectedRepository = new EventEmitter<any>();
@@ -102,20 +103,22 @@ export class MailboxComposeComponent implements OnInit {
         @Inject(MAT_DIALOG_DATA) public data: any,
 
         private http: HttpClient,
-        private cdr: ChangeDetectorRef
-    ) {
+        private cdr: ChangeDetectorRef,
+        private financeService: FinanceService
+    ) {}
+
+    ngOnInit(): void {
         this.composeForm = this._formBuilder.group({
             name: ['', Validators.required],
             provider: [[]],
-            SonarQubeproject: ['', Validators.required],
-            K8s: ['', Validators.required],
+            Status: ['', Validators.required],
             ArgoCD: ['', Validators.required],
-            Dockerimg: ['', Validators.required],
-            databaseType: ['', Validators.required],
+            DockerImage: ['', Validators.required],
+            DBType: ['', Validators.required],
+            language: ['', Validators.required],
+            SonarQube: ['', Validators.required],
         });
-    }
 
-    ngOnInit(): void {
         this.loadRepositories();
     }
 
@@ -127,60 +130,82 @@ export class MailboxComposeComponent implements OnInit {
         this.matDialogRef.close();
     }
 
-    trackByFn(index: number, item: any): any {
-        return item ? item.value : index;
-    }
-
-    selectRepository(repository: any): void {
-        this.selectedRepository.emit(repository);
-    }
-
     discard(): void {}
 
     saveAsDraft(): void {}
 
-    send(): void {}
-
-    onRepositorySelected(repository: any): void {
-        this.selectedRepository = repository;
+    send(): void {
+        const formData = this.composeForm.value;
+    
+        const updatedData = {
+            name: formData.name,
+            provider: formData.provider._id,
+            Status: formData.Status,
+            ArgoCD: formData.ArgoCD,
+            DockerImage: formData.DockerImage,
+            DBType: formData.DBType,
+            language: formData.language,
+            SonarQube: formData.SonarQube,
+        };
+    
+        this.financeService.updateRepository(formData.provider, updatedData)
+          .subscribe(
+                () => {
+                    console.log('Repository updated successfully');
+                    // console.log(formData.provider);
+                    // this.selectedRepository.emit(updatedData);
+                    this.matDialogRef.close(); 
+                },
+                (error) => {
+                    console.error('Failed to update repository:', error);
+                }
+            );
     }
-
+    
+  
     loadRepositories(): void {
-        this.isLoading = true;
-
-        this.http
-            .get<RepositoryItem[]>('http://localhost:3000/Repos/Allrepos')
-            .subscribe({
-                next: (repositories) => {
-                    const repoOptions = repositories.map((repo) => ({
+        setTimeout(() => {
+            this.http
+                .get<any[]>('http://localhost:3000/Repos/Allrepos')
+                .subscribe((repositories) => {
+                    this.dataSource.data = repositories;
+                    this.repositories = repositories;
+                    this.providerOptions = repositories.map((repo) => ({
                         value: repo._id,
                         viewValue: repo.name,
                     }));
+                    this.cdr.detectChanges();
+                    this.isLoading = true;
+                    console.log(this.isLoading);
+                    this.cdr.detectChanges();
+                });
+        }, 0);
+    }
 
-                    console.log('Repo Options:', repoOptions);
+    selectRepository(repositoryId: string): void {
+        this.selectedRepository.emit(repositoryId);
+        console.log("RepoID",repositoryId);
+        const selectedRepo = this.repositories.find(
+            (repo) => repo._id === repositoryId
+        );
 
-                    if (!this.composeForm.controls['provider']) {
-                        this.composeForm.setControl(
-                            'provider',
-                            new FormControl([])
-                        );
-                    }
-
-                    this.composeForm.controls['provider'].setValue(repoOptions);
-
-                    console.log(
-                        'Provider Control Value:',
-                        this.composeForm.controls['provider'].value
-                    );
-
-                    this.cdr.markForCheck();
-                    this.isLoading = false;
-                },
-                error: (error) => {
-                    console.error(error);
-                    this.errorMessage = 'Failed to load repositories.';
-                    this.isLoading = false;
-                },
+        if (selectedRepo) {
+            this.composeForm.controls['provider'].setValue(selectedRepo._id); 
+            this.composeForm.patchValue({
+                name: selectedRepo.name,
+                status: selectedRepo.Status,
+                ArgoCD: selectedRepo.ArgoCD,
+                Dockerimg: selectedRepo.DockerImage,
+                databaseType: selectedRepo.DBType,
+                language: selectedRepo.language,
+                SonarQubeproject: selectedRepo.SonarQube,
             });
+        } else {
+            console.error('Selected repository not found');
+        }
+    }
+
+    trackByFn(index, item) {
+        return item.value;
     }
 }

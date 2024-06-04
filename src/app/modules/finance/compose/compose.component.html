@@ -25,36 +25,26 @@
 
         <!-- Provider Type -->
         <mat-form-field class="w-full mb-6">
+            <mat-label>Provider Repo</mat-label>
             <mat-select
                 formControlName="provider"
-                placeholder="Select Provider"
+                (selectionChange)="selectRepository($event.value)"
             >
-                <ng-container
-                    *ngIf="composeForm.controls.provider.value as options"
+                <mat-option
+                    *ngFor="let option of providerOptions; trackBy: trackByFn"
+                    [value]="option.value"
                 >
-                    <!-- Ensure options is an array -->
-                    <!-- <pre>{{ options | json }}</pre> -->
-                    <mat-option
-                        *ngFor="let option of options; trackBy: trackByFn"
-                        [value]="option.value"
-                    >
-                        {{ option.viewValue }}
-                    </mat-option>
-                </ng-container>
+                    {{ option.viewValue }}
+                </mat-option>
             </mat-select>
         </mat-form-field>
 
-        <!-- SonarQube Project -->
+        <!-- Status -->
         <mat-form-field>
-            <mat-label>SonarQube Project</mat-label>
-            <input matInput [formControlName]="'SonarQubeproject'" />
+            <mat-label>Status</mat-label>
+            <input matInput [formControlName]="'Status'" />
         </mat-form-field>
 
-        <!-- Production K8s Workload -->
-        <mat-form-field>
-            <mat-label>Production K8s Workload</mat-label>
-            <input matInput [formControlName]="'K8s'" />
-        </mat-form-field>
         <!-- Test ArgoCD App -->
         <mat-form-field>
             <mat-label>Test ArgoCD App</mat-label>
@@ -64,13 +54,24 @@
         <!-- Docker Image -->
         <mat-form-field>
             <mat-label>Docker Image</mat-label>
-            <input matInput [formControlName]="'Dockerimg'" />
+            <input matInput [formControlName]="'DockerImage'" />
         </mat-form-field>
-
         <!-- DB Type -->
         <mat-form-field>
-            <mat-label>DB Type</mat-label>
-            <input matInput [formControlName]="'databaseType'" />
+            <mat-label>DataBase Type</mat-label>
+            <input matInput [formControlName]="'DBType'" />
+        </mat-form-field>
+        <!-- Production K8s Workload -->
+
+        <mat-form-field>
+            <mat-label>Language</mat-label>
+            <input matInput [formControlName]="'language'" />
+        </mat-form-field>
+
+        <!-- SonarQube Project -->
+        <mat-form-field>
+            <mat-label>SonarQube Project</mat-label>
+            <input matInput [formControlName]="'SonarQube'" />
         </mat-form-field>
 
         <!-- Actions -->

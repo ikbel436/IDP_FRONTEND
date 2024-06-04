@@ -4,6 +4,7 @@ import {
     ChangeDetectionStrategy,
     ChangeDetectorRef,
     Component,
+    Input,
     OnDestroy,
     OnInit,
     ViewChild,
@@ -22,6 +23,8 @@ import { HttpClient } from '@angular/common/http';
 import { MatDialog } from '@angular/material/dialog';
 import { MailboxComposeComponent } from './compose/compose.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { BehaviorSubject } from 'rxjs';
+import { FinanceService } from './finance.service';
 
 export interface Repository {
     name: string;
@@ -58,10 +61,8 @@ export class FinanceComponent implements OnInit, AfterViewInit, OnDestroy {
     displayedColumnsMatSort: MatSort;
     dataSource = new MatTableDataSource<any>();
     errorMessage: string = '';
-    isloaded: boolean = false;
+    @Input() selectedProviderId: string;
 
-    // displayedColumns: string[] = ['position', 'name', 'weight', 'symbol'];
-    // dataSource = ELEMENT_DATA;
     displayedColumns: string[] = [
         'name',
         'description',
@@ -78,7 +79,8 @@ export class FinanceComponent implements OnInit, AfterViewInit, OnDestroy {
         private gitProviderService: GitProviderService,
         private http: HttpClient,
         private _matDialog: MatDialog,
-        private cd: ChangeDetectorRef
+        private cd: ChangeDetectorRef,
+        private financeService: FinanceService
     ) {}
 
     // -----------------------------------------------------------------------------------------------------
@@ -88,15 +90,15 @@ export class FinanceComponent implements OnInit, AfterViewInit, OnDestroy {
     /**
      * On init
      */
-    ngOnInit(): void {}
+    ngOnInit(): void {
+    }
 
     /**
      * After view init
      */
     ngAfterViewInit(): void {
-        // Make the data source sortable
-        // this.recentTransactionsDataSource.sort =
-        //     this.recentTransactionsTableMatSort;
+
+        
     }
 
     /**
@@ -127,17 +129,32 @@ export class FinanceComponent implements OnInit, AfterViewInit, OnDestroy {
      */
 
     openComposeDialog(): void {
-        // Open the dialog
         const dialogRef = this._matDialog.open(MailboxComposeComponent, {
             panelClass: 'custom-dialog-container',
         });
-
+    
+        dialogRef.componentInstance.selectedRepository.subscribe((repositoryId) => {
+            console.log('Received repository ID:', repositoryId);
+            this.handleUpdatedRepository({ provider: repositoryId });
+        });
+    
         dialogRef.afterClosed().subscribe((result) => {
             console.log('Compose dialog was closed!');
         });
     }
+    
 
     // -----------------------------------------------------------------------------------------------------
     // @ Private methods
     // -----------------------------------------------------------------------------------------------------
+
+    handleUpdatedRepository(data: { provider: string }): void {
+        this.financeService.getRepositoryById(data.provider)
+           .subscribe((updatedDetails) => {
+                this.dataSource.data = [updatedDetails];
+                this.cd.detectChanges();
+                console.log('Updated details', updatedDetails);
+            });
+    }
+    
 }
