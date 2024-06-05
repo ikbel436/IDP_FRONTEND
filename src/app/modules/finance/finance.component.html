@@ -4,10 +4,10 @@
         <div class="flex items-center justify-between w-full">
             <div>
                 <h2 class="text-3xl font-semibold tracking-tight leading-8">
-                    Finance dashboard
+                    My Services
                 </h2>
                 <div class="font-medium tracking-tight text-secondary">
-                    Keep track of your financial status
+                    Keep track of your services status
                 </div>
             </div>
             <div class="flex items-center ml-6">
@@ -16,7 +16,7 @@
                         class="icon-size-5"
                         [svgIcon]="'heroicons_solid:document-chart-bar'"
                     ></mat-icon>
-                    <span class="ml-2">Reports</span>
+                    <span class="ml-2">Data</span>
                 </button>
                 <button class="hidden sm:inline-flex ml-3" mat-stroked-button>
                     <mat-icon
@@ -55,7 +55,7 @@
         </div>
         <div class="grid grid-cols-1 xl:grid-cols-3 gap-8 w-full mt-8">
             <!-- Recent transactions table -->
-            
+
             <div
                 class="xl:col-span-2 flex flex-col flex-auto bg-card shadow rounded-2xl overflow-hidden"
             >
@@ -63,64 +63,494 @@
                     <div
                         class="mr-4 text-lg font-medium tracking-tight leading-6 truncate"
                     >
-                        Recent transactions
+                        Recently added
                     </div>
                     <div class="text-secondary font-medium">
-                        1 pending, 4 completed
+                        1 active, 4 shutdown
                     </div>
                 </div>
-                
+
                 <div class="overflow-x-auto mx-6 h-120 border-0">
-                    <table mat-table [dataSource]="dataSource" class="w-full bg-transparent">
+                    <table
+                        mat-table
+                        [dataSource]="dataSource"
+                        matSort
+                        class="w-full bg-transparent"
+                    >
                         <!-- Define columns -->
                         <ng-container matColumnDef="name">
-                            <th mat-header-cell *matHeaderCellDef>Name</th>
-                            <td mat-cell *matCellDef="let element">{{element.name}}</td>
-                        </ng-container>
-                        <ng-container matColumnDef="description">
-                            <th mat-header-cell *matHeaderCellDef>Description</th>
-                            <td mat-cell *matCellDef="let element">{{element.description}}</td>
-                        </ng-container>
-                        <ng-container matColumnDef="createdAt">
-                            <th mat-header-cell *matHeaderCellDef>CreatedAt</th>
-                            <td mat-cell *matCellDef="let element">{{element.createdAt | date}}</td>
-                        </ng-container>
-                        <ng-container matColumnDef="lastUpdated">
-                            <th mat-header-cell *matHeaderCellDef>LastUpdated</th>
-                            <td mat-cell *matCellDef="let element">{{element.lastUpdated | date}}</td>
-                        </ng-container>
-                        <ng-container matColumnDef="Status">
-                            <th mat-header-cell *matHeaderCellDef>Status</th>
-                            <td mat-cell *matCellDef="let element">{{element.Status}}</td>
-                        </ng-container>
-                        <ng-container matColumnDef="ArgoCD">
-                            <th mat-header-cell *matHeaderCellDef>ArgoCD</th>
-                            <td mat-cell *matCellDef="let element">{{element.ArgoCD}}</td>
-                        </ng-container>
-                        <ng-container matColumnDef="DockerImage">
-                            <th mat-header-cell *matHeaderCellDef>Docker Image</th>
-                            <td mat-cell *matCellDef="let element">{{element.DockerImage}}</td>
-                        </ng-container>
-                        <ng-container matColumnDef="DBType">
-                            <th mat-header-cell *matHeaderCellDef>DB</th>
-                            <td mat-cell *matCellDef="let element">{{element.DBType}}</td>
+                            <th mat-header-cell *matHeaderCellDef>Title</th>
+                            <td mat-cell *matCellDef="let element">
+                                {{ element.name }}
+                            </td>
                         </ng-container>
                         <ng-container matColumnDef="language">
                             <th mat-header-cell *matHeaderCellDef>Language</th>
-                            <td mat-cell *matCellDef="let element">{{element.language}}</td>
-                        </ng-container>
-                        <ng-container matColumnDef="SonarQube">
-                            <th mat-header-cell *matHeaderCellDef>SonarQube</th>
-                            <td mat-cell *matCellDef="let element">{{element.SonarQube}}</td>
+                            <td mat-cell *matCellDef="let element">
+                                {{ element.language }}
+                            </td>
                         </ng-container>
 
+                        <ng-container matColumnDef="createdAt">
+                            <th mat-header-cell *matHeaderCellDef>CreatedAt</th>
+                            <td mat-cell *matCellDef="let element">
+                                {{ element.createdAt | date }}
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="cloneUrl">
+                            <th mat-header-cell *matHeaderCellDef>Clone URL</th>
+                            <td mat-cell *matCellDef="let element">
+                                <!-- {{element.cloneUrl}} -->
+                                <div
+                                    class="truncate hidden lg:block"
+                                    style="width: 32px; height: 32px"
+                                >
+                                    <!-- GitHub Icon with Dynamic Link -->
+                                    <a
+                                        href="{{ element.cloneUrl }}"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        title="{{ element.cloneUrl }}"
+                                    >
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            width="32"
+                                            height="32"
+                                            viewBox="0 0 256 256"
+                                        >
+                                            <g fill="none">
+                                                <rect
+                                                    width="256"
+                                                    height="256"
+                                                    fill="#f4f2ed"
+                                                    rx="60"
+                                                />
+                                                <path
+                                                    fill="#161614"
+                                                    d="M128.001 30C72.779 30 28 74.77 28 130.001c0 44.183 28.653 81.667 68.387 94.89c4.997.926 6.832-2.169 6.832-4.81c0-2.385-.093-10.262-.136-18.618c-27.82 6.049-33.69-11.799-33.69-11.799c-4.55-11.559-11.104-14.632-11.104-14.632c-9.073-6.207.684-6.079.684-6.079c10.042.705 15.33 10.305 15.33 10.305c8.919 15.288 23.394 10.868 29.1 8.313c.898-6.464 3.489-10.875 6.349-13.372c-22.211-2.529-45.56-11.104-45.56-49.421c0-10.918 3.906-19.839 10.303-26.842c-1.039-2.519-4.462-12.69.968-26.464c0 0 8.398-2.687 27.508 10.25c7.977-2.215 16.531-3.326 25.03-3.364c8.498.038 17.06 1.149 25.051 3.365c19.087-12.939 27.473-10.25 27.473-10.25c5.443 13.773 2.019 23.945.98 26.463c6.412 7.003 10.292 15.924 10.292 26.842c0 38.409-23.394 46.866-45.662 49.341c3.587 3.104 6.783 9.189 6.783 18.519c0 13.38-.116 24.149-.116 27.443c0 2.661 1.8 5.779 6.869 4.797C199.383 211.64 228 174.169 228 130.001C228 74.771 183.227 30 128.001 30M65.454 172.453c-.22.497-1.002.646-1.714.305c-.726-.326-1.133-1.004-.898-1.502c.215-.512.999-.654 1.722-.311c.727.326 1.141 1.01.89 1.508m4.919 4.389c-.477.443-1.41.237-2.042-.462c-.654-.697-.777-1.629-.293-2.078c.491-.442 1.396-.235 2.051.462c.654.706.782 1.631.284 2.078m3.374 5.616c-.613.426-1.615.027-2.234-.863c-.613-.889-.613-1.955.013-2.383c.621-.427 1.608-.043 2.236.84c.611.904.611 1.971-.015 2.406m5.707 6.504c-.548.604-1.715.442-2.57-.383c-.874-.806-1.118-1.95-.568-2.555c.555-.606 1.729-.435 2.59.383c.868.804 1.133 1.957.548 2.555m7.376 2.195c-.242.784-1.366 1.14-2.499.807c-1.13-.343-1.871-1.26-1.642-2.052c.235-.788 1.364-1.159 2.505-.803c1.13.341 1.871 1.252 1.636 2.048m8.394.932c.028.824-.932 1.508-2.121 1.523c-1.196.027-2.163-.641-2.176-1.452c0-.833.939-1.51 2.134-1.53c1.19-.023 2.163.639 2.163 1.459m8.246-.316c.143.804-.683 1.631-1.864 1.851c-1.161.212-2.236-.285-2.383-1.083c-.144-.825.697-1.651 1.856-1.865c1.183-.205 2.241.279 2.391 1.097"
+                                                />
+                                            </g>
+                                        </svg>
+                                    </a>
+                                </div>
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="lastUpdated">
+                            <th mat-header-cell *matHeaderCellDef>
+                                LastUpdated
+                            </th>
+                            <td mat-cell *matCellDef="let element">
+                                {{ element.lastUpdated | date }}
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="Status">
+                            <th
+                                mat-header-cell
+                                mat-sort-header
+                                *matHeaderCellDef
+                            >
+                                Status
+                            </th>
+                            <td mat-cell *matCellDef="let element">
+                                <span
+                                    class="inline-flex items-center font-bold text-xs px-2.5 py-0.5 rounded-full tracking-wide uppercase"
+                                    [ngClass]="{
+                                        'bg-red-200 text-red-800 dark:bg-red-600 dark:text-red-50':
+                                            element.Status === 'Pending',
+                                        'bg-green-200 text-green-800 dark:bg-green-600 dark:text-green-50':
+                                            element.Status === 'Active'
+                                    }"
+                                >
+                                    <span
+                                        class="leading-relaxed whitespace-nowrap"
+                                        >{{ element.Status }}</span
+                                    >
+                                </span>
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="ArgoCD">
+                            <th mat-header-cell *matHeaderCellDef>ArgoCD</th>
+                            <td mat-cell *matCellDef="let element">
+                                <!-- {{element.ArgoCD}} -->
+                                <div
+                                    class="truncate hidden lg:block"
+                                    style="width: 32px; height: 32px"
+                                >
+                                    <a
+                                        href="{{ element.ArgoCD }}"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        title="{{ element.ArgoCD }}"
+                                    >
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            xmlns:xlink="http://www.w3.org/1999/xlink"
+                                            viewBox="0 0 128 128"
+                                        >
+                                            <defs>
+                                                <clipPath
+                                                    id="argocd-original-e"
+                                                >
+                                                    <path
+                                                        d="M42 41h44v51H42zm0 0"
+                                                    />
+                                                </clipPath>
+                                                <clipPath
+                                                    id="argocd-original-d"
+                                                >
+                                                    <path d="M0 0h128v128H0z" />
+                                                </clipPath>
+                                                <clipPath
+                                                    id="argocd-original-c"
+                                                >
+                                                    <path d="M0 0h128v128H0z" />
+                                                </clipPath>
+                                                <clipPath
+                                                    id="argocd-original-f"
+                                                >
+                                                    <path
+                                                        d="M85.695 41.133l-2.55 58.238H44.887l-2.125-58.238"
+                                                    />
+                                                </clipPath>
+                                                <clipPath
+                                                    id="argocd-original-b"
+                                                >
+                                                    <path d="M0 0h128v128H0z" />
+                                                </clipPath>
+                                                <mask id="argocd-original-l">
+                                                    <g
+                                                        filter="url(#argocd-original-a)"
+                                                    >
+                                                        <path
+                                                            d="M0 0h128v128H0z"
+                                                            fill-opacity=".251"
+                                                        />
+                                                    </g>
+                                                </mask>
+                                                <mask id="argocd-original-h">
+                                                    <g
+                                                        filter="url(#argocd-original-a)"
+                                                    >
+                                                        <path
+                                                            d="M0 0h128v128H0z"
+                                                            fill-opacity=".22"
+                                                        />
+                                                    </g>
+                                                </mask>
+                                                <mask id="argocd-original-j">
+                                                    <g
+                                                        filter="url(#argocd-original-a)"
+                                                    >
+                                                        <path
+                                                            d="M0 0h128v128H0z"
+                                                            fill-opacity=".502"
+                                                        />
+                                                    </g>
+                                                </mask>
+                                                <g
+                                                    id="argocd-original-i"
+                                                    clip-path="url(#argocd-original-b)"
+                                                >
+                                                    <path
+                                                        d="M58.488 30.508a2.974 2.974 0 11-5.948-.003 2.974 2.974 0 015.948.003zm0 0"
+                                                        fill="#fbdfc3"
+                                                    />
+                                                </g>
+                                                <g
+                                                    id="argocd-original-g"
+                                                    clip-path="url(#argocd-original-c)"
+                                                >
+                                                    <path
+                                                        d="M84.422 65.363s2.55-22.531-.852-31.031C77.195 19.453 62.316 20.73 62.316 20.73s8.5 3.399 8.926 16.153c.426 8.926 0 22.105 0 22.105zm0 0"
+                                                        fill="#e34e3b"
+                                                    />
+                                                </g>
+                                                <g
+                                                    id="argocd-original-k"
+                                                    clip-path="url(#argocd-original-d)"
+                                                >
+                                                    <path
+                                                        d="M83.145 90.867V87.47c-5.95 3.398-12.329 6.8-19.977 6.8-8.504 0-14.031-3.824-19.555-6.8l.422 3.398s6.38 6.805 19.555 6.805c12.328-.426 19.555-6.805 19.555-6.805zm0 0"
+                                                        fill="#e9654b"
+                                                    />
+                                                </g>
+                                                <filter
+                                                    id="argocd-original-a"
+                                                    filterUnits="objectBoundingBox"
+                                                    x="0%"
+                                                    y="0%"
+                                                    width="100%"
+                                                    height="100%"
+                                                >
+                                                    <feColorMatrix
+                                                        in="SourceGraphic"
+                                                        values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"
+                                                    />
+                                                </filter>
+                                            </defs>
+                                            <path
+                                                d="M44.035 89.594s-.847 2.55-2.125 3.824a3.844 3.844 0 01-2.972 1.277 49.946 49.946 0 01-6.38 1.274s2.977.426 6.38.851c1.273 0 1.273 0 2.124.426 2.126 0 2.973-1.277 2.973-1.277zm39.11 0s.851 2.55 2.125 3.824a3.858 3.858 0 002.976 1.277 49.8 49.8 0 006.375 1.274s-2.973.426-6.8.851c-1.274 0-1.274 0-2.126.426-2.55 0-2.976-1.277-2.976-1.277zm0 0"
+                                                fill="#e9654b"
+                                            />
+                                            <path
+                                                d="M109.926 47.508c0 25.355-20.555 45.91-45.91 45.91-25.356 0-45.91-20.555-45.91-45.91 0-25.352 20.554-45.906 45.91-45.906 25.355 0 45.91 20.554 45.91 45.906zm0 0"
+                                                fill="#b6cfea"
+                                            />
+                                            <path
+                                                d="M108.227 47.508c0 24.418-19.793 44.21-44.211 44.21-24.414 0-44.207-19.792-44.207-44.21C19.809 23.094 39.602 3.3 64.016 3.3c24.418 0 44.21 19.793 44.21 44.207zm0 0"
+                                                fill="#e6f5f8"
+                                            />
+                                            <path
+                                                d="M100.148 48.36c0 19.956-16.175 36.132-36.132 36.132-19.954 0-36.133-16.176-36.133-36.133 0-19.953 16.18-36.132 36.133-36.132 19.957 0 36.132 16.18 36.132 36.132zm0 0"
+                                                fill="#d0e8f0"
+                                            />
+                                            <path
+                                                d="M42.762 65.363s2.976 48.035 2.976 48.887c0 .422.426 1.273-1.703 2.125-2.125.848-8.926 2.55-8.926 2.55h10.203c4.676 0 4.676-3.827 4.676-4.675 0-.852 1.274-19.129 1.274-19.129s.425 21.68.425 22.527c0 .852-.425 2.125-3.398 2.977-2.125.426-8.504 1.7-8.504 1.7h9.778c5.953 0 5.953-3.825 5.953-3.825l1.273-19.129s.426 19.129.426 21.254c0 1.7-1.274 2.977-5.953 3.824-2.973.852-6.801 1.703-6.801 1.703h11.055c5.523-.425 6.375-4.254 6.375-4.254l9.351-47.609zm0 0"
+                                                fill="#ee794b"
+                                            />
+                                            <path
+                                                d="M85.27 65.363s-2.973 48.035-2.973 48.887c0 .422-.426 1.273 1.7 2.125 2.124.848 8.925 2.55 8.925 2.55H82.719c-4.676 0-4.676-3.827-4.676-4.675 0-.852-1.273-19.129-1.273-19.129s-.426 21.68-.426 22.527c0 .852.426 2.125 3.402 2.977l8.5 1.7H78.47c-5.95 0-5.95-3.825-5.95-3.825l-1.277-19.129s-.426 19.129-.426 21.254c0 1.7 1.278 2.977 5.954 3.824 2.976.852 6.8 1.703 6.8 1.703H72.52c-5.528-.425-6.38-4.254-6.38-4.254L56.79 74.29zm.425-23.379c0 11.903-9.777 21.254-21.254 21.254-11.476 0-21.254-9.777-21.254-21.254 0-11.476 9.778-21.254 21.254-21.254 11.477 0 21.254 9.352 21.254 21.254zm0 0"
+                                                fill="#ee794b"
+                                            />
+                                            <g
+                                                clip-path="url(#argocd-original-e)"
+                                            >
+                                                <g
+                                                    clip-path="url(#argocd-original-f)"
+                                                >
+                                                    <path
+                                                        d="M102.273 53.46c0 20.895-16.937 37.833-37.832 37.833-20.894 0-37.832-16.938-37.832-37.832 0-20.895 16.938-37.832 37.832-37.832 20.895 0 37.832 16.937 37.832 37.832zm0 0"
+                                                        fill="#ee794b"
+                                                    />
+                                                </g>
+                                            </g>
+                                            <use
+                                                xlink:href="#argocd-original-g"
+                                                mask="url(#argocd-original-h)"
+                                            />
+                                            <use
+                                                xlink:href="#argocd-original-i"
+                                                mask="url(#argocd-original-j)"
+                                            />
+                                            <path
+                                                d="M71.668 73.863c0 7.227-3.402 11.907-7.652 11.907s-7.653-5.528-7.653-12.754c0 0 3.403 6.8 8.078 6.8 4.676 0 7.227-5.953 7.227-5.953zm0 0"
+                                                fill="#010101"
+                                            />
+                                            <path
+                                                d="M71.668 73.863c0 4.68-3.402 7.227-7.652 7.227s-7.227-3.399-7.227-7.649c0 0 3.402 4.25 8.078 4.25 4.676 0 6.801-3.828 6.801-3.828zm0 0"
+                                                fill="#fff"
+                                            />
+                                            <path
+                                                d="M92.07 53.887c0 7.277-5.898 13.175-13.175 13.175-7.278 0-13.18-5.898-13.18-13.175 0-7.278 5.902-13.18 13.18-13.18 7.277 0 13.175 5.902 13.175 13.18zm-29.754 0c0 7.277-5.902 13.175-13.18 13.175-7.277 0-13.175-5.898-13.175-13.175 0-7.278 5.898-13.18 13.176-13.18 7.277 0 13.18 5.902 13.18 13.18zm0 0"
+                                                fill="#e9654b"
+                                            />
+                                            <path
+                                                d="M89.098 53.887c0 5.633-4.57 10.203-10.203 10.203-5.633 0-10.204-4.57-10.204-10.203 0-5.637 4.57-10.203 10.204-10.203 5.632 0 10.203 4.566 10.203 10.203zm-30.61 0c0 5.633-4.566 10.203-10.199 10.203-5.637 0-10.203-4.57-10.203-10.203a10.201 10.201 0 0110.203-10.203c5.633 0 10.2 4.566 10.2 10.203zm0 0"
+                                                fill="#fff"
+                                            />
+                                            <path
+                                                d="M51.262 52.61a2.975 2.975 0 11-5.95.003 2.975 2.975 0 015.95-.004zm30.609 0a2.976 2.976 0 11-5.951.001 2.976 2.976 0 015.951-.002zm0 0"
+                                                fill="#010101"
+                                            />
+                                            <path
+                                                d="M17.258 58.988a2.005 2.005 0 01-2.125-2.125V39.86a2.008 2.008 0 01.582-1.543 2.008 2.008 0 011.543-.582 2.005 2.005 0 012.125 2.125v17.004c.035.57-.18 1.133-.586 1.54a2.008 2.008 0 01-1.54.585zm92.668 0a2.003 2.003 0 01-1.54-.586 2.008 2.008 0 01-.585-1.539V39.86a2.011 2.011 0 01.586-1.543 2 2 0 011.539-.582 2 2 0 011.539.582c.41.407.62.97.586 1.543v17.004a1.994 1.994 0 01-.586 1.54 2.003 2.003 0 01-1.54.585zm0 0"
+                                                fill="#b6cfea"
+                                            />
+                                            <path
+                                                d="M51.688 13.504a2.125 2.125 0 11-4.25 0 2.125 2.125 0 014.25 0zM34.262 70.89a1.559 1.559 0 01-1.278-.425c-5.101-6.375-7.652-14.453-7.652-22.531a37.933 37.933 0 015.102-19.13 41.641 41.641 0 0113.601-13.6 1.873 1.873 0 012.13.425 1.874 1.874 0 01-.427 2.125 34.305 34.305 0 00-17.43 29.754 33.487 33.487 0 007.227 20.832c.426.426.426 1.7-.426 2.125-.425.426-.425.426-.847.426zm0 0"
+                                                fill="#fff"
+                                            />
+                                            <use
+                                                xlink:href="#argocd-original-k"
+                                                mask="url(#argocd-original-l)"
+                                            />
+                                        </svg>
+                                    </a>
+                                </div>
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="DockerImage">
+                            <th mat-header-cell *matHeaderCellDef>
+                                Docker Image
+                            </th>
+                            <td mat-cell *matCellDef="let element">
+                                <div
+                                    class="truncate hidden lg:block"
+                                    style="width: 32px; height: 32px"
+                                >
+                                    <!-- Docker Icon with Dynamic Link -->
+                                    <a
+                                        href="{{ element.DockerImage }}"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        title="{{ element.DockerImage }}"
+                                    >
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            viewBox="0 0 128 128"
+                                        >
+                                            <path
+                                                fill-rule="evenodd"
+                                                clip-rule="evenodd"
+                                                fill="#3A4D54"
+                                                d="M73.8 50.8h11.3v11.5h5.7c2.6 0 5.3-.5 7.8-1.3 1.2-.4 2.6-1 3.8-1.7-1.6-2.1-2.4-4.7-2.6-7.3-.3-3.5.4-8.1 2.8-10.8l1.2-1.4 1.4 1.1c3.6 2.9 6.5 6.8 7.1 11.4 4.3-1.3 9.3-1 13.1 1.2l1.5.9-.8 1.6c-3.2 6.2-9.9 8.2-16.4 7.8-9.8 24.3-31 35.8-56.8 35.8-13.3 0-25.5-5-32.5-16.8l-.1-.2-1-2.1c-2.4-5.2-3.1-10.9-2.6-16.6l.2-1.7h9.6V50.8h11.3V39.6h22.5V28.3h13.5v22.5z"
+                                            />
+                                            <path
+                                                fill="#00AADA"
+                                                d="M110.4 55.1c.8-5.9-3.6-10.5-6.4-12.7-3.1 3.6-3.6 13.2 1.3 17.2-2.8 2.4-8.5 4.7-14.5 4.7H18.6c-.6 6.2.5 11.9 3 16.8l.8 1.5c.5.9 1.1 1.7 1.7 2.6 3 .2 5.7.3 8.2.2 4.9-.1 8.9-.7 12-1.7.5-.2.9.1 1.1.5.2.5-.1.9-.5 1.1-.4.1-.8.3-1.3.4-2.4.7-5 1.1-8.3 1.3h-.6c-1.3.1-2.7.1-4.2.1-1.6 0-3.1 0-4.9-.1 6 6.8 15.4 10.8 27.2 10.8 25 0 46.2-11.1 55.5-35.9 6.7.7 13.1-1 16-6.7-4.5-2.7-10.5-1.8-13.9-.1z"
+                                            />
+                                            <path
+                                                fill="#28B8EB"
+                                                d="M110.4 55.1c.8-5.9-3.6-10.5-6.4-12.7-3.1 3.6-3.6 13.2 1.3 17.2-2.8 2.4-8.5 4.7-14.5 4.7h-68c-.3 9.5 3.2 16.7 9.5 21 4.9-.1 8.9-.7 12-1.7.5-.2.9.1 1.1.5.2.5-.1.9-.5 1.1-.4.1-.8.3-1.3.4-2.4.7-5.2 1.2-8.5 1.4l-.1-.1c8.5 4.4 20.8 4.3 35-1.1 15.8-6.1 30.6-17.7 40.9-30.9-.2.1-.4.1-.5.2z"
+                                            />
+                                            <path
+                                                fill="#028BB8"
+                                                d="M18.7 71.8c.4 3.3 1.4 6.4 2.9 9.3l.8 1.5c.5.9 1.1 1.7 1.7 2.6 3 .2 5.7.3 8.2.2 4.9-.1 8.9-.7 12-1.7.5-.2.9.1 1.1.5.2.5-.1.9-.5 1.1-.4.1-.8.3-1.3.4-2.4.7-5.2 1.2-8.5 1.4h-.4c-1.3.1-2.7.1-4.1.1-1.6 0-3.2 0-4.9-.1 6 6.8 15.5 10.8 27.3 10.8 21.4 0 40-8.1 50.8-26H18.7v-.1z"
+                                            />
+                                            <path
+                                                fill="#019BC6"
+                                                d="M23.5 71.8c1.3 5.8 4.3 10.4 8.8 13.5 4.9-.1 8.9-.7 12-1.7.5-.2.9.1 1.1.5.2.5-.1.9-.5 1.1-.4.1-.8.3-1.3.4-2.4.7-5.2 1.2-8.6 1.4 8.5 4.4 20.8 4.3 34.9-1.1 8.5-3.3 16.8-8.2 24.2-14.1H23.5z"
+                                            />
+                                            <path
+                                                fill-rule="evenodd"
+                                                clip-rule="evenodd"
+                                                fill="#00ACD3"
+                                                d="M28.4 52.7h9.8v9.8h-9.8v-9.8zm.8.8h.8v8.1h-.8v-8.1zm1.4 0h.8v8.1h-.8v-8.1zm1.5 0h.8v8.1h-.8v-8.1zm1.5 0h.8v8.1h-.8v-8.1zm1.5 0h.8v8.1h-.8v-8.1zm1.5 0h.8v8.1h-.8v-8.1zm3-12h9.8v9.8h-9.8v-9.8zm.9.8h.8v8.1h-.8v-8.1zm1.4 0h.8v8.1h-.8v-8.1zm1.5 0h.8v8.1h-.8v-8.1zm1.5 0h.8v8.1h-.8v-8.1zm1.4 0h.8v8.1h-.8v-8.1zm1.5 0h.8v8.1h-.8v-8.1z"
+                                            />
+                                            <path
+                                                fill-rule="evenodd"
+                                                clip-rule="evenodd"
+                                                fill="#23C2EE"
+                                                d="M39.6 52.7h9.8v9.8h-9.8v-9.8zm.9.8h.8v8.1h-.8v-8.1zm1.4 0h.8v8.1h-.8v-8.1zm1.5 0h.8v8.1h-.8v-8.1zm1.5 0h.8v8.1h-.8v-8.1zm1.4 0h.8v8.1h-.8v-8.1zm1.5 0h.8v8.1h-.8v-8.1z"
+                                            />
+                                            <path
+                                                fill-rule="evenodd"
+                                                clip-rule="evenodd"
+                                                fill="#00ACD3"
+                                                d="M50.9 52.7h9.8v9.8h-9.8v-9.8zm.8.8h.8v8.1h-.8v-8.1zm1.5 0h.8v8.1h-.8v-8.1zm1.5 0h.8v8.1h-.8v-8.1zm1.4 0h.8v8.1h-.8v-8.1zm1.5 0h.8v8.1h-.8v-8.1zm1.5 0h.8v8.1h-.8v-8.1z"
+                                            />
+                                            <path
+                                                fill-rule="evenodd"
+                                                clip-rule="evenodd"
+                                                fill="#23C2EE"
+                                                d="M50.9 41.5h9.8v9.8h-9.8v-9.8zm.8.8h.8v8.1h-.8v-8.1zm1.5 0h.8v8.1h-.8v-8.1zm1.5 0h.8v8.1h-.8v-8.1zm1.4 0h.8v8.1h-.8v-8.1zm1.5 0h.8v8.1h-.8v-8.1zm1.5 0h.8v8.1h-.8v-8.1zm3.1 10.4H72v9.8h-9.8v-9.8zm.8.8h.8v8.1H63v-8.1zm1.5 0h.8v8.1h-.8v-8.1zm1.4 0h.8v8.1h-.8v-8.1zm1.5 0h.8v8.1h-.8v-8.1zm1.5 0h.8v8.1h-.8v-8.1zm1.5 0h.8v8.1h-.8v-8.1z"
+                                            />
+                                            <path
+                                                fill-rule="evenodd"
+                                                clip-rule="evenodd"
+                                                fill="#00ACD3"
+                                                d="M62.2 41.5H72v9.8h-9.8v-9.8zm.8.8h.8v8.1H63v-8.1zm1.5 0h.8v8.1h-.8v-8.1zm1.4 0h.8v8.1h-.8v-8.1zm1.5 0h.8v8.1h-.8v-8.1zm1.5 0h.8v8.1h-.8v-8.1zm1.5 0h.8v8.1h-.8v-8.1z"
+                                            />
+                                            <path
+                                                fill-rule="evenodd"
+                                                clip-rule="evenodd"
+                                                fill="#23C2EE"
+                                                d="M62.2 30.2H72V40h-9.8v-9.8zm.8.8h.8v8.1H63V31zm1.5 0h.8v8.1h-.8V31zm1.4 0h.8v8.1h-.8V31zm1.5 0h.8v8.1h-.8V31zm1.5 0h.8v8.1h-.8V31zm1.5 0h.8v8.1h-.8V31z"
+                                            />
+                                            <path
+                                                fill-rule="evenodd"
+                                                clip-rule="evenodd"
+                                                fill="#00ACD3"
+                                                d="M73.5 52.7h9.8v9.8h-9.8v-9.8zm.8.8h.8v8.1h-.8v-8.1zm1.4 0h.8v8.1h-.8v-8.1zm1.5 0h.8v8.1h-.8v-8.1zm1.5 0h.8v8.1h-.8v-8.1zm1.5 0h.8v8.1h-.8v-8.1zm1.5 0h.8v8.1h-.8v-8.1z"
+                                            />
+                                            <path
+                                                fill-rule="evenodd"
+                                                clip-rule="evenodd"
+                                                fill="#D4EEF1"
+                                                d="M48.8 78.3c1.5 0 2.7 1.2 2.7 2.7 0 1.5-1.2 2.7-2.7 2.7-1.5 0-2.7-1.2-2.7-2.7 0-1.5 1.2-2.7 2.7-2.7"
+                                            />
+                                            <path
+                                                fill-rule="evenodd"
+                                                clip-rule="evenodd"
+                                                fill="#3A4D54"
+                                                d="M48.8 79.1c.2 0 .5 0 .7.1-.2.1-.4.4-.4.7 0 .4.4.8.8.8.3 0 .6-.2.7-.4.1.2.1.5.1.7 0 1.1-.9 1.9-1.9 1.9-1.1 0-1.9-.9-1.9-1.9 0-1 .8-1.9 1.9-1.9M1.1 72.8h125.4c-2.7-.7-8.6-1.6-7.7-5.2-5 5.7-16.9 4-20 1.2-3.4 4.9-23 3-24.3-.8-4.2 5-17.3 5-21.5 0-1.4 3.8-21 5.7-24.3.8-3 2.8-15 4.5-20-1.2 1.1 3.5-4.9 4.5-7.6 5.2"
+                                            />
+                                            <path
+                                                fill="#BFDBE0"
+                                                d="M56 97.8c-6.7-3.2-10.3-7.5-12.4-12.2-2.5.7-5.5 1.2-8.9 1.4-1.3.1-2.7.1-4.1.1-1.7 0-3.4 0-5.2-.1 6 6 13.6 10.7 27.5 10.8H56z"
+                                            />
+                                            <path
+                                                fill="#D4EEF1"
+                                                d="M46.1 89.9c-.9-1.3-1.8-2.8-2.5-4.3-2.5.7-5.5 1.2-8.9 1.4 2.3 1.2 5.7 2.4 11.4 2.9z"
+                                            />
+                                        </svg>
+                                    </a>
+                                </div>
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="DBType">
+                            <th mat-header-cell *matHeaderCellDef>DB</th>
+                            <td mat-cell *matCellDef="let element">
+                                {{ element.DBType }}
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="SonarQube">
+                            <th mat-header-cell *matHeaderCellDef>SonarQube</th>
+                            <td mat-cell *matCellDef="let element">
+                                <div
+                                    class="truncate hidden lg:block"
+                                    style="width: 32px; height: 32px"
+                                >
+                                    <!-- SonarQube Icon with Dynamic Link -->
+                                    <a
+                                        href="{{ element.SonarQube }}"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        title="{{ element.SonarQube }}"
+                                    >
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            viewBox="0 0 128 128"
+                                        >
+                                            <path
+                                                fill="#549dd0"
+                                                d="M102.195 112.023h-5.57c0-44.84-37-81.32-82.477-81.32v-5.57c48.551 0 88.047 38.976 88.047 86.89Zm3.852-29.902C99.359 54 76.567 30.5 48 22.301l1.281-4.461C79.434 26.5 103.5 51.309 110.56 81.047Zm4.281-26.402c-6.887-15.02-18.625-28.117-33.043-36.88l1.93-3.175c15.047 9.145 27.297 22.82 34.5 38.5Zm0 0"
+                                            />
+                                        </svg>
+                                    </a>
+                                </div>
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="description">
+                            <th mat-header-cell *matHeaderCellDef>
+                                Description
+                            </th>
+                            <td mat-cell *matCellDef="let element">
+                                {{ element.description }}
+                            </td>
+                        </ng-container>
+
+                                   <!-- Add actions column -->
+                                   <ng-container matColumnDef="actions">
+                                    <th mat-header-cell *matHeaderCellDef></th>
+                                    <td mat-cell *matCellDef="let element">
+                                        <div class="ml-auto -mt-2 -mr-2">
+                                            <button mat-icon-button [matMenuTriggerFor]="actionMenu">
+                                                <mat-icon class="icon-size-5" [svgIcon]="'heroicons_mini:ellipsis-vertical'"></mat-icon>
+                                            </button>
+                                            <mat-menu #actionMenu="matMenu">
+                                                <button mat-menu-item (click)="editRow(element)">Edit</button>
+                                                <button mat-menu-item (click)="deleteRow(element.id)">Delete</button>
+                                            </mat-menu>
+                                        </div>
+                                    </td>
+                                </ng-container>
+
                         <!-- Header Row -->
-                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                        <tr
+                            mat-header-row
+                            *matHeaderRowDef="displayedColumns"
+                        ></tr>
                         <!-- Data Rows -->
-                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                        <tr
+                            mat-row
+                            *matRowDef="let row; columns: displayedColumns"
+                        ></tr>
                     </table>
-                    
-                    
                 </div>
             </div>
 
@@ -131,11 +561,10 @@
                         <div
                             class="mr-4 text-lg font-medium tracking-tight leading-6 truncate"
                         >
-                            Budget
+                        My Open Pull Requests
                         </div>
                         <div class="text-secondary font-medium">
-                            Monthly budget summary
-                        </div>
+                Recent Pull Requests                        </div>
                     </div>
                     <div class="ml-auto -mt-2 -mr-2">
                         <button
@@ -174,9 +603,9 @@
                     </div>
                 </div>
                 <div class="mt-6">
-                    Last month; you had <strong>223</strong> expense
-                    transactions, <strong>12</strong> savings entries and
-                    <strong>4</strong> bills.
+                    Last month; you had <strong>223</strong> pull requests
+                    , <strong>122</strong> pushes and
+                    <strong>4</strong> Repos in total.
                 </div>
                 <div class="my-8 space-y-8">
                     <div class="flex flex-col">
@@ -191,10 +620,10 @@
                             </div>
                             <div class="flex-auto ml-4 leading-none">
                                 <div class="text-sm font-medium text-secondary">
-                                    Expenses
+                                    Pull Requests
                                 </div>
                                 <div class="mt-2 font-medium text-2xl">
-                                    kljl
+                                    Total : 200
                                 </div>
                                 <mat-progress-bar
                                     class="mt-3 rounded-full"
@@ -225,10 +654,10 @@
                             </div>
                             <div class="flex-auto ml-4 leading-none">
                                 <div class="text-sm font-medium text-secondary">
-                                    Savings
+                                    Push
                                 </div>
                                 <div class="mt-2 font-medium text-2xl">
-                                    mmmmmm
+                                    Total : 1220
                                 </div>
                                 <mat-progress-bar
                                     class="mt-3 rounded-full"
@@ -258,10 +687,10 @@
                             </div>
                             <div class="flex-auto ml-4 leading-none">
                                 <div class="text-sm font-medium text-secondary">
-                                    Bills
+                                    Repositories
                                 </div>
                                 <div class="mt-2 font-medium text-2xl">
-                                    mmmmmm
+                                    18
                                 </div>
                                 <mat-progress-bar
                                     class="mt-3 rounded-full"

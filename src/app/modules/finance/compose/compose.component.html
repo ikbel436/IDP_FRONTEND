@@ -42,7 +42,10 @@
         <!-- Status -->
         <mat-form-field>
             <mat-label>Status</mat-label>
-            <input matInput [formControlName]="'Status'" />
+            <mat-select formControlName="Status">
+                <mat-option value="active">Active</mat-option>
+                <mat-option value="pending">Pending</mat-option>
+            </mat-select>
         </mat-form-field>
 
         <!-- Test ArgoCD App -->
@@ -60,6 +63,16 @@
         <mat-form-field>
             <mat-label>DataBase Type</mat-label>
             <input matInput [formControlName]="'DBType'" />
+        </mat-form-field>
+
+        <mat-form-field>
+            <mat-label>DataBase Type</mat-label>
+            <mat-select formControlName="DBType">
+                <mat-option value="NoSQL">NoSQL</mat-option>
+                <mat-option value="SQL">Relational databases</mat-option>
+                <mat-option value="Cloud database">Cloud database</mat-option>
+                <mat-option value="Graph">Graph</mat-option>
+            </mat-select>
         </mat-form-field>
         <!-- Production K8s Workload -->
 

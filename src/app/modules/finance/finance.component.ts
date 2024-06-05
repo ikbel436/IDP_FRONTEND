@@ -72,18 +72,8 @@ export class FinanceComponent implements OnInit, AfterViewInit, OnDestroy {
     errorMessage: string = '';
     @Input() selectedProviderId: string;
 
-    displayedColumns: string[] = [
-        'name',
-        'description',
-        'createdAt',
-        'lastUpdated',
-        'Status',
-        'ArgoCD',
-        'DockerImage',
-        'DBType',
-        'language',
-        'SonarQube',
-    ];
+    displayedColumns: string[] = ['name', 'language', 'createdAt', 'cloneUrl', 'lastUpdated', 'Status', 'ArgoCD', 'DockerImage', 'DBType', 'SonarQube', 'description', 'actions'];
+
     data: any;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
@@ -113,6 +103,13 @@ export class FinanceComponent implements OnInit, AfterViewInit, OnDestroy {
 
     }
 
+    editRow(element: any): void {
+        // Implementation for editing a row
+      }
+    
+      deleteRow(id: string): void {
+        // Implementation for deleting a row
+      }
     /**
      * After view init
      */
