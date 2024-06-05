@@ -41,16 +41,6 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { TextFieldModule } from '@angular/cdk/text-field';
 import { FinanceService } from '../finance.service';
 
-interface RepositoryItem {
-    _id: string;
-    name: string;
-    description: string | null;
-    createdAt: string;
-    lastUpdated: string;
-    cloneUrl: string;
-    language: string | null;
-    __v: number;
-}
 
 @Component({
     selector: 'mailbox-compose',
@@ -152,8 +142,6 @@ export class MailboxComposeComponent implements OnInit {
           .subscribe(
                 () => {
                     console.log('Repository updated successfully');
-                    // console.log(formData.provider);
-                    // this.selectedRepository.emit(updatedData);
                     this.matDialogRef.close(); 
                 },
                 (error) => {

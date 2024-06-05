@@ -1,11 +1,13 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { InventoryProject } from 'app/mock-api/apps/project/project.types';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class FinanceService {
     private _data: BehaviorSubject<any> = new BehaviorSubject(null);
     private apiUrl = 'http://localhost:3000/Repos';
+    
 
     /**
      * Constructor
@@ -21,6 +23,10 @@ export class FinanceService {
      */
     get data$(): Observable<any> {
         return this._data.asObservable();
+    }
+
+    get accessToken(): string {
+        return localStorage.getItem('accessToken') ?? '';
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -65,4 +71,30 @@ export class FinanceService {
             })
         );
     }
+
+    /**
+     * Create a new repo
+     * @param repo The repo to create
+     * @returns An Observable of the created repo
+     */
+    createRepo(repo: InventoryProject): Observable<any> {
+        const token = this.accessToken // Retrieve the token from local storage
+    
+        const headers = new HttpHeaders({
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        });
+    
+        return this._httpClient.post(`${this.apiUrl}/RepoTouser`, repo, { headers });
+      }
+
+        /**
+         * Get all repos
+         * @returns An Observable of all repos
+         */
+      getRepos(): Observable<{ repos: InventoryProject[] }> {
+        return this._httpClient.get<{ repos: InventoryProject[] }>(`${this.apiUrl}/get`);
+      }
+
+    
 }
