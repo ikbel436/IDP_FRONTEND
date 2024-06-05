@@ -109,7 +109,7 @@ export class FinanceComponent implements OnInit, AfterViewInit, OnDestroy {
      */
     ngOnInit(): void {
 
-        this.getRepoData();
+        this.getProjectData();
 
     }
 
@@ -174,7 +174,7 @@ export class FinanceComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.cd.detectChanges();
                 console.log('Updated details', updatedDetails);
     
-                const repo: InventoryProject = {
+                const project: InventoryProject = {
                     name: updatedDetails.name,
                     description: updatedDetails.description,
                     createdAt: updatedDetails.createdAt,
@@ -188,7 +188,7 @@ export class FinanceComponent implements OnInit, AfterViewInit, OnDestroy {
                     SonarQube: updatedDetails.SonarQube,
                 };
     
-                this.financeService.createRepo(repo).subscribe(
+                this.financeService.createRepo(project).subscribe(
                     (response) => {
                         console.log('Project added successfully:', response);
                     },
@@ -199,24 +199,24 @@ export class FinanceComponent implements OnInit, AfterViewInit, OnDestroy {
             });
     }
 
-    private getRepoData(): void {
+    private getProjectData(): void {
         this.financeService.getRepos()
-        .pipe(
-             catchError(error => {
-                 console.error('Error fetching projects:', error);
-                 return of([]); 
-             })
-         )
-         .subscribe(({ repos }: { repos: InventoryProject[] }) => {
-            this.dataSource.data = repos;
-            this.cd.detectChanges(); 
-            console.log('Repos:', this.dataSource.data);
-        });
+           .pipe(
+                catchError(error => {
+                    console.error('Error fetching projects:', error);
+                    return of([]); 
+                })
+            )
+           .subscribe(projects => {
+            if ('projects' in projects) {
+                this.dataSource.data = projects.projects;
+            } else {
+                console.error('Unexpected projects structure:', projects);
+            }            this.cd.detectChanges(); // Trigger change detection manually
+            });
     }
-    
-    }
 
     
     
 
-
+}

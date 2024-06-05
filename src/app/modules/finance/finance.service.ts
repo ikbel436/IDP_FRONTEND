@@ -92,8 +92,8 @@ export class FinanceService {
          * Get all repos
          * @returns An Observable of all repos
          */
-      getRepos(): Observable<{ repos: InventoryProject[] }> {
-        return this._httpClient.get<{ repos: InventoryProject[] }>(`${this.apiUrl}/get`);
+      getRepos(): Observable<{ projects: InventoryProject[] }> {
+        return this._httpClient.get<{ projects: InventoryProject[] }>(`${this.apiUrl}/get`);
       }
 
     
