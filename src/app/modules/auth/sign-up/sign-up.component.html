@@ -38,7 +38,21 @@
                                 }}</span>
                         </mat-error>
                     </mat-form-field>
+
+                    <!-- Birth Date field -->
+                    <mat-form-field class="w-full sm:w-1/2">
+                        <mat-label>{{ t("birthDate") }}</mat-label>
+                        <input matInput [matDatepicker]="picker" formControlName="birthDate"
+                            placeholder="{{ t('placeholders.birthDate') }}" />
+                        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-datepicker #picker></mat-datepicker>
+                        <mat-error *ngIf="signUpForm.get('birthDate').hasError('invalidAge')">
+                            {{ t('errorMessages.invalidAge') }}
+                        </mat-error>
+                    </mat-form-field>
+
                 </div>
+
 
                 <!-- Email and Phone fields -->
                 <div class="flex sm:flex-row flex-col justify-between gap-3">

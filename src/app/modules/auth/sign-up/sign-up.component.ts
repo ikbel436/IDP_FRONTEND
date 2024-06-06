@@ -31,6 +31,8 @@ import { RecaptchaModule, RecaptchaFormsModule } from 'ng-recaptcha';
 import { TranslocoModule, TranslocoService } from '@ngneat/transloco';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LanguagesComponent } from 'app/layout/common/languages/languages.component';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 @Component({
   selector: 'auth-sign-up',
   templateUrl: './sign-up.component.html',
@@ -41,6 +43,8 @@ import { LanguagesComponent } from 'app/layout/common/languages/languages.compon
   imports: [
     RouterLink,
     MatSelectModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
     // PasswordStrengthMeterComponent,
     NgIf,
     FuseAlertComponent,
@@ -107,6 +111,7 @@ export class AuthSignUpComponent implements OnInit {
     this.signUpForm = this._formBuilder.group(
       {
         name: ['', Validators.required],
+        birthDate: ['', [this.validateBirthdate]],
         // lastName: ['', Validators.required],
         email: ['', [Validators.required, Validators.email]],
         phoneNumber: ['', [Validators.required, Validators.minLength(7), Validators.maxLength(15), Validators.pattern('^[0-9]*$')]],
@@ -121,7 +126,22 @@ export class AuthSignUpComponent implements OnInit {
       }
     );
   }
+  validateBirthdate(control: AbstractControl): ValidationErrors | null {
+    const birthDate = new Date(control.value);
+    const currentDate = new Date();
+    const age = currentDate.getFullYear() - birthDate.getFullYear();
+    const monthDifference = currentDate.getMonth() - birthDate.getMonth();
+    const dayDifference = currentDate.getDate() - birthDate.getDate();
 
+    if (
+      age < 18 ||
+      (age === 18 && (monthDifference < 0 || (monthDifference === 0 && dayDifference < 0)))
+    ) {
+      return { invalidAge: true };
+    }
+
+    return null;
+  }
   // -----------------------------------------------------------------------------------------------------
   // @ Accessors
   // -----------------------------------------------------------------------------------------------------

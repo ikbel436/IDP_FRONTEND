@@ -12,10 +12,12 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
+  AbstractControl,
   FormBuilder,
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
+  ValidationErrors,
   Validators,
 } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -32,12 +34,12 @@ import { User } from 'app/core/user/user.types';
 import { Country } from 'app/models/country.types';
 import { CountryService } from 'app/services/country.service';
 import { DateTime } from 'luxon';
-import { concatMap, Observable, switchMap } from 'rxjs';
+import { concatMap, Observable, of, switchMap } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { FuseConfirmationService } from '@fuse/services/confirmation';
 import { ToastService } from 'app/services/toast.service';
 import { ImageCropperComponent } from 'ngx-image-cropper';
-
+import { MatSnackBar } from '@angular/material/snack-bar';
 @Component({
   selector: 'settings-account',
   templateUrl: './account.component.html',
@@ -97,7 +99,8 @@ export class SettingsAccountComponent implements OnInit {
     private _translocoService: TranslocoService,
     private _toastService: ToastService,
     private _fuseConfirmationService: FuseConfirmationService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private _snackBar: MatSnackBar
   ) {
     this.form = this._formBuilder.group({
       phoneNumber: ['', [Validators.required]]
@@ -105,7 +108,7 @@ export class SettingsAccountComponent implements OnInit {
 
     this.accountForm = this._formBuilder.group({
       name: [''],
-      birthDate: [''],
+      birthDate: ['', [this.validateBirthdate]],
       city: [''],
       description: [''],
 
@@ -124,7 +127,29 @@ export class SettingsAccountComponent implements OnInit {
       // gender: [''],
     });
   }
+  validateBirthdate(control: AbstractControl): ValidationErrors | null {
+    const birthDate = new Date(control.value);
+    const currentDate = new Date();
+    const age = currentDate.getFullYear() - birthDate.getFullYear();
+    const monthDifference = currentDate.getMonth() - birthDate.getMonth();
+    const dayDifference = currentDate.getDate() - birthDate.getDate();
 
+    if (
+      age < 18 ||
+      (age === 18 && (monthDifference < 0 || (monthDifference === 0 && dayDifference < 0)))
+    ) {
+      return { invalidAge: true };
+    }
+
+    return null;
+  }
+  private _showInvalidBirthdateMessage(): void {
+    this._snackBar.open('L\'âge doit être de 18 ans ou plus', 'Close', {
+      duration: 5000,
+      horizontalPosition: 'center',
+      verticalPosition: 'top',
+    });
+  }
   // -----------------------------------------------------------------------------------------------------
   // @ Lifecycle hooks
   // -----------------------------------------------------------------------------------------------------
@@ -132,6 +157,40 @@ export class SettingsAccountComponent implements OnInit {
   /**
    * On init
    */
+  // ngOnInit(): void {
+  //   // Subscribe to user data
+  //   this.user$ = this._userService.user$;
+
+  //   // Retrieve user data and countries
+  //   this.user$
+  //     .pipe(
+  //       takeUntilDestroyed(this.destroyRef),
+  //       switchMap((user) => {
+  //         if (user) {
+  //           // Patch the form with initial user data
+  //           this.patchFormWithUserData(user);
+
+  //           // Set the selected country based on user data
+  //           this.selectedCountry = this.getCountryByCode(user.countryCode) || this.getCountryByCode('+216');
+
+  //           // Retrieve countries
+  //           return this._countryService.getCountries();
+  //         } else {
+  //           // Handle case when user data is not available
+  //           return of([]);
+  //         }
+  //       })
+  //     )
+  //     .subscribe((countries) => {
+  //       this.countries = countries;
+  //       // Manually trigger change detection
+  //       this._cd.markForCheck();
+  //     });
+
+  //   // Subscribe to form changes for updating full phone number
+  //   this.accountForm.get('countryCode').valueChanges.subscribe(() => this.updateFullPhoneNumber());
+  //   this.accountForm.get('phoneNumber').valueChanges.subscribe(() => this.updateFullPhoneNumber());
+  // }
   ngOnInit(): void {
     // Create the form
 
@@ -215,6 +274,12 @@ export class SettingsAccountComponent implements OnInit {
    * Save the user data
    */
   save() {
+    if (this.accountForm.invalid) {
+      this._snackBar.open('Please correct the errors in the form before submitting.', 'Close', {
+        duration: 5000,
+      });
+      return;
+    }
     this.accountForm.disable();
     const formValue = this.accountForm.value;
     const payload = {
@@ -244,13 +309,18 @@ export class SettingsAccountComponent implements OnInit {
       )
       .subscribe({
         next: (user) => {
+          this.accountForm.enable();
           this._toastService.createSuccessToast(
-            this._translocoService.translate(
-              'confirmationDialog.titles.account'
-            ),
+            this._translocoService.translate('confirmationDialog.titles.account'),
             'updateSuccess'
           );
-          //  this.patchFormWithUserData(user); 
+
+          // Patch the form with updated user data
+          this.patchFormWithUserData(user);
+
+          // Manually trigger change detection
+          // this._cd.detectChanges();
+          //  this.patchFormWithUserData(user);
           if (this.user.email !== payload.email) {
             this.emailUpdated = true;
             //  user.emailVerified = false;
@@ -266,7 +336,7 @@ export class SettingsAccountComponent implements OnInit {
           user.image = payload.image
           user.createdAt = payload.createdAt
           user.countryCode = payload.countryCode
-
+          this._cd.detectChanges();
 
           this.patchFormWithUserData(this.user);
           console.log("Updated user data:", user);
