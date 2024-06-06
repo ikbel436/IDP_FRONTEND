@@ -5,12 +5,13 @@ export class User {
     image?: string;
     status?: string;
     phoneNumber: string;
+    countryCode: string;
     description: string;
     role: string;
     birthDate: String;
     codePostal: String;
     country: String;
     city: String;
-    password:String;
-    createdAt:Date;
+    password: String;
+    createdAt: Date;
 }

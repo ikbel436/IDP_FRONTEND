@@ -46,6 +46,7 @@ export class ProfileComponent implements OnInit {
   name: string;
   email: string;
   phoneNumber: string;
+  countryCode: string;
   description: string
   images: string;
   title = 'fileUpload';
@@ -61,6 +62,7 @@ export class ProfileComponent implements OnInit {
     image: '',
     phoneNumber: '',
     password: '',
+    countryCode: '',
 
     status: '',
     description: '',
@@ -163,6 +165,7 @@ export class ProfileComponent implements OnInit {
         this.name = this.user.name;
         this.email = this.user.email;
         this.phoneNumber = this.user.phoneNumber;
+        this.countryCode = this.user.countryCode;
         this.description = this.user.description;
       },
       (error) => {

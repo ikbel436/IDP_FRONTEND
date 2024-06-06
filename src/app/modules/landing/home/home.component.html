@@ -13,8 +13,7 @@
                     <div class="hidden sm:block">
                         <div class="flex space-x-4">
                             <a href="#"
-                                class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Getting
-                                Started</a>
+                                class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Platform</a>
                             <a href="#pricing"
                                 class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Pricing</a>
                             <a href="#"
@@ -26,7 +25,10 @@
                     </div>
                 </div>
                 <div class="hidden sm:block">
-                    <button mat-flat-button [routerLink]="['/sign-up']">Sign up</button>
+                    <button mat-flat-button [routerLink]="['/sign-in']">Login</button>
+                </div>
+                <div class="hidden sm:block">
+                    <button mat-stroked-button color="primary" [routerLink]="['/sign-up']">Get Started</button>
                 </div>
             </div>
         </div>

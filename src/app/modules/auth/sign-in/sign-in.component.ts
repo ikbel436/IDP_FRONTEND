@@ -22,7 +22,7 @@ import { TranslocoModule } from '@ngneat/transloco';
     encapsulation: ViewEncapsulation.None,
     animations: fuseAnimations,
     standalone: true,
-    imports: [RouterLink, FuseAlertComponent,TranslocoModule ,LanguagesComponent ,NgIf, FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule, MatCheckboxModule, MatProgressSpinnerModule],
+    imports: [RouterLink, FuseAlertComponent, TranslocoModule, LanguagesComponent, NgIf, FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule, MatCheckboxModule, MatProgressSpinnerModule],
 })
 export class AuthSignInComponent implements OnInit {
     @ViewChild('signInNgForm') signInNgForm: NgForm;
@@ -68,11 +68,9 @@ export class AuthSignInComponent implements OnInit {
     /**
      * Sign in
      */
-    signIn(): void
-    {
+    signIn(): void {
         // Return if the form is invalid
-        if ( this.signInForm.invalid )
-        {
+        if (this.signInForm.invalid) {
             return;
         }
         const credentials = this.signInForm.value;
@@ -85,8 +83,7 @@ export class AuthSignInComponent implements OnInit {
         // Sign in
         this._authService.signIn(credentials)
             .subscribe(
-                () =>
-                {
+                () => {
                     // Set the redirect url.
                     // The '/signed-in-redirect' is a dummy url to catch the request and redirect the user
                     // to the correct page after a successful sign in. This way, that url can be set via
@@ -97,8 +94,7 @@ export class AuthSignInComponent implements OnInit {
                     this._router.navigateByUrl(redirectURL);
 
                 },
-                (response) =>
-                {
+                (response) => {
                     // Re-enable the form
                     this.signInForm.enable();
 
@@ -107,7 +103,7 @@ export class AuthSignInComponent implements OnInit {
 
                     // Set the alert
                     this.alert = {
-                        type   : 'error',
+                        type: 'error',
                         message: 'Wrong email or password',
                     };
 
@@ -115,5 +111,9 @@ export class AuthSignInComponent implements OnInit {
                     this.showAlert = true;
                 },
             );
+    }
+
+    navigateToHome(): void {
+        this._router.navigate(['/home']); // '/home' est l'URL de votre page d'accueil
     }
 }
