@@ -96,7 +96,7 @@ export const appRoutes: Route[] = [
             { path: 'project', loadChildren: () => import('app/modules/details-project/details-project.routes') },
             { path: 'gitProvider', loadChildren: () => import('app/modules/git-provider/get-projects/get-project.routes') },
             { path: 'cloudProviderServices', loadChildren: () => import('app/modules/cloud-provider-services/cloud-provider-services.routes') },
-            { path: 'finance', loadChildren: () => import('app/modules/finance/finance.routes') },
+            { path: 'services', loadChildren: () => import('app/modules/finance/finance.routes') },
 
             // Apps
 

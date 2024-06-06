@@ -87,19 +87,20 @@ export class MailboxComposeComponent implements OnInit {
     isLoading: boolean;
     @Input() repositories: any[] = [];
     @Output() selectedRepository = new EventEmitter<any>();
-
+    newProjectId: string | null = null; 
+    projectData: any;
     constructor(
         public matDialogRef: MatDialogRef<MailboxComposeComponent>,
         private _formBuilder: FormBuilder,
         @Inject(MAT_DIALOG_DATA) public data: any,
+        
+
 
         private http: HttpClient,
         private cdr: ChangeDetectorRef,
         private financeService: FinanceService,
         private projectSerivce:DetailsProjectService
-    ) {}
-
-    ngOnInit(): void {
+    ) {
         this.composeForm = this._formBuilder.group({
             name: ['', Validators.required],
             provider: [[]],
@@ -111,7 +112,47 @@ export class MailboxComposeComponent implements OnInit {
             SonarQube: ['', Validators.required],
         });
 
+        if (data) {
+            this.newProjectId = data.newProjectId;
+            this.projectData = data.projectData; // Assign the project data
+            console.log('Received newProjectId:', this.newProjectId); // Debug log
+            console.log('Received projectData:', this.projectData); // Debug log
+
+            // Populate the form if projectData is available
+            if (this.projectData) {
+                this.populateForm(this.projectData);
+            }
+        }
+    }
+    ngOnInit(): void {
+        this.composeForm = this._formBuilder.group({
+            name: ['', Validators.required],
+            provider: [[]],
+            Status: ['', Validators.required],
+            ArgoCD: ['', Validators.required],
+            DockerImage: ['', Validators.required],
+            DBType: ['', Validators.required],
+            language: ['', Validators.required],
+            SonarQube: ['', Validators.required],
+        });
+     
         this.loadRepositories();
+        if (this.projectData) {
+            this.populateForm(this.projectData);
+        }
+    }
+    populateForm(projectData: any): void {
+        console.log('Populating form with data:', projectData); 
+        this.composeForm.patchValue({
+            name: projectData.name,
+            provider: projectData.provider,
+            Status: projectData.Status,
+            ArgoCD: projectData.ArgoCD,
+            DockerImage: projectData.DockerImage,
+            DBType: projectData.DBType,
+            language: projectData.language,
+            SonarQube: projectData.SonarQube,
+        });
     }
 
     saveAndClose(): void {
@@ -127,11 +168,19 @@ export class MailboxComposeComponent implements OnInit {
     saveAsDraft(): void {}
 
     send(): void {
+        console.log('Type of newProjectId:', typeof this.newProjectId);
+        console.log('Value of newProjectId:', this.newProjectId);
+
+        if (typeof this.newProjectId !== 'string') {
+            console.error('newProjectId is not a string:', this.newProjectId);
+            return;
+        }
         const formData = this.composeForm.value;
     
         const updatedData = {
+            _id: this.newProjectId,
             name: formData.name,
-            provider: formData.provider._id,
+            provider: formData.provider,
             Status: formData.Status,
             ArgoCD: formData.ArgoCD,
             DockerImage: formData.DockerImage,
@@ -139,8 +188,10 @@ export class MailboxComposeComponent implements OnInit {
             language: formData.language,
             SonarQube: formData.SonarQube,
         };
-    
-        this.projectSerivce.createProject(formData)
+
+        console.log('Sending updated data:', updatedData); 
+
+        this.projectSerivce.updateProject(this.newProjectId,updatedData)
           .subscribe(
                 () => {
                     console.log('Repository updated successfully');
@@ -173,22 +224,22 @@ export class MailboxComposeComponent implements OnInit {
     }
 
     selectRepository(repositoryId: string): void {
-        this.selectedRepository.emit(repositoryId);
+        this.selectedRepository.emit(repositoryId); // Emit the selected repository ID
         console.log("RepoID",repositoryId);
         const selectedRepo = this.repositories.find(
             (repo) => repo._id === repositoryId
         );
-
+    
         if (selectedRepo) {
             this.composeForm.controls['provider'].setValue(selectedRepo._id); 
             this.composeForm.patchValue({
                 name: selectedRepo.name,
-                status: selectedRepo.Status,
-                ArgoCD: selectedRepo.ArgoCD,
-                Dockerimg: selectedRepo.DockerImage,
-                databaseType: selectedRepo.DBType,
+                description: selectedRepo.description,
                 language: selectedRepo.language,
-                SonarQubeproject: selectedRepo.SonarQube,
+                DBType: selectedRepo.DBType,
+                DockerImage: selectedRepo.DockerImage,
+                Status: selectedRepo.Status,
+                SonarQube: selectedRepo.SonarQube,
             });
         } else {
             console.error('Selected repository not found');

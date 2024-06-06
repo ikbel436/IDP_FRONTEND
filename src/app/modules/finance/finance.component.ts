@@ -4,9 +4,11 @@ import {
     ChangeDetectionStrategy,
     ChangeDetectorRef,
     Component,
+    EventEmitter,
     Input,
     OnDestroy,
     OnInit,
+    Output,
     ViewChild,
     ViewEncapsulation,
 } from '@angular/core';
@@ -63,16 +65,28 @@ export interface Repository {
         MatFormFieldModule,
     ],
 })
-
-
 export class FinanceComponent implements OnInit, AfterViewInit, OnDestroy {
     @ViewChild('displayedColumns', { read: MatSort })
     displayedColumnsMatSort: MatSort;
     dataSource = new MatTableDataSource<any>();
     errorMessage: string = '';
     @Input() selectedProviderId: string;
-
-    displayedColumns: string[] = ['name', 'language', 'createdAt', 'cloneUrl', 'lastUpdated', 'Status', 'ArgoCD', 'DockerImage', 'DBType', 'SonarQube', 'description', 'actions'];
+    @Output() newProjectId = new EventEmitter<string>();
+   
+    displayedColumns: string[] = [
+        'name',
+        'language',
+        'createdAt',
+        'cloneUrl',
+        'lastUpdated',
+        'Status',
+        'ArgoCD',
+        'DockerImage',
+        'DBType',
+        'SonarQube',
+        'description',
+        'actions',
+    ];
 
     data: any;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
@@ -86,8 +100,7 @@ export class FinanceComponent implements OnInit, AfterViewInit, OnDestroy {
         private _matDialog: MatDialog,
         private cd: ChangeDetectorRef,
         private financeService: FinanceService,
-        private projectSerivce:DetailsProjectService,
-
+        private projectSerivce: DetailsProjectService
     ) {}
 
     // -----------------------------------------------------------------------------------------------------
@@ -98,20 +111,18 @@ export class FinanceComponent implements OnInit, AfterViewInit, OnDestroy {
      * On init
      */
     ngOnInit(): void {
-
         this.getProjectData();
-
     }
 
-    editRow(element: any): void {
  
+    editRow(element: any): void {
+        this.openComposeDialog(element);
+        console.log('Edit row:', element);
     }
-    
-    
-    
-      deleteRow(id: string): void {
+
+    deleteRow(id: string): void {
         // Implementation for deleting a row
-      }
+    }
     /**
      * After view init
      */
@@ -144,36 +155,41 @@ export class FinanceComponent implements OnInit, AfterViewInit, OnDestroy {
      * Open compose dialog
      */
 
-    openComposeDialog(): void {
+    openComposeDialog(projectData: any = null): void {
+        // Open the dialog without newProjectId
         const dialogRef = this._matDialog.open(MailboxComposeComponent, {
             panelClass: 'custom-dialog-container',
+            data: { projectData }
         });
 
         dialogRef.componentInstance.selectedRepository.subscribe(
             (repositoryId) => {
                 console.log('Received repository ID:', repositoryId);
-                this.handleUpdatedRepository({ provider: repositoryId });
+                this.handleUpdatedRepository(
+                    { provider: repositoryId },
+                    dialogRef
+                );
             }
         );
 
         dialogRef.afterClosed().subscribe((result) => {
             console.log('Compose dialog was closed!');
-            
         });
     }
 
     // -----------------------------------------------------------------------------------------------------
     // @ Private methods
     // -----------------------------------------------------------------------------------------------------
-    handleUpdatedRepository(data: { provider: string }): void {
+    handleUpdatedRepository(data: { provider: string }, dialogRef: any): void {
         this.financeService
-           .getRepositoryById(data.provider)
-           .subscribe((updatedDetails) => {
+            .getRepositoryById(data.provider)
+            .subscribe((updatedDetails) => {
                 this.dataSource.data = [updatedDetails];
                 this.cd.detectChanges();
                 console.log('Updated details', updatedDetails);
-    
+
                 const project: InventoryProject = {
+                    _id: updatedDetails._id,
                     name: updatedDetails.name,
                     description: updatedDetails.description,
                     createdAt: updatedDetails.createdAt,
@@ -186,10 +202,16 @@ export class FinanceComponent implements OnInit, AfterViewInit, OnDestroy {
                     language: updatedDetails.language,
                     SonarQube: updatedDetails.SonarQube,
                 };
-    
+
                 this.projectSerivce.createProject(project).subscribe(
                     (response) => {
                         console.log('Project added successfully:', response);
+                        const newProjectId = response._id.toString(); // Ensure it's a string
+                        console.log('New project ID:', newProjectId);
+
+                        // Pass newProjectId to the dialog
+                        dialogRef.componentInstance.newProjectId = newProjectId;
+                        dialogRef.componentInstance.cdr.detectChanges();
                     },
                     (error) => {
                         console.error('Failed to add project:', error);
@@ -199,23 +221,21 @@ export class FinanceComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     private getProjectData(): void {
-        this.projectSerivce.getProjects()
-           .pipe(
-                catchError(error => {
+        this.projectSerivce
+            .getProjects()
+            .pipe(
+                catchError((error) => {
                     console.error('Error fetching projects:', error);
-                    return of([]); 
+                    return of([]);
                 })
             )
-           .subscribe(projects => {
-            if ('projects' in projects) {
-                this.dataSource.data = projects.projects;
-            } else {
-                console.error('Unexpected projects structure:', projects);
-            }            this.cd.detectChanges(); // Trigger change detection manually
+            .subscribe((projects) => {
+                if ('projects' in projects) {
+                    this.dataSource.data = projects.projects;
+                } else {
+                    console.error('Unexpected projects structure:', projects);
+                }
+                this.cd.detectChanges(); // Trigger change detection manually
             });
     }
-
-    
-    
-
 }
