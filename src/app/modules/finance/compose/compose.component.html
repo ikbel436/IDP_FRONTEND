@@ -1,0 +1,120 @@
+<div class="flex flex-col max-w-240 md:min-w-160 max-h-screen -m-6">
+    <!-- Header -->
+    <div
+        class="flex flex-0 items-center justify-between h-16 pr-3 sm:pr-5 pl-6 sm:pl-8 bg-primary text-on-primary"
+    >
+        <div class="text-lg font-medium">New Service</div>
+        <button mat-icon-button (click)="saveAndClose()" [tabIndex]="-1">
+            <mat-icon
+                class="text-current"
+                [svgIcon]="'heroicons_outline:x-mark'"
+            ></mat-icon>
+        </button>
+    </div>
+
+    <!-- Compose form -->
+    <form
+        class="flex flex-col flex-auto p-6 sm:p-8 overflow-y-auto"
+        [formGroup]="composeForm"
+    >
+        <!-- Name -->
+        <mat-form-field>
+            <mat-label>Name</mat-label>
+            <input matInput [formControlName]="'name'" />
+        </mat-form-field>
+
+        <!-- Provider Type -->
+        <mat-form-field class="w-full mb-6">
+            <mat-label>Provider Repo</mat-label>
+            <mat-select
+                formControlName="provider"
+                (selectionChange)="selectRepository($event.value)"
+            >
+                <mat-option
+                    *ngFor="let option of providerOptions; trackBy: trackByFn"
+                    [value]="option.value"
+                >
+                    {{ option.viewValue }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <!-- Status -->
+        <mat-form-field>
+            <mat-label>Status</mat-label>
+            <mat-select formControlName="Status">
+                <mat-option value="Active">Active</mat-option>
+                <mat-option value="Pending">Pending</mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <!-- Test ArgoCD App -->
+        <mat-form-field>
+            <mat-label>Test ArgoCD App</mat-label>
+            <input matInput [formControlName]="'ArgoCD'" />
+        </mat-form-field>
+
+        <!-- Docker Image -->
+        <mat-form-field>
+            <mat-label>Docker Image</mat-label>
+            <input matInput [formControlName]="'DockerImage'" />
+        </mat-form-field>
+        <!-- DB Type -->
+        <mat-form-field>
+            <mat-label>DataBase Type</mat-label>
+            <mat-select formControlName="DBType">
+                <mat-option value="NoSQL">NoSQL</mat-option>
+                <mat-option value="SQL">Relational databases</mat-option>
+                <mat-option value="Cloud database">Cloud database</mat-option>
+                <mat-option value="Graph">Graph</mat-option>
+            </mat-select>
+        </mat-form-field>
+        <!-- Production K8s Workload -->
+
+        <mat-form-field>
+            <mat-label>Language</mat-label>
+            <input matInput [formControlName]="'language'" />
+        </mat-form-field>
+
+        <!-- SonarQube Project -->
+        <mat-form-field>
+            <mat-label>SonarQube Project</mat-label>
+            <input matInput [formControlName]="'SonarQube'" />
+        </mat-form-field>
+
+        <!-- Actions -->
+        <div
+            class="flex flex-col sm:flex-row sm:items-center justify-between mt-4 sm:mt-6"
+        >
+            <div class="-ml-2">
+                <!-- Json Mode -->
+                <button mat-icon-button>
+                    <mat-icon
+                        class="icon-size-5"
+                        [svgIcon]="'heroicons_solid:code-bracket'"
+                    ></mat-icon>
+                </button>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2 content-start mt-4 sm:mt-0 c">
+                <!-- Discard -->
+                <button
+                    class="ml-auto sm:ml-0"
+                    mat-stroked-button
+                    (click)="discard()"
+                >
+                    Discard
+                </button>
+                <!-- Send -->
+                <button
+                    class="order-first sm:order-last"
+                    mat-flat-button
+                    [color]="'primary'"
+                    (click)="send()"
+                >
+                    Send
+                </button>
+            </div>
+        </div>
+    </form>
+</div>

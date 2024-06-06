@@ -21,7 +21,7 @@ export class DetailsProjectService {
     return this._httpClient.get<InventoryProject>(`${this.apiUrl}/projects/${id}`);
   }
   createProject(project: InventoryProject): Observable<any> {
-    const token = this.accessToken // Retrieve the token from local storage
+    const token = this.accessToken 
 
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`,
@@ -30,4 +30,22 @@ export class DetailsProjectService {
 
     return this._httpClient.post(`${this.apiUrl}/project`, project, { headers });
   }
+
+
+  updateProject(id: string, project: Partial<InventoryProject>): Observable<any> {
+    const token = this.accessToken; 
+
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+
+    return this._httpClient.put(`${this.apiUrl}/project/${id}`, project, { headers });
+  }
 }
+
+
+
+
+
+

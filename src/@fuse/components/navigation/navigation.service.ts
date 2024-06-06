@@ -4,13 +4,15 @@ import { FuseNavigationItem } from '@fuse/components/navigation/navigation.types
 @Injectable({ providedIn: 'root' })
 export class FuseNavigationService {
     private _componentRegistry: Map<string, any> = new Map<string, any>();
-    private _navigationStore: Map<string, FuseNavigationItem[]> = new Map<string, any>();
+    private _navigationStore: Map<string, FuseNavigationItem[]> = new Map<
+        string,
+        any
+    >();
 
     /**
      * Constructor
      */
-    constructor() {
-    }
+    constructor() {}
     getUserRole(): string {
         return localStorage.getItem('userRole') ?? '';
     }
@@ -25,13 +27,24 @@ export class FuseNavigationService {
 
     getAdminNavigation(): any[] {
         return [
-
-            { type: 'basic', title: 'Settings', icon: 'heroicons_outline:cog-8-tooth', link: '/settings' },
-            { type: 'basic', title: 'Profile', icon: 'heroicons_outline:user-circle', link: '/profile' },
-            { type: 'basic', title: 'Cloud Providers Services', icon: 'heroicons_outline:cloud', link: '/cloudProviderServices' },
-
-
-
+            {
+                type: 'basic',
+                title: 'Settings',
+                icon: 'heroicons_outline:cog-8-tooth',
+                link: '/settings',
+            },
+            {
+                type: 'basic',
+                title: 'Profile',
+                icon: 'heroicons_outline:user-circle',
+                link: '/profile',
+            },
+            {
+                type: 'basic',
+                title: 'Cloud Providers Services',
+                icon: 'heroicons_outline:cloud',
+                link: '/cloudProviderServices',
+            },
         ];
     }
 
@@ -48,22 +61,55 @@ export class FuseNavigationService {
                 id: 'Project',
                 title: 'Project',
                 icon: 'heroicons_outline:clipboard-document-list',
-                type: 'group', children: [
-                    { type: 'basic', title: 'Create Project', icon: 'heroicons_outline:square-3-stack-3d', link: '/createProject' },
-                    { type: 'basic', title: 'Git Provider', icon: 'heroicons_outline:code-bracket-square', link: '/gitProvider' },
-                ]
+                type: 'group',
+                children: [
+                    {
+                        type: 'basic',
+                        title: 'Create Project',
+                        icon: 'heroicons_outline:square-3-stack-3d',
+                        link: '/createProject',
+                    },
+                    {
+                        type: 'basic',
+                        title: 'Git Provider',
+                        icon: 'heroicons_outline:code-bracket-square',
+                        link: '/gitProvider',
+                    },
+                ],
             },
 
             {
                 id: 'Cloud',
                 title: 'Self-Service',
                 icon: 'heroicons_outline:bolt',
-                type: 'group', children: [
-                    { type: 'basic', title: 'Configure Infrastructure', icon: 'heroicons_outline:cloud', link: '/configInfrastructure' },
-                    { type: 'basic', title: 'Cloud Infrastructure Templates', icon: 'heroicons_outline:cloud', link: '/templateTerraform' },
-                ]
+                type: 'group',
+                children: [
+                    {
+                        type: 'basic',
+                        title: 'Configure Infrastructure',
+                        icon: 'heroicons_outline:cloud',
+                        link: '/configInfrastructure',
+                    },
+                    // {
+                    //     type: 'basic',
+                    //     title: 'Cloud Infrastructure Templates',
+                    //     icon: 'heroicons_outline:cloud',
+                    //     link: '/templateTerraform',
+                    // },
+                    {
+                        type: 'basic',
+                        title: 'Create Service',
+                        icon: 'heroicons_outline:cloud',
+                        link: '/services',
+                    },
+                     {
+                        type: 'basic',
+                        title: 'Cloud Infrastructure Templates',
+                        icon: 'heroicons_outline:cloud',
+                        link: '/templateTerraform',
+                    },
+                ],
             },
-
         ];
     }
     // -----------------------------------------------------------------------------------------------------
@@ -126,7 +172,9 @@ export class FuseNavigationService {
     deleteNavigation(key: string): void {
         // Check if the navigation exists
         if (!this._navigationStore.has(key)) {
-            console.warn(`Navigation with the key '${key}' does not exist in the store.`);
+            console.warn(
+                `Navigation with the key '${key}' does not exist in the store.`
+            );
         }
 
         // Delete from the storage
@@ -140,14 +188,21 @@ export class FuseNavigationService {
      * @param navigation
      * @param flatNavigation
      */
-    getFlatNavigation(navigation: FuseNavigationItem[], flatNavigation: FuseNavigationItem[] = []): FuseNavigationItem[] {
+    getFlatNavigation(
+        navigation: FuseNavigationItem[],
+        flatNavigation: FuseNavigationItem[] = []
+    ): FuseNavigationItem[] {
         for (const item of navigation) {
             if (item.type === 'basic') {
                 flatNavigation.push(item);
                 continue;
             }
 
-            if (item.type === 'aside' || item.type === 'collapsable' || item.type === 'group') {
+            if (
+                item.type === 'aside' ||
+                item.type === 'collapsable' ||
+                item.type === 'group'
+            ) {
                 if (item.children) {
                     this.getFlatNavigation(item.children, flatNavigation);
                 }
@@ -164,7 +219,10 @@ export class FuseNavigationService {
      * @param id
      * @param navigation
      */
-    getItem(id: string, navigation: FuseNavigationItem[]): FuseNavigationItem | null {
+    getItem(
+        id: string,
+        navigation: FuseNavigationItem[]
+    ): FuseNavigationItem | null {
         for (const item of navigation) {
             if (item.id === id) {
                 return item;
@@ -193,7 +251,7 @@ export class FuseNavigationService {
     getItemParent(
         id: string,
         navigation: FuseNavigationItem[],
-        parent: FuseNavigationItem[] | FuseNavigationItem,
+        parent: FuseNavigationItem[] | FuseNavigationItem
     ): FuseNavigationItem[] | FuseNavigationItem | null {
         for (const item of navigation) {
             if (item.id === id) {
