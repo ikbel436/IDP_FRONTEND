@@ -40,6 +40,7 @@ import { FuseConfirmationService } from '@fuse/services/confirmation';
 import { ToastService } from 'app/services/toast.service';
 import { ImageCropperComponent } from 'ngx-image-cropper';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { AuthService } from 'app/core/auth/auth.service';
 @Component({
   selector: 'settings-account',
   templateUrl: './account.component.html',
@@ -100,7 +101,8 @@ export class SettingsAccountComponent implements OnInit {
     private _toastService: ToastService,
     private _fuseConfirmationService: FuseConfirmationService,
     public dialog: MatDialog,
-    private _snackBar: MatSnackBar
+    private _snackBar: MatSnackBar,
+    private _authService: AuthService
   ) {
     this.form = this._formBuilder.group({
       phoneNumber: ['', [Validators.required]]
@@ -124,7 +126,7 @@ export class SettingsAccountComponent implements OnInit {
       countryCode: [''],
       country: [''],
       codePostal: [''],
-      // gender: [''],
+
     });
   }
   validateBirthdate(control: AbstractControl): ValidationErrors | null {
@@ -153,49 +155,14 @@ export class SettingsAccountComponent implements OnInit {
   // -----------------------------------------------------------------------------------------------------
   // @ Lifecycle hooks
   // -----------------------------------------------------------------------------------------------------
-
-  /**
-   * On init
-   */
-  // ngOnInit(): void {
-  //   // Subscribe to user data
-  //   this.user$ = this._userService.user$;
-
-  //   // Retrieve user data and countries
-  //   this.user$
-  //     .pipe(
-  //       takeUntilDestroyed(this.destroyRef),
-  //       switchMap((user) => {
-  //         if (user) {
-  //           // Patch the form with initial user data
-  //           this.patchFormWithUserData(user);
-
-  //           // Set the selected country based on user data
-  //           this.selectedCountry = this.getCountryByCode(user.countryCode) || this.getCountryByCode('+216');
-
-  //           // Retrieve countries
-  //           return this._countryService.getCountries();
-  //         } else {
-  //           // Handle case when user data is not available
-  //           return of([]);
-  //         }
-  //       })
-  //     )
-  //     .subscribe((countries) => {
-  //       this.countries = countries;
-  //       // Manually trigger change detection
-  //       this._cd.markForCheck();
-  //     });
-
-  //   // Subscribe to form changes for updating full phone number
-  //   this.accountForm.get('countryCode').valueChanges.subscribe(() => this.updateFullPhoneNumber());
-  //   this.accountForm.get('phoneNumber').valueChanges.subscribe(() => this.updateFullPhoneNumber());
-  // }
+  private toastShownForUpdate = false;
   ngOnInit(): void {
     // Create the form
 
-
+    // Reset the toast flag when the component initializes
+    this.toastShownForUpdate = false;
     this.user$ = this._userService.user$;
+    console.log("User fffff:", this.user$);
 
     this.user$
       .pipe(
@@ -239,7 +206,7 @@ export class SettingsAccountComponent implements OnInit {
     const phoneNumber = this.accountForm.get('phoneNumber').value || '';
     const fullPhoneNumber = `${countryCode}${phoneNumber}`;
     this.user.phoneNumber = fullPhoneNumber;
-    console.log('Full phone number:', fullPhoneNumber);
+    //console.log('Full phone number:', fullPhoneNumber);
 
   }
   // -----------------------------------------------------------------------------------------------------
@@ -282,7 +249,7 @@ export class SettingsAccountComponent implements OnInit {
     }
     this.accountForm.disable();
     const formValue = this.accountForm.value;
-    const payload = {
+    const updatedUserInfo = {
       ...this.user,
       name: formValue.name,
       birthDate: DateTime.fromISO(formValue.birthDate).toFormat('yyyy-MM-dd'),
@@ -299,7 +266,7 @@ export class SettingsAccountComponent implements OnInit {
 
 
     this._userService
-      .update(payload)
+      .update(updatedUserInfo)
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         concatMap(() => {
@@ -310,10 +277,16 @@ export class SettingsAccountComponent implements OnInit {
       .subscribe({
         next: (user) => {
           this.accountForm.enable();
-          this._toastService.createSuccessToast(
-            this._translocoService.translate('confirmationDialog.titles.account'),
-            'updateSuccess'
-          );
+          // Show the toast only if it hasn't been shown for this update session
+          if (!this.toastShownForUpdate) {
+            this._toastService.createSuccessToast(
+              this._translocoService.translate('confirmationDialog.titles.account'),
+              'updateSuccess'
+            );
+            this.toastShownForUpdate = true;
+          }
+
+
 
           // Patch the form with updated user data
           this.patchFormWithUserData(user);
@@ -321,21 +294,21 @@ export class SettingsAccountComponent implements OnInit {
           // Manually trigger change detection
           // this._cd.detectChanges();
           //  this.patchFormWithUserData(user);
-          if (this.user.email !== payload.email) {
+          if (this.user.email !== updatedUserInfo.email) {
             this.emailUpdated = true;
             //  user.emailVerified = false;
           }
-          user.name = payload.name;
-          user.birthDate = payload.birthDate;
-          user.city = payload.city;
-          user.description = payload.description;
-          user.email = payload.email;
-          user.phoneNumber = payload.phoneNumber
-          user.country = payload.country
-          user.codePostal = payload.codePostal
-          user.image = payload.image
-          user.createdAt = payload.createdAt
-          user.countryCode = payload.countryCode
+          user.name = updatedUserInfo.name;
+          user.birthDate = updatedUserInfo.birthDate;
+          user.city = updatedUserInfo.city;
+          user.description = updatedUserInfo.description;
+          user.email = updatedUserInfo.email;
+          user.phoneNumber = updatedUserInfo.phoneNumber
+          user.country = updatedUserInfo.country
+          user.codePostal = updatedUserInfo.codePostal
+          user.image = updatedUserInfo.image
+          user.createdAt = updatedUserInfo.createdAt
+          user.countryCode = updatedUserInfo.countryCode
           this._cd.detectChanges();
 
           this.patchFormWithUserData(this.user);
@@ -410,10 +383,14 @@ export class SettingsAccountComponent implements OnInit {
             this.imagePreviewUrl = '';
             this.uploadedImage = undefined;
             this.user.image = '';
-            this._toastService.createSuccessToast(
-              this._translocoService.translate('confirmationDialog.titles.profilePictureRemoved'),
-              'removeSuccess'
-            );
+            // Show the toast only if it hasn't been shown for this update session
+            if (!this.toastShownForUpdate) {
+              this._toastService.createSuccessToast(
+                this._translocoService.translate('confirmationDialog.titles.account'),
+                'updateSuccess'
+              );
+              this.toastShownForUpdate = true;
+            };
             this._cd.markForCheck();
           },
           error: (err) => {
@@ -452,10 +429,14 @@ export class SettingsAccountComponent implements OnInit {
       next: (res) => {
         this._userService.user$.subscribe((user) => {
           user.image = res.url;
-          this._toastService.createSuccessToast(
-            this._translocoService.translate('confirmationDialog.titles.profilePicture'),
-            'addSuccess'
-          );
+          // Show the toast only if it hasn't been shown for this update session
+          if (!this.toastShownForUpdate) {
+            this._toastService.createSuccessToast(
+              this._translocoService.translate('confirmationDialog.titles.account'),
+              'updateSuccess'
+            );
+            this.toastShownForUpdate = true;
+          }
           this._cd.markForCheck();
           this._cd.detectChanges();
         });

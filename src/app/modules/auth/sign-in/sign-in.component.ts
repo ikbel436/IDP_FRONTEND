@@ -14,6 +14,7 @@ import { FuseAlertComponent, FuseAlertType } from '@fuse/components/alert';
 import { AuthService } from 'app/core/auth/auth.service';
 import { LanguagesComponent } from 'app/layout/common/languages/languages.component';
 import { TranslocoModule } from '@ngneat/transloco';
+import { User } from 'app/core/user/user.types';
 
 
 @Component({
@@ -111,6 +112,7 @@ export class AuthSignInComponent implements OnInit {
                     this.showAlert = true;
                 },
             );
+
     }
 
     navigateToHome(): void {

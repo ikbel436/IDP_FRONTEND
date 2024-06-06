@@ -2,23 +2,25 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AuthUtils } from 'app/core/auth/auth.utils';
 import { UserService } from 'app/core/user/user.service';
-import { catchError, Observable, of, switchMap, throwError } from 'rxjs';
+import { catchError, Observable, of, switchMap, throwError, ReplaySubject } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { tap } from 'rxjs/operators';
+import { User } from '../user/user.types';
+import { JwtHelperService } from '@auth0/angular-jwt';
 
-@Injectable({providedIn: 'root'})
-export class AuthService
-{
+@Injectable({ providedIn: 'root' })
+export class AuthService {
     private _authenticated: boolean = false;
     private apiUrl = 'http://localhost:3000/auth';
+    private _user: ReplaySubject<User> = new ReplaySubject<User>(1);
+    private _jwtHelper: JwtHelperService
     /**
      * Constructor
      */
     constructor(
         private _httpClient: HttpClient,
         private _userService: UserService,
-    )
-    {
+    ) {
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -26,18 +28,16 @@ export class AuthService
     // -----------------------------------------------------------------------------------------------------
     getUserRole(): string {
         return localStorage.getItem('userRole');
-      }
+    }
     /**
      * Setter & getter for access token
      */
-    set accessToken(token: string)
-    {
+    set accessToken(token: string) {
         localStorage.setItem('accessToken', token);
-       
+
     }
 
-    get accessToken(): string
-    {
+    get accessToken(): string {
         return localStorage.getItem('accessToken') ?? '';
     }
 
@@ -50,10 +50,10 @@ export class AuthService
      *
      * @param email
      */
-    forgotPassword(email: string): Observable<any>
-    {const url = `${this.apiUrl}/forgot`;
-        return this._httpClient.post(url, {email});
-        
+    forgotPassword(email: string): Observable<any> {
+        const url = `${this.apiUrl}/forgot`;
+        return this._httpClient.post(url, { email });
+
     }
 
     /**
@@ -65,55 +65,53 @@ export class AuthService
         localStorage.setItem('resetLink', token);
         console.log(token);
     }
-    get resetPasswordToken(): string
-    {
-        return localStorage.getItem('resetLink') ?? '' ;
+    get resetPasswordToken(): string {
+        return localStorage.getItem('resetLink') ?? '';
     }
-    resetPassword(password: string): Observable<any>
-    {
+    resetPassword(password: string): Observable<any> {
         const token = this.resetPasswordToken;
 
         const url = `${this.apiUrl}/reset`;
         const requestBody = {
-        newPass: password,
-        resetLink: token
+            newPass: password,
+            resetLink: token
         };
         console.log(requestBody.newPass);
-        
+
         return this._httpClient.post(url, requestBody).pipe(
             tap(() => {
                 // Supprimer le resetPasswordToken du localStorage après l'utilisation
                 localStorage.removeItem('resetLink');
             })
         );
-    
+
     }
 
-    
+
     /**
  * Change password
  *
  * @param credentials
  */
-changePassword(credentials: { currentPassword: string; newPassword: string }): Observable<any> {
-    const url = `${this.apiUrl}/changepassword`;
-    return this._httpClient.put(url, credentials).pipe(
-        switchMap((response: any) => {
-            if (response && response.msg === "Password successfully changed") {
-               
-                return of(response);
-            } else {
-                // Handle error case
-                return throwError('Failed to change password.');
-            }
-        }),
-        catchError(error => {
-            // Handle network errors or unexpected server responses
-            console.error('Error changing password:', error);
-            return throwError(error);
-        })
-    );
-}
+    changePassword(credentials: { currentPassword: string; newPassword: string }): Observable<any> {
+        const url = `${this.apiUrl}/changepassword`;
+        return this._httpClient.put(url, credentials).pipe(
+            switchMap((response: any) => {
+                if (response && response.msg === "Password successfully changed") {
+
+                    return of(response);
+                } else {
+                    // Handle error case
+                    return throwError('Failed to change password.');
+                }
+            }),
+            catchError(error => {
+                // Handle network errors or unexpected server responses
+                console.error('Error changing password:', error);
+                return throwError(error);
+            })
+        );
+    }
 
 
 
@@ -122,42 +120,44 @@ changePassword(credentials: { currentPassword: string; newPassword: string }): O
      *
      * @param credentials
      */
-    signIn(credentials: { email: string; password: string }): Observable<any>
-    {
+    signIn(credentials: { email: string; password: string }): Observable<any> {
         // Throw error, if the user is already logged in
-        if ( this._authenticated )
-        {
+        if (this._authenticated) {
             return throwError('User is already logged in.');
         }
         const url = `${this.apiUrl}/login`;
         return this._httpClient.post<any>(url, credentials).pipe(
-            
-            switchMap((response: any) =>
-            {
+
+            switchMap((response: any) => {
                 // Store the access token in the local storage
                 this.accessToken = response.token;
-                
+
                 console.log(this.accessToken)
-              localStorage.setItem('userRole', response.user.Role);
+                localStorage.setItem('userRole', response.user.Role);
                 // Set the authenticated flag to true
                 this._authenticated = true;
 
-                console.log(response)
-                console.log(this._authenticated)
-                // Store the user on the user service
+                console.log("signed-in response :", response.user);
+                console.log("Current userin the response", response.user);
+                console.log("helloe", this._authenticated);
                 this._userService.user = response.user;
 
+
+
                 // Return a new observable with the response
-                return of(response);
+                return this._userService.get();
             }),
+            tap((user: User) => {
+                // Update the user in UserService
+                this._userService.user = user;
+            })
         );
     }
 
     /**
      * Sign in using the access token
      */
-    signInUsingToken(): Observable<any>
-    {
+    signInUsingToken(): Observable<any> {
         // Sign in using the token
         return this._httpClient.post('api/auth/sign-in-with-token', {
             accessToken: this.accessToken,
@@ -167,8 +167,7 @@ changePassword(credentials: { currentPassword: string; newPassword: string }): O
                 // Return false
                 of(false),
             ),
-            switchMap((response: any) =>
-            {
+            switchMap((response: any) => {
                 // Replace the access token with the new one if it's available on
                 // the response object.
                 //
@@ -176,8 +175,7 @@ changePassword(credentials: { currentPassword: string; newPassword: string }): O
                 // in using the token, you should generate a new one on the server
                 // side and attach it to the response object. Then the following
                 // piece of code can replace the token with the refreshed one.
-                if ( response.accessToken )
-                {
+                if (response.accessToken) {
                     this.accessToken = response.accessToken;
                 }
 
@@ -196,10 +194,10 @@ changePassword(credentials: { currentPassword: string; newPassword: string }): O
     /**
      * Sign out
      */
-    signOut(): Observable<any>
-    {
+    signOut(): Observable<any> {
         // Remove the access token from the local storage
         localStorage.removeItem('accessToken');
+        this._user.next(null);
 
         // Set the authenticated flag to false
         this._authenticated = false;
@@ -230,20 +228,17 @@ changePassword(credentials: { currentPassword: string; newPassword: string }): O
     /**
      * Check the authentication status
      */
-    check(): Observable<boolean>
-    {
+    check(): Observable<boolean> {
 
 
-      //  return of(true);
+        //  return of(true);
         // Check if the user is logged in
-        if ( this._authenticated )
-        {
+        if (this._authenticated) {
             return of(true);
         }
 
         // // Check the access token availability
-        if ( !this.accessToken )
-        {
+        if (!this.accessToken) {
             return of(false);
         }
 
@@ -252,12 +247,12 @@ changePassword(credentials: { currentPassword: string; newPassword: string }): O
         // // {
         // //     return of(false);
         // // }
-        this._authenticated=true;
-        this.accessToken=localStorage.getItem('accessToken')
+        this._authenticated = true;
+        this.accessToken = localStorage.getItem('accessToken')
         // // If the access token exists, and it didn't expire, sign in using it
         return of(true);
     }
     getCurrentUser(): Observable<any> {
         return this._httpClient.get<any>(`${this.apiUrl}/current`);
-      }
+    }
 }
