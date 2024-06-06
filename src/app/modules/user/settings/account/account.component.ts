@@ -383,10 +383,14 @@ export class SettingsAccountComponent implements OnInit {
             this.imagePreviewUrl = '';
             this.uploadedImage = undefined;
             this.user.image = '';
-            this._toastService.createSuccessToast(
-              this._translocoService.translate('confirmationDialog.titles.profilePictureRemoved'),
-              'removeSuccess'
-            );
+            // Show the toast only if it hasn't been shown for this update session
+            if (!this.toastShownForUpdate) {
+              this._toastService.createSuccessToast(
+                this._translocoService.translate('confirmationDialog.titles.account'),
+                'updateSuccess'
+              );
+              this.toastShownForUpdate = true;
+            };
             this._cd.markForCheck();
           },
           error: (err) => {
@@ -425,10 +429,14 @@ export class SettingsAccountComponent implements OnInit {
       next: (res) => {
         this._userService.user$.subscribe((user) => {
           user.image = res.url;
-          this._toastService.createSuccessToast(
-            this._translocoService.translate('confirmationDialog.titles.profilePicture'),
-            'addSuccess'
-          );
+          // Show the toast only if it hasn't been shown for this update session
+          if (!this.toastShownForUpdate) {
+            this._toastService.createSuccessToast(
+              this._translocoService.translate('confirmationDialog.titles.account'),
+              'updateSuccess'
+            );
+            this.toastShownForUpdate = true;
+          }
           this._cd.markForCheck();
           this._cd.detectChanges();
         });
