@@ -7,6 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { Router } from '@angular/router';
 import { UserService } from 'app/core/user/user.service';
+import { AuthService } from 'app/core/auth/auth.service';
 import { User } from 'app/core/user/user.types';
 import { Subject, takeUntil } from 'rxjs';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
@@ -31,15 +32,15 @@ export class UserComponent implements OnInit, OnDestroy {
         private _changeDetectorRef: ChangeDetectorRef,
         private _router: Router,
         private _userService: UserService,
-        private _sanitizer: DomSanitizer // Inject DomSanitizer
+        private _sanitizer: DomSanitizer,
+        private _authService: AuthService // Inject DomSanitizer
     ) { }
 
     ngOnInit(): void {
         this._userService.get().subscribe(
             (user: User) => {
                 this.currentUser = user;
-                //this.currentUser.avatar = this._sanitizer.bypassSecurityTrustUrl("https://upload.wikimedia.org/wikipedia/fr/thumb/a/a0/Avatar_Logo.png/899px-Avatar_Logo.png?20190421211809"); // Use DomSanitizer
-                //console.error("this.user", this.currentUser)
+
                 this.isLoaded = true
             },
             (error) => {
@@ -73,6 +74,14 @@ export class UserComponent implements OnInit, OnDestroy {
     }
 
     signOut(): void {
-        this._router.navigate(['/sign-out']);
+        this._authService.signOut().subscribe({
+            next: () => {
+                // Redirect to the login page or any other action
+                this._router.navigate(['/sign-out']);
+            },
+            error: (err) => {
+                console.error('Sign out failed', err);
+            }
+        });
     }
 }
