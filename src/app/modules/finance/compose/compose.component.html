@@ -43,8 +43,8 @@
         <mat-form-field>
             <mat-label>Status</mat-label>
             <mat-select formControlName="Status">
-                <mat-option value="active">Active</mat-option>
-                <mat-option value="pending">Pending</mat-option>
+                <mat-option value="Active">Active</mat-option>
+                <mat-option value="Pending">Pending</mat-option>
             </mat-select>
         </mat-form-field>
 
@@ -60,11 +60,6 @@
             <input matInput [formControlName]="'DockerImage'" />
         </mat-form-field>
         <!-- DB Type -->
-        <mat-form-field>
-            <mat-label>DataBase Type</mat-label>
-            <input matInput [formControlName]="'DBType'" />
-        </mat-form-field>
-
         <mat-form-field>
             <mat-label>DataBase Type</mat-label>
             <mat-select formControlName="DBType">

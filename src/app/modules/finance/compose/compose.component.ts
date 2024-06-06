@@ -40,6 +40,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { TextFieldModule } from '@angular/cdk/text-field';
 import { FinanceService } from '../finance.service';
+import { DetailsProjectService } from 'app/modules/details-project/details-project.service';
 
 
 @Component({
@@ -94,7 +95,8 @@ export class MailboxComposeComponent implements OnInit {
 
         private http: HttpClient,
         private cdr: ChangeDetectorRef,
-        private financeService: FinanceService
+        private financeService: FinanceService,
+        private projectSerivce:DetailsProjectService
     ) {}
 
     ngOnInit(): void {
@@ -138,7 +140,7 @@ export class MailboxComposeComponent implements OnInit {
             SonarQube: formData.SonarQube,
         };
     
-        this.financeService.updateRepository(formData.provider, updatedData)
+        this.projectSerivce.createProject(formData)
           .subscribe(
                 () => {
                     console.log('Repository updated successfully');

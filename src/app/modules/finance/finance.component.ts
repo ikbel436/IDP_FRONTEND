@@ -104,8 +104,10 @@ export class FinanceComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     editRow(element: any): void {
-        // Implementation for editing a row
-      }
+ 
+    }
+    
+    
     
       deleteRow(id: string): void {
         // Implementation for deleting a row
@@ -185,7 +187,7 @@ export class FinanceComponent implements OnInit, AfterViewInit, OnDestroy {
                     SonarQube: updatedDetails.SonarQube,
                 };
     
-                this.financeService.createRepo(project).subscribe(
+                this.projectSerivce.createProject(project).subscribe(
                     (response) => {
                         console.log('Project added successfully:', response);
                     },
@@ -197,7 +199,7 @@ export class FinanceComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     private getProjectData(): void {
-        this.financeService.getRepos()
+        this.projectSerivce.getProjects()
            .pipe(
                 catchError(error => {
                     console.error('Error fetching projects:', error);
