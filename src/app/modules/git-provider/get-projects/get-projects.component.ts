@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
 import {
-    AsyncPipe,
-    CommonModule,
-    CurrencyPipe,
-    NgClass,
-    NgFor,
-    NgIf,
-    NgTemplateOutlet,
+  AsyncPipe,
+  CommonModule,
+  CurrencyPipe,
+  NgClass,
+  NgFor,
+  NgIf,
+  NgTemplateOutlet,
 } from '@angular/common';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -30,166 +30,166 @@ import { HttpClient } from '@angular/common/http';
 
 
 export interface Repository {
-    name: string;
-    description?: string;
-    createdAt: Date;
-    lastUpdated: Date;
-    cloneUrl: string;
-    language: string;
-  }
+  name: string;
+  description?: string;
+  createdAt: Date;
+  lastUpdated: Date;
+  cloneUrl: string;
+  language: string;
+}
 @Component({
-    selector: 'app-get-projects',
-    standalone: true,
-    imports: [
-        CommonModule,
-        MatTableModule,
-        NgIf,
-        MatProgressBarModule,
-        MatFormFieldModule,
-        MatIconModule,
-        MatInputModule,
-        FormsModule,
-        ReactiveFormsModule,
-        MatButtonModule,
-        MatSortModule,
-        NgFor,
-        NgTemplateOutlet,
-        MatPaginatorModule,
-        NgClass,
-        MatSlideToggleModule,
-        MatSelectModule,
-        MatOptionModule,
-        MatCheckboxModule,
-        MatRippleModule,
-        AsyncPipe,
-        CurrencyPipe,
-    ],
-    templateUrl: './get-projects.component.html',
-    styleUrl: './get-projects.component.scss',
+  selector: 'app-get-projects',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatTableModule,
+    NgIf,
+    MatProgressBarModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatButtonModule,
+    MatSortModule,
+    NgFor,
+    NgTemplateOutlet,
+    MatPaginatorModule,
+    NgClass,
+    MatSlideToggleModule,
+    MatSelectModule,
+    MatOptionModule,
+    MatCheckboxModule,
+    MatRippleModule,
+    AsyncPipe,
+    CurrencyPipe,
+  ],
+  templateUrl: './get-projects.component.html',
+  styleUrl: './get-projects.component.scss',
 })
 
 
 export class GetProjectsComponent {
-    projects: any[];
-    subscription: Subscription | undefined;
-    dataSource = new MatTableDataSource<any>();
-    displayedColumns: string[] = [
-        'name',
-        'description',
-        'createdAt',
-        'lastUpdated',
-        'cloneUrl',
-        'language',
-    ];
-    //repositories: any[] = [];
-    selectedProvider: 'github' | 'bitbucket' = 'github';
-    errorMessage: string = '';
-    constructor(
-        public dialog: MatDialog,
-        private gitProviderService: GitProviderService,
-        private localStorageService: LocalStorageService,
-        private http: HttpClient
-    ) {
-        this.loadRepositories();
+  projects: any[];
+  subscription: Subscription | undefined;
+  dataSource = new MatTableDataSource<any>();
+  displayedColumns: string[] = [
+    'name',
+    'description',
+    'createdAt',
+    'lastUpdated',
+    'cloneUrl',
+    'language',
+  ];
+  //repositories: any[] = [];
+  selectedProvider: 'github' | 'bitbucket' = 'github';
+  errorMessage: string = '';
+  constructor(
+    public dialog: MatDialog,
+    private gitProviderService: GitProviderService,
+    private localStorageService: LocalStorageService,
+    private http: HttpClient
+  ) {
+    this.loadRepositories();
+  }
+
+  ngOnInit() {
+    this.loadRepositories();
+
+    const repositories = this.localStorageService.getData('repositories');
+    if (!Array.isArray(repositories) || repositories.length === 0) {
+      this.openDialog();
     }
+  }
 
-    ngOnInit() {
-        this.loadRepositories();
-
-        const repositories = this.localStorageService.getData('repositories');
-        if (!Array.isArray(repositories) || repositories.length === 0) {
-            this.openDialog();
+  loadRepositories(): void {
+    this.http.get('http://localhost:3000/Repos/get').subscribe({
+      next: (repositories) => {
+        if (Array.isArray(repositories)) {
+          this.dataSource.data = repositories;
+        } else {
+          this.errorMessage = 'No repositories found.';
         }
+      },
+      error: (error) => {
+        console.error(error);
+        this.errorMessage = 'Failed to load repositories.';
+      },
+    });
+  }
+
+
+  ngOnDestroy(): void {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
     }
+  }
 
-    loadRepositories(): void {
-        this.http.get('http://localhost:3000/Repos/Allrepos').subscribe({
-          next: (repositories) => {
-            if (Array.isArray(repositories)) {
-              this.dataSource.data = repositories;
-            } else {
-              this.errorMessage = 'No repositories found.';
-            }
-          },
-          error: (error) => {
-            console.error(error);
-            this.errorMessage = 'Failed to load repositories.';
-          },
-        });
-      }
-      
+  copyToClipboard(url: string) {
+    navigator.clipboard
+      .writeText(url)
+      .then(() => {
+        alert('URL copied to clipboard');
+      })
 
-    ngOnDestroy(): void {
-        if (this.subscription) {
-            this.subscription.unsubscribe();
+      .catch((err) => {
+        alert('Failed to copy URL');
+      });
+  }
+
+  fetchRepositories(): void {
+    const methodCall =
+      this.selectedProvider === 'github'
+        ? this.gitProviderService.getRepositoriesGit()
+        : this.gitProviderService.getRepositoriesBitbucket();
+
+    methodCall.subscribe({
+      next: (response) => {
+        if (response && Array.isArray(response)) {
+          const mappedResponse = response.map((repo) => ({
+            name: repo.name || repo.full_name,
+            description: repo.description,
+            createdAt: repo.createdAt || repo.created_at,
+            lastUpdated: repo.updated_at,
+            cloneUrl: repo.cloneUrl || repo.url,
+            language: repo.language,
+          }));
+
+          this.http.post('http://localhost:3000/Repos/Addrepos', mappedResponse).subscribe({
+            next: () => {
+              this.dataSource.data = mappedResponse;
+              return "Repositories saved successfully."
+            },
+            error: (error) => {
+              console.error(error);
+              this.errorMessage = 'Failed to save repositories.';
+            },
+          });
+        } else {
+          this.errorMessage = 'No repositories found.';
         }
-    }
+        this.errorMessage = '';
+      },
+      error: () => {
+        this.errorMessage = 'Failed to fetch repositories. Please try again.';
+      },
+    });
+  }
 
-    copyToClipboard(url: string) {
-        navigator.clipboard
-            .writeText(url)
-            .then(() => {
-                alert('URL copied to clipboard');
-            })
-            
-            .catch((err) => {
-                alert('Failed to copy URL');
-            });
-    }
 
-    fetchRepositories(): void {
-        const methodCall =
-          this.selectedProvider === 'github'
-           ? this.gitProviderService.getRepositoriesGit()
-            : this.gitProviderService.getRepositoriesBitbucket();
-      
-        methodCall.subscribe({
-          next: (response) => {
-            if (response && Array.isArray(response)) {
-              const mappedResponse = response.map((repo) => ({
-                name: repo.name || repo.full_name,
-                description: repo.description,
-                createdAt: repo.createdAt || repo.created_at,
-                lastUpdated: repo.updated_at,
-                cloneUrl: repo.cloneUrl || repo.url,
-                language: repo.language,
-              }));
-      
-              this.http.post('http://localhost:3000/Repos/Addrepos', mappedResponse).subscribe({
-                next: () => {
-                  this.dataSource.data = mappedResponse;
-                    return "Repositories saved successfully."
-                },
-                error: (error) => {
-                    console.error(error);
-                  this.errorMessage = 'Failed to save repositories.';
-                },
-              });
-            } else {
-              this.errorMessage = 'No repositories found.';
-            }
-            this.errorMessage = '';
-          },
-          error: () => {
-            this.errorMessage = 'Failed to fetch repositories. Please try again.';
-          },
-        });
+  openDialog(): void {
+    const dialogRef = this.dialog.open(BitbucketCredComponent, {
+      width: '400px',
+      data: { selectedProvider: this.selectedProvider },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        const { accessToken, workspace, selectedProvider } = result;
+        this.gitProviderService.setCredentials(accessToken, workspace);
+        this.selectedProvider = selectedProvider;
+        this.fetchRepositories();
       }
-      
-
-    openDialog(): void {
-        const dialogRef = this.dialog.open(BitbucketCredComponent, {
-            width: '400px',
-            data: { selectedProvider: this.selectedProvider },
-        });
-
-        dialogRef.afterClosed().subscribe((result) => {
-            if (result) {
-                const { accessToken, workspace, selectedProvider } = result;
-                this.gitProviderService.setCredentials(accessToken, workspace);
-                this.selectedProvider = selectedProvider;
-                this.fetchRepositories();
-            }
-        });
-    }
+    });
+  }
 }
