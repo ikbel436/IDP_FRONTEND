@@ -12,14 +12,14 @@ import { ClientGuard } from './core/auth/guards/client.guard';
 export const appRoutes: Route[] = [
 
     // Redirect empty path to '/dashboards/project'
-    { path: '', pathMatch: 'full', redirectTo: '/profile' },
+    { path: '', pathMatch: 'full', redirectTo: '/userHome' },
 
     // Redirect signed-in user to the '/dashboards/project'
     //
     // After the user signs in, the sign-in page will redirect the user to the 'signed-in-redirect'
     // path. Below is another redirection for that path to redirect the user to the desired
     // location. This is a small convenience to keep all main routes together here on this file.
-    { path: 'signed-in-redirect', pathMatch: 'full', redirectTo: '/profile' },
+    { path: 'signed-in-redirect', pathMatch: 'full', redirectTo: '/userHome' },
     {
         path: 'settings',
         canActivate: [AuthGuard],
@@ -89,6 +89,7 @@ export const appRoutes: Route[] = [
         children: [
 
             // Dashboards
+            { path: 'userHome', loadChildren: () => import('app/modules/landing/logged-in-home/logged-in-home.routes') },
             { path: 'createProject', loadChildren: () => import('app/mock-api/apps/project/project.routes') },
             { path: 'profile', loadChildren: () => import('app/modules/profile/profile.routes') },
             { path: 'configInfrastructure', loadChildren: () => import('app/modules/config-infra/config-infra.routes') },
@@ -96,6 +97,8 @@ export const appRoutes: Route[] = [
             { path: 'project', loadChildren: () => import('app/modules/details-project/details-project.routes') },
             { path: 'gitProvider', loadChildren: () => import('app/modules/git-provider/get-projects/get-project.routes') },
             { path: 'cloudProviderServices', loadChildren: () => import('app/modules/cloud-provider-services/cloud-provider-services.routes') },
+            { path: 'addCloudService', loadChildren: () => import('app/modules/cloud-services/add-cloud-service/add-cloud-services.routes') },
+            { path: 'listCloudServices', loadChildren: () => import('app/modules/cloud-services/list-cloud-services/list-cloud-services.routes') },
             { path: 'services', loadChildren: () => import('app/modules/finance/finance.routes') },
 
             // Apps
