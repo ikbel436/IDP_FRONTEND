@@ -29,10 +29,11 @@ import { BehaviorSubject } from 'rxjs';
 import { FinanceService } from './finance.service';
 import { DetailsProjectService } from '../details-project/details-project.service';
 import { InventoryProject } from 'app/mock-api/apps/project/project.types';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 export interface Repository {
     name: string;
-    description: string | null;
+    // description: string | null;
     createdAt: string;
     lastUpdated: string;
     cloneUrl: string;
@@ -82,9 +83,8 @@ export class FinanceComponent implements OnInit, AfterViewInit, OnDestroy {
         'Status',
         'ArgoCD',
         'DockerImage',
-        'DBType',
         'SonarQube',
-        'description',
+        'DBType',
         'actions',
     ];
 
@@ -100,7 +100,8 @@ export class FinanceComponent implements OnInit, AfterViewInit, OnDestroy {
         private _matDialog: MatDialog,
         private cd: ChangeDetectorRef,
         private financeService: FinanceService,
-        private projectSerivce: DetailsProjectService
+        private projectSerivce: DetailsProjectService,
+        private _snackBar: MatSnackBar
     ) {}
 
     // -----------------------------------------------------------------------------------------------------
@@ -117,11 +118,24 @@ export class FinanceComponent implements OnInit, AfterViewInit, OnDestroy {
  
     editRow(element: any): void {
         this.openComposeDialog(element);
-        console.log('Edit row:', element);
     }
 
     deleteRow(id: string): void {
-        // Implementation for deleting a row
+        this.projectSerivce.deleteProject(id).subscribe(
+            () => {
+                this.dataSource.data = this.dataSource.data.filter(project => project._id !== id);
+                this.cd.detectChanges(); 
+                this._snackBar.open('Project deleted successfully', 'Close', {
+                    duration: 2000,
+                });
+            },
+            (error) => {
+                console.error('Failed to delete project:', error);
+                this._snackBar.open('Failed to delete project', 'Close', {
+                    duration: 2000,
+                });
+            }
+        );
     }
     /**
      * After view init
@@ -164,7 +178,6 @@ export class FinanceComponent implements OnInit, AfterViewInit, OnDestroy {
 
         dialogRef.componentInstance.selectedRepository.subscribe(
             (repositoryId) => {
-                console.log('Received repository ID:', repositoryId);
                 this.handleUpdatedRepository(
                     { provider: repositoryId },
                     dialogRef
@@ -173,7 +186,19 @@ export class FinanceComponent implements OnInit, AfterViewInit, OnDestroy {
         );
 
         dialogRef.afterClosed().subscribe((result) => {
-            console.log('Compose dialog was closed!');
+            if (result && result.updatedProject) {
+                // Update the data source with the new/updated project
+                const index = this.dataSource.data.findIndex(project => project._id === result.updatedProject._id);
+                if (index > -1) {
+                    // Update existing project
+                    this.dataSource.data[index] = result.updatedProject;
+                } else {
+                    // Add new project
+                    this.dataSource.data = [...this.dataSource.data, result.updatedProject];
+                }
+                this.dataSource._updateChangeSubscription(); // Trigger table update
+                this.cd.detectChanges(); // Trigger change detection manually
+            }
         });
     }
 
@@ -186,12 +211,11 @@ export class FinanceComponent implements OnInit, AfterViewInit, OnDestroy {
             .subscribe((updatedDetails) => {
                 this.dataSource.data = [updatedDetails];
                 this.cd.detectChanges();
-                console.log('Updated details', updatedDetails);
 
                 const project: InventoryProject = {
                     _id: updatedDetails._id,
                     name: updatedDetails.name,
-                    description: updatedDetails.description,
+                    // description: updatedDetails.description,
                     createdAt: updatedDetails.createdAt,
                     lastUpdated: updatedDetails.lastUpdated,
                     cloneUrl: updatedDetails.cloneUrl,
@@ -205,11 +229,7 @@ export class FinanceComponent implements OnInit, AfterViewInit, OnDestroy {
 
                 this.projectSerivce.createProject(project).subscribe(
                     (response) => {
-                        console.log('Project added successfully:', response);
                         const newProjectId = response._id.toString(); // Ensure it's a string
-                        console.log('New project ID:', newProjectId);
-
-                        // Pass newProjectId to the dialog
                         dialogRef.componentInstance.newProjectId = newProjectId;
                         dialogRef.componentInstance.cdr.detectChanges();
                     },

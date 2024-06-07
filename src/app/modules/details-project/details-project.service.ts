@@ -42,6 +42,10 @@ export class DetailsProjectService {
 
     return this._httpClient.put(`${this.apiUrl}/project/${id}`, project, { headers });
   }
+  deleteProject(projectId: string): Observable<any> {
+    return this._httpClient.delete(`${this.apiUrl}/projects/${projectId}`);
+}
+
 }
 
 

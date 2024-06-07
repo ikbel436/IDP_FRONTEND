@@ -2,7 +2,7 @@ export interface InventoryProject
 {
     _id: string;
     name: string;
-    description: string | null;
+    // description: string | null;
     createdAt: string;
     lastUpdated: string;
     cloneUrl: string;

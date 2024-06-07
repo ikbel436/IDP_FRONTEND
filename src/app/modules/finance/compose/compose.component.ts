@@ -41,6 +41,8 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { TextFieldModule } from '@angular/cdk/text-field';
 import { FinanceService } from '../finance.service';
 import { DetailsProjectService } from 'app/modules/details-project/details-project.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
 
 
 @Component({
@@ -89,6 +91,9 @@ export class MailboxComposeComponent implements OnInit {
     @Output() selectedRepository = new EventEmitter<any>();
     newProjectId: string | null = null; 
     projectData: any;
+    isEditMode: boolean = false;
+    showSnackbar$ = new BehaviorSubject<boolean>(false);
+
     constructor(
         public matDialogRef: MatDialogRef<MailboxComposeComponent>,
         private _formBuilder: FormBuilder,
@@ -99,11 +104,13 @@ export class MailboxComposeComponent implements OnInit {
         private http: HttpClient,
         private cdr: ChangeDetectorRef,
         private financeService: FinanceService,
-        private projectSerivce:DetailsProjectService
+        private projectSerivce:DetailsProjectService,
+        private _snackBar: MatSnackBar
     ) {
+        // Initialize the form in the constructor
         this.composeForm = this._formBuilder.group({
-            name: ['', Validators.required],
-            provider: [[]],
+            name: [{ value: '', disabled: this.isEditMode }, Validators.required],
+            provider: [{ value: '', disabled: this.isEditMode }, Validators.required], // Ensure provider is required
             Status: ['', Validators.required],
             ArgoCD: ['', Validators.required],
             DockerImage: ['', Validators.required],
@@ -112,11 +119,10 @@ export class MailboxComposeComponent implements OnInit {
             SonarQube: ['', Validators.required],
         });
 
-        if (data) {
-            this.newProjectId = data.newProjectId;
-            this.projectData = data.projectData; // Assign the project data
-            console.log('Received newProjectId:', this.newProjectId); // Debug log
-            console.log('Received projectData:', this.projectData); // Debug log
+        if (data && data.projectData) {
+            this.newProjectId = data.projectData._id;
+            this.projectData = data.projectData; 
+            this.isEditMode = true;
 
             // Populate the form if projectData is available
             if (this.projectData) {
@@ -125,24 +131,23 @@ export class MailboxComposeComponent implements OnInit {
         }
     }
     ngOnInit(): void {
-        this.composeForm = this._formBuilder.group({
-            name: ['', Validators.required],
-            provider: [[]],
-            Status: ['', Validators.required],
-            ArgoCD: ['', Validators.required],
-            DockerImage: ['', Validators.required],
-            DBType: ['', Validators.required],
-            language: ['', Validators.required],
-            SonarQube: ['', Validators.required],
-        });
      
         this.loadRepositories();
+        if (this.isEditMode && this.projectData.provider) {
+            this.loadProvider(this.projectData.provider);
+        }
         if (this.projectData) {
             this.populateForm(this.projectData);
         }
     }
+    loadProvider(providerId: string): void {
+        this.financeService.getRepositoryById(providerId).subscribe((provider) => {
+            this.composeForm.controls['provider'].setValue(provider._id);
+        }, (error) => {
+            console.error('Failed to load provider data:', error);
+        });
+    }
     populateForm(projectData: any): void {
-        console.log('Populating form with data:', projectData); 
         this.composeForm.patchValue({
             name: projectData.name,
             provider: projectData.provider,
@@ -153,6 +158,11 @@ export class MailboxComposeComponent implements OnInit {
             language: projectData.language,
             SonarQube: projectData.SonarQube,
         });
+
+        if (this.isEditMode) {
+            this.composeForm.controls['name'].disable();
+            this.composeForm.controls['provider'].disable();
+        }
     }
 
     saveAndClose(): void {
@@ -168,13 +178,6 @@ export class MailboxComposeComponent implements OnInit {
     saveAsDraft(): void {}
 
     send(): void {
-        console.log('Type of newProjectId:', typeof this.newProjectId);
-        console.log('Value of newProjectId:', this.newProjectId);
-
-        if (typeof this.newProjectId !== 'string') {
-            console.error('newProjectId is not a string:', this.newProjectId);
-            return;
-        }
         const formData = this.composeForm.value;
     
         const updatedData = {
@@ -189,18 +192,21 @@ export class MailboxComposeComponent implements OnInit {
             SonarQube: formData.SonarQube,
         };
 
-        console.log('Sending updated data:', updatedData); 
 
         this.projectSerivce.updateProject(this.newProjectId,updatedData)
-          .subscribe(
-                () => {
-                    console.log('Repository updated successfully');
-                    this.matDialogRef.close(); 
-                },
-                (error) => {
-                    console.error('Failed to update repository:', error);
-                }
-            );
+        .subscribe(
+            (updatedProject) => {
+                this.matDialogRef.close({ updatedProject }); 
+                window.location.reload();
+                this._snackBar.open('Project updated', 'OK', {
+                    duration: 3000,
+                });
+                
+            },
+            (error) => {
+                console.error('Failed to update repository:', error);
+            }
+        );
     }
     
   
@@ -217,7 +223,6 @@ export class MailboxComposeComponent implements OnInit {
                     }));
                     this.cdr.detectChanges();
                     this.isLoading = true;
-                    console.log(this.isLoading);
                     this.cdr.detectChanges();
                 });
         }, 0);
@@ -225,7 +230,6 @@ export class MailboxComposeComponent implements OnInit {
 
     selectRepository(repositoryId: string): void {
         this.selectedRepository.emit(repositoryId); // Emit the selected repository ID
-        console.log("RepoID",repositoryId);
         const selectedRepo = this.repositories.find(
             (repo) => repo._id === repositoryId
         );
@@ -234,7 +238,7 @@ export class MailboxComposeComponent implements OnInit {
             this.composeForm.controls['provider'].setValue(selectedRepo._id); 
             this.composeForm.patchValue({
                 name: selectedRepo.name,
-                description: selectedRepo.description,
+                ArgoCD: selectedRepo.ArgoCD,
                 language: selectedRepo.language,
                 DBType: selectedRepo.DBType,
                 DockerImage: selectedRepo.DockerImage,
