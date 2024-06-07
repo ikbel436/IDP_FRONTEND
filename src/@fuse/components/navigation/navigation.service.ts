@@ -28,8 +28,15 @@ export class FuseNavigationService {
     getAdminNavigation(): any[] {
         return [
 
-            { type: 'basic', title: 'Settings', icon: 'heroicons_outline:cog-8-tooth', link: '/settings' },
-            { type: 'basic', title: 'Profile', icon: 'heroicons_outline:user-circle', link: '/profile' },
+            {
+                id: 'Home',
+                title: 'Home',
+                icon: 'heroicons_outline:home',
+                type: 'basic',
+                link: '/userHome'
+            },
+            //{ type: 'basic', title: 'Profile', icon: 'heroicons_outline:user-circle', link: '/profile' },
+            //{ type: 'basic', title: 'Settings', icon: 'heroicons_outline:cog-8-tooth', link: '/settings' },
             {
                 type: 'group', title: 'Manage Cloud Providers Services', icon: 'heroicons_outline:cloud', link: '/cloudProviderServices',
                 children: [
@@ -49,25 +56,25 @@ export class FuseNavigationService {
                 title: 'Home',
                 icon: 'heroicons_outline:home',
                 type: 'basic',
-                link: '/createProject/inventory'
+                link: '/userHome'
             },
             {
                 id: 'Project',
-                title: 'Project',
-                icon: 'heroicons_outline:clipboard-document-list',
+                title: 'Catalog',
+                icon: 'heroicons_outline:list-bullet',
                 type: 'group',
                 children: [
                     {
                         type: 'basic',
-                        title: 'Create Project',
-                        icon: 'heroicons_outline:square-3-stack-3d',
-                        link: '/createProject',
+                        title: 'Cloud Services',
+                        icon: 'heroicons_outline:cloud',
+                        link: '/listCloudServices',
                     },
                     {
                         type: 'basic',
-                        title: 'Git Provider',
+                        title: 'Infrastructure Templates',
                         icon: 'heroicons_outline:code-bracket-square',
-                        link: '/gitProvider',
+                        link: '/templateTerraform',
                     },
                 ],
             },
@@ -77,9 +84,10 @@ export class FuseNavigationService {
                 title: 'Self-Service',
                 icon: 'heroicons_outline:bolt',
                 type: 'group', children: [
-                    { type: 'basic', title: 'Configure Infrastructure', icon: 'heroicons_outline:cloud', link: '/configInfrastructure' },
-                    { type: 'basic', title: 'Cloud Infrastructure Templates', icon: 'heroicons_outline:cloud', link: '/templateTerraform' },
-                    { type: 'basic', title: 'Cloud Services', icon: 'heroicons_outline:list-bullet', link: '/listCloudServices' },
+                    // { type: 'basic', title: 'Configure Infrastructure', icon: 'heroicons_outline:cloud', link: '/configInfrastructure' },
+                    //{ type: 'basic', title: 'Cloud Infrastructure Templates', icon: 'heroicons_outline:cloud', link: '/templateTerraform' },
+                    //{ type: 'basic', title: 'Cloud Services', icon: 'heroicons_outline:list-bullet', link: '/listCloudServices' },
+                    { type: 'basic', title: 'Create Services', icon: 'heroicons_outline:list-bullet', link: '/services' },
                 ]
             },
 

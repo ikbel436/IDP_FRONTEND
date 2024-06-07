@@ -54,23 +54,46 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
   standalone: true,
 })
 export class ListCloudServicesComponent implements OnInit {
-  displayedColumns: string[] = [
-    'provider',
-    'serviceName',
-    'serviceType',
-    'location',
-    'availability'
-  ];
+
 
   cloudServices: CloudService[] = [];
   uniqueProviders: string[] = [];
   selectedProvider: string | null = null;
+  userRole: string;
+  filteredCloudServices: CloudService[] = [];
+
+  displayedColumns: string[] = [];
 
   constructor(private cloudServiceService: CloudServiceService) { }
 
   ngOnInit(): void {
+    this.userRole = this.getUserRole(); // Get user role from localStorage
+    this.setDisplayedColumns();
     this.fetchCloudServices();
   }
+
+  getUserRole(): string {
+    return localStorage.getItem('userRole') ?? '';
+  }
+
+  isAdmin(): boolean {
+    return this.getUserRole() === 'admin';
+  }
+
+  isUser(): boolean {
+    return this.getUserRole() === 'User';
+  }
+
+  setDisplayedColumns(): void {
+    this.displayedColumns = ['TYPE', 'PROVIDER', 'SERVICE_NAME', 'LOCATION'];
+    if (this.isAdmin()) {
+      this.displayedColumns.push('AVAILABILITY');
+    }
+    if (this.isUser()) {
+      this.displayedColumns.push('ADD_SERVICE');
+    }
+  }
+
 
   fetchCloudServices(): void {
     this.cloudServiceService.getCloudServices().subscribe(cloudServices => {
@@ -111,5 +134,21 @@ export class ListCloudServicesComponent implements OnInit {
     this.cloudServiceService.updateServiceAvailability(service).subscribe(updatedService => {
       // Handle success or error response if needed
     });
+  }
+
+  addService(service: CloudService): void {
+    // Implement logic to add the service for the user
+    console.log('Service added for user:', service);
+  }
+
+  getProviderLogo(provider: string): string {
+    const logos: { [key: string]: string } = {
+      'AWS': 'assets/images/logo/aws.png',
+      'Azure': 'assets/images/logo/azure.png',
+      'GCP': 'assets/images/logo/gcp.png',
+      'Oracle Cloud': 'assets/images/logo/oracle.png',
+      'IBM': 'assets/images/logo/ibm.png'
+    };
+    return logos[provider] || '';
   }
 }
