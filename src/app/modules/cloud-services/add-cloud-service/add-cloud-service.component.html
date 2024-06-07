@@ -36,7 +36,7 @@
                                     <mat-option value="IBM">IBM</mat-option>
                                 </mat-select>
                                 <mat-icon class="icon-size-5" matPrefix
-                                    [svgIcon]="'heroicons_outline:cloud'"></mat-icon>
+                                    [svgIcon]="'heroicons_solid:cloud'"></mat-icon>
                                 <mat-error
                                     *ngIf="cloudServiceForm.get('provider').invalid && cloudServiceForm.get('provider').touched">
                                     Provider is required
@@ -45,29 +45,41 @@
                         </div>
                         <div class="flex">
                             <mat-form-field class="flex-auto"
+                                [ngClass]="{'error': cloudServiceForm.get('serviceType').invalid && cloudServiceForm.get('serviceType').touched}">
+                                <mat-label for="serviceType">Service Type</mat-label>
+                                <!-- <input [formControl]="cloudServiceForm.get('serviceType')" matInput id="serviceType"
+                                    [placeholder]="'Enter Service Name'"> -->
+                                    <mat-select [formControl]="cloudServiceForm.get('serviceType')" id="serviceType"
+                                    [placeholder]="'Enter Service Type'">
+                                    <mat-option value="Storage">Storage</mat-option>
+                                    <mat-option value="Compute">Compute</mat-option>
+                                    <mat-option value="DataBase">DataBase</mat-option>
+                                    <mat-option value="Networking">Networking</mat-option>
+                                    <mat-option value="Security">Security</mat-option>
+                                </mat-select>
+                                
+                                <mat-icon class="icon-size-5" matPrefix
+                                    [svgIcon]="'heroicons_solid:cube'"></mat-icon>
+                                <mat-error
+                                    *ngIf="cloudServiceForm.get('serviceType').invalid && cloudServiceForm.get('serviceType').touched">
+                                    Service Type is required
+                                </mat-error>
+                            </mat-form-field>
+                        <br/>
+                        <br/>
+                        <br/>
+                        </div>
+                        <div class="flex">
+                            <mat-form-field class="flex-auto"
                                 [ngClass]="{'error': cloudServiceForm.get('serviceName').invalid && cloudServiceForm.get('serviceName').touched}">
                                 <mat-label for="serviceName">Service Name</mat-label>
                                 <input [formControl]="cloudServiceForm.get('serviceName')" matInput id="serviceName"
                                     [placeholder]="'Enter Service Name'">
                                 <mat-icon class="icon-size-5" matPrefix
-                                    [svgIcon]="'heroicons_solid:envelope'"></mat-icon>
+                                    [svgIcon]="'heroicons_solid:pencil'"></mat-icon>
                                 <mat-error
                                     *ngIf="cloudServiceForm.get('serviceName').invalid && cloudServiceForm.get('serviceName').touched">
                                     Service Name is required
-                                </mat-error>
-                            </mat-form-field>
-                        </div>
-                        <div class="flex">
-                            <mat-form-field class="flex-auto"
-                                [ngClass]="{'error': cloudServiceForm.get('serviceType').invalid && cloudServiceForm.get('serviceType').touched}">
-                                <mat-label for="serviceType">Service Type</mat-label>
-                                <input [formControl]="cloudServiceForm.get('serviceType')" matInput id="serviceType"
-                                    [placeholder]="'Enter Service Type'">
-                                <mat-icon class="icon-size-5" matPrefix
-                                    [svgIcon]="'heroicons_solid:envelope'"></mat-icon>
-                                <mat-error
-                                    *ngIf="cloudServiceForm.get('serviceType').invalid && cloudServiceForm.get('serviceType').touched">
-                                    Service Type is required
                                 </mat-error>
                             </mat-form-field>
                         </div>
@@ -78,7 +90,7 @@
                                 <input [formControl]="cloudServiceForm.get('location')" matInput id="location"
                                     [placeholder]="'Enter Location'">
                                 <mat-icon class="icon-size-5" matPrefix
-                                    [svgIcon]="'heroicons_solid:envelope'"></mat-icon>
+                                    [svgIcon]="'heroicons_solid:map-pin'"></mat-icon>
                                 <mat-error
                                     *ngIf="cloudServiceForm.get('location').invalid && cloudServiceForm.get('location').touched">
                                     Location is required
