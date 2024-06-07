@@ -138,7 +138,7 @@ export class ListCloudServicesComponent implements OnInit {
 
   addService(service: CloudService): void {
     // Implement logic to add the service for the user
-    console.log('Service added for user:', service);
+    // console.log('Service added for user:', service);
   }
 
   getProviderLogo(provider: string): string {

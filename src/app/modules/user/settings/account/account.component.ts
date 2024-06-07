@@ -162,13 +162,13 @@ export class SettingsAccountComponent implements OnInit {
     // Reset the toast flag when the component initializes
     this.toastShownForUpdate = false;
     this.user$ = this._userService.user$;
-    console.log("User fffff:", this.user$);
+    //console.log("User fffff:", this.user$);
 
     this.user$
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         switchMap((user) => {
-          console.log("user", user);
+          // console.log("user", user);
 
           this.user = user;
           this.accountForm.patchValue({
@@ -312,7 +312,7 @@ export class SettingsAccountComponent implements OnInit {
           this._cd.detectChanges();
 
           this.patchFormWithUserData(this.user);
-          console.log("Updated user data:", user);
+          // console.log("Updated user data:", user);
         },
 
 
@@ -421,7 +421,7 @@ export class SettingsAccountComponent implements OnInit {
   }
   uploadImage() {
     if (!this.uploadedImage) {
-      console.log("error")
+      //console.log("error")
       return;
     }
 

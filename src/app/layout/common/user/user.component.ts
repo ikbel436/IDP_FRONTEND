@@ -57,7 +57,7 @@ export class UserComponent implements OnInit, OnDestroy {
     updateStatus1(status: string): void {
         this._userService.updateUserStatus(status).subscribe(
             (response) => {
-                console.log('User status updated successfully:', response);
+                //console.log('User status updated successfully:', response);
                 this.currentUser.status = status;
                 window.location.reload();
             },

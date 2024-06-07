@@ -19,89 +19,86 @@ import { DetailsProjectService } from './details-project.service';
 import { UserService } from 'app/core/user/user.service';
 import { FuseCardComponent } from '@fuse/components/card';
 @Component({
-  selector: 'app-details-project',
-  encapsulation  : ViewEncapsulation.None,
+    selector: 'app-details-project',
+    encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone     : true,
-    imports        : [FuseCardComponent ,TranslocoModule,AsyncPipe,CommonModule, MatIconModule, MatButtonModule, MatRippleModule, MatMenuModule, MatTabsModule, MatButtonToggleModule, NgApexchartsModule, NgFor, NgIf, MatTableModule, NgClass, CurrencyPipe],
+    standalone: true,
+    imports: [FuseCardComponent, TranslocoModule, AsyncPipe, CommonModule, MatIconModule, MatButtonModule, MatRippleModule, MatMenuModule, MatTabsModule, MatButtonToggleModule, NgApexchartsModule, NgFor, NgIf, MatTableModule, NgClass, CurrencyPipe],
 
-  templateUrl: './details-project.component.html',
-  styleUrl: './details-project.component.scss',
-  styles         : [
-    `
+    templateUrl: './details-project.component.html',
+    styleUrl: './details-project.component.scss',
+    styles: [
+        `
         cards fuse-card {
             margin: 16px;
         }
     `,
-],
+    ],
 })
 export class DetailsProjectComponent {
-  chartGithubIssues: ApexOptions = {};
+    chartGithubIssues: ApexOptions = {};
     chartTaskDistribution: ApexOptions = {};
     chartBudgetDistribution: ApexOptions = {};
     chartWeeklyExpenses: ApexOptions = {};
     chartMonthlyExpenses: ApexOptions = {};
     chartYearlyExpenses: ApexOptions = {};
     data: any;
-   // selectedProject: string;
-   projects$: Observable<{ projects: InventoryProject[] }>;
+    // selectedProject: string;
+    projects$: Observable<{ projects: InventoryProject[] }>;
     selectedProject: InventoryProject | null = null;
     selectedProjectName: string | null = null;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
-    currentProject:any
+    currentProject: any
     /**
      * Constructor
      */
-  
+
     constructor(
         private _projectService: DetailsProjectService,
         private _router: Router,
-         private cd: ChangeDetectorRef,
-         private userService: UserService
-    )
-    { // this.projects$ = this._projectService.getProjects();
+        private cd: ChangeDetectorRef,
+        private userService: UserService
+    ) { // this.projects$ = this._projectService.getProjects();
     }
 
     // -----------------------------------------------------------------------------------------------------
     // @ Lifecycle hooks
     // -----------------------------------------------------------------------------------------------------
-    currentUser:any
+    currentUser: any
     imageUrl: string;
     /**
      * On init
      */
-    ngOnInit(): void
-
-    {
-      this.projects$ = this._projectService.getProjects();
-      // Subscribe to projects$ observable to get the first project and set it as selected
-      this.projects$.subscribe(data => {
-        const projects = data.projects; // Access the projects array from the data object
-        if (projects && projects.length > 0) {
-          this.selectedProjectName = projects[0].name;
-          this.selectedProject = projects[0];
-          console.log("Selected Project:", this.selectedProject);
-          this.cd.detectChanges(); // Trigger change detection manually
-        }
-      });
-      this.userService.get().subscribe(
-        user => {
-          // this.getUserData(user);
-          this.currentUser = user;
-        //  this.ctx = user;
-          // Ensure currentUser is defined before calling fetchImage
-          if (this.currentUser && this.currentUser.image) {
-            const transformedUrl = this.currentUser.image.replace('/upload/', '/upload/w_128,h_128,c_fill/');
-            this.imageUrl = transformedUrl;
-            console.log(this.imageUrl); // Check if URL is logged
-          }
-          // Fetch user data after currentUser is set
-        },
-        error => {
-          console.error('Error fetching current user:', error);
-        }
-      );
-      //  Get the data
+    ngOnInit(): void {
+        this.projects$ = this._projectService.getProjects();
+        // Subscribe to projects$ observable to get the first project and set it as selected
+        this.projects$.subscribe(data => {
+            const projects = data.projects; // Access the projects array from the data object
+            if (projects && projects.length > 0) {
+                this.selectedProjectName = projects[0].name;
+                this.selectedProject = projects[0];
+                console.log("Selected Project:", this.selectedProject);
+                this.cd.detectChanges(); // Trigger change detection manually
+            }
+        });
+        this.userService.get().subscribe(
+            user => {
+                // this.getUserData(user);
+                this.currentUser = user;
+                //  this.ctx = user;
+                // Ensure currentUser is defined before calling fetchImage
+                if (this.currentUser && this.currentUser.image) {
+                    const transformedUrl = this.currentUser.image.replace('/upload/', '/upload/w_128,h_128,c_fill/');
+                    this.imageUrl = transformedUrl;
+                    // console.log(this.imageUrl); // Check if URL is logged
+                }
+                // Fetch user data after currentUser is set
+            },
+            error => {
+                console.error('Error fetching current user:', error);
+            }
+        );
+        //  Get the data
         // this._projectService.getProjects
         //     .pipe(takeUntil(this._unsubscribeAll))
         //     .subscribe((data) =>
@@ -117,12 +114,10 @@ export class DetailsProjectComponent {
         window['Apex'] = {
             chart: {
                 events: {
-                    mounted: (chart: any, options?: any): void =>
-                    {
+                    mounted: (chart: any, options?: any): void => {
                         this._fixSvgFill(chart.el);
                     },
-                    updated: (chart: any, options?: any): void =>
-                    {
+                    updated: (chart: any, options?: any): void => {
                         this._fixSvgFill(chart.el);
                     },
                 },
@@ -147,23 +142,23 @@ export class DetailsProjectComponent {
     //   });
     // }
     handleProjectSelection(projectName: string): void {
-      this.selectedProjectName = projectName; // Update the selected project name
-      console.log("Selected Project:", this.selectedProjectName);
-  
-      this.projects$.subscribe(data => {
-        const projects = data.projects; // Access the projects array from the data object
-        console.log('Projects:', projects); // Log the projects to see what is being returned
-        const selectedProject = projects.find(project => project.name === projectName);
-        console.log('Selected Project:', selectedProject); // Log the selected project to see if it matches
-        if (selectedProject) {
-          this.selectedProject = selectedProject;
-          console.log('Selected Project Details:', this.selectedProject);
-          this.cd.detectChanges(); // Trigger change detection manually
-        }
-      });
+        this.selectedProjectName = projectName; // Update the selected project name
+        //console.log("Selected Project:", this.selectedProjectName);
+
+        this.projects$.subscribe(data => {
+            const projects = data.projects; // Access the projects array from the data object
+            //console.log('Projects:', projects); // Log the projects to see what is being returned
+            const selectedProject = projects.find(project => project.name === projectName);
+            //console.log('Selected Project:', selectedProject); // Log the selected project to see if it matches
+            if (selectedProject) {
+                this.selectedProject = selectedProject;
+                // console.log('Selected Project Details:', this.selectedProject);
+                this.cd.detectChanges(); // Trigger change detection manually
+            }
+        });
     }
-    
-   
+
+
     // fetchSelectedProject(projectId: string) {
     //   this._projectService.getProjectsByIds(projectId).subscribe(
     //     (project) => {
@@ -175,7 +170,7 @@ export class DetailsProjectComponent {
     //     }
     //   );
     // }
-  
+
     // fetchProjectDetails(projectId: string): void {
     //   this._projectService.getProjectsByIds(projectId).subscribe(project => {
     //     this.selectedProject = project;
@@ -184,8 +179,7 @@ export class DetailsProjectComponent {
     /**
      * On destroy
      */
-    ngOnDestroy(): void
-    {
+    ngOnDestroy(): void {
         // Unsubscribe from all subscriptions
         this._unsubscribeAll.next(null);
         this._unsubscribeAll.complete();
@@ -201,8 +195,7 @@ export class DetailsProjectComponent {
      * @param index
      * @param item
      */
-    trackByFn(index: number, item: any): any
-    {
+    trackByFn(index: number, item: any): any {
         return item.id || index;
     }
 
@@ -220,8 +213,7 @@ export class DetailsProjectComponent {
      * @param element
      * @private
      */
-    private _fixSvgFill(element: Element): void
-    {
+    private _fixSvgFill(element: Element): void {
         // Current URL
         const currentURL = this._router.url;
 
@@ -230,8 +222,7 @@ export class DetailsProjectComponent {
         // 3. Insert the 'currentURL' at the front of the 'fill' attribute value
         Array.from(element.querySelectorAll('*[fill]'))
             .filter(el => el.getAttribute('fill').indexOf('url(') !== -1)
-            .forEach((el) =>
-            {
+            .forEach((el) => {
                 const attrVal = el.getAttribute('fill');
                 el.setAttribute('fill', `url(${currentURL}${attrVal.slice(attrVal.indexOf('#'))}`);
             });
@@ -242,35 +233,34 @@ export class DetailsProjectComponent {
      *
      * @private
      */
-    private _prepareChartData(): void
-    {
+    private _prepareChartData(): void {
         // Github issues
         this.chartGithubIssues = {
-            chart      : {
+            chart: {
                 fontFamily: 'inherit',
-                foreColor : 'inherit',
-                height    : '100%',
-                type      : 'line',
-                toolbar   : {
+                foreColor: 'inherit',
+                height: '100%',
+                type: 'line',
+                toolbar: {
                     show: false,
                 },
-                zoom      : {
+                zoom: {
                     enabled: false,
                 },
             },
-            colors     : ['#64748B', '#94A3B8'],
-            dataLabels : {
-                enabled        : true,
+            colors: ['#64748B', '#94A3B8'],
+            dataLabels: {
+                enabled: true,
                 enabledOnSeries: [0],
-                background     : {
+                background: {
                     borderWidth: 0,
                 },
             },
-            grid       : {
+            grid: {
                 borderColor: 'var(--fuse-border)',
             },
-            labels     : this.data.githubIssues.labels,
-            legend     : {
+            labels: this.data.githubIssues.labels,
+            legend: {
                 show: false,
             },
             plotOptions: {
@@ -278,42 +268,42 @@ export class DetailsProjectComponent {
                     columnWidth: '50%',
                 },
             },
-            series     : this.data.githubIssues.series,
-            states     : {
+            series: this.data.githubIssues.series,
+            states: {
                 hover: {
                     filter: {
-                        type : 'darken',
+                        type: 'darken',
                         value: 0.75,
                     },
                 },
             },
-            stroke     : {
+            stroke: {
                 width: [3, 0],
             },
-            tooltip    : {
+            tooltip: {
                 followCursor: true,
-                theme       : 'dark',
+                theme: 'dark',
             },
-            xaxis      : {
+            xaxis: {
                 axisBorder: {
                     show: false,
                 },
-                axisTicks : {
+                axisTicks: {
                     color: 'var(--fuse-border)',
                 },
-                labels    : {
+                labels: {
                     style: {
                         colors: 'var(--fuse-text-secondary)',
                     },
                 },
-                tooltip   : {
+                tooltip: {
                     enabled: false,
                 },
             },
-            yaxis      : {
+            yaxis: {
                 labels: {
                     offsetX: -16,
-                    style  : {
+                    style: {
                         colors: 'var(--fuse-text-secondary)',
                     },
                 },
@@ -322,20 +312,20 @@ export class DetailsProjectComponent {
 
         // Task distribution
         this.chartTaskDistribution = {
-            chart      : {
+            chart: {
                 fontFamily: 'inherit',
-                foreColor : 'inherit',
-                height    : '100%',
-                type      : 'polarArea',
-                toolbar   : {
+                foreColor: 'inherit',
+                height: '100%',
+                type: 'polarArea',
+                toolbar: {
                     show: false,
                 },
-                zoom      : {
+                zoom: {
                     enabled: false,
                 },
             },
-            labels     : this.data.taskDistribution.labels,
-            legend     : {
+            labels: this.data.taskDistribution.labels,
+            legend: {
                 position: 'bottom',
             },
             plotOptions: {
@@ -343,36 +333,36 @@ export class DetailsProjectComponent {
                     spokes: {
                         connectorColors: 'var(--fuse-border)',
                     },
-                    rings : {
+                    rings: {
                         strokeColor: 'var(--fuse-border)',
                     },
                 },
             },
-            series     : this.data.taskDistribution.series,
-            states     : {
+            series: this.data.taskDistribution.series,
+            states: {
                 hover: {
                     filter: {
-                        type : 'darken',
+                        type: 'darken',
                         value: 0.75,
                     },
                 },
             },
-            stroke     : {
+            stroke: {
                 width: 2,
             },
-            theme      : {
+            theme: {
                 monochrome: {
-                    enabled       : true,
-                    color         : '#93C5FD',
+                    enabled: true,
+                    color: '#93C5FD',
                     shadeIntensity: 0.75,
-                    shadeTo       : 'dark',
+                    shadeTo: 'dark',
                 },
             },
-            tooltip    : {
+            tooltip: {
                 followCursor: true,
-                theme       : 'dark',
+                theme: 'dark',
             },
-            yaxis      : {
+            yaxis: {
                 labels: {
                     style: {
                         colors: 'var(--fuse-text-secondary)',
@@ -383,95 +373,95 @@ export class DetailsProjectComponent {
 
         // Budget distribution
         this.chartBudgetDistribution = {
-            chart      : {
+            chart: {
                 fontFamily: 'inherit',
-                foreColor : 'inherit',
-                height    : '100%',
-                type      : 'radar',
-                sparkline : {
+                foreColor: 'inherit',
+                height: '100%',
+                type: 'radar',
+                sparkline: {
                     enabled: true,
                 },
             },
-            colors     : ['#818CF8'],
-            dataLabels : {
-                enabled   : true,
-                formatter : (val: number): string | number => `${val}%`,
+            colors: ['#818CF8'],
+            dataLabels: {
+                enabled: true,
+                formatter: (val: number): string | number => `${val}%`,
                 textAnchor: 'start',
-                style     : {
-                    fontSize  : '13px',
+                style: {
+                    fontSize: '13px',
                     fontWeight: 500,
                 },
                 background: {
                     borderWidth: 0,
-                    padding    : 4,
+                    padding: 4,
                 },
-                offsetY   : -15,
+                offsetY: -15,
             },
-            markers    : {
+            markers: {
                 strokeColors: '#818CF8',
-                strokeWidth : 4,
+                strokeWidth: 4,
             },
             plotOptions: {
                 radar: {
                     polygons: {
-                        strokeColors   : 'var(--fuse-border)',
+                        strokeColors: 'var(--fuse-border)',
                         connectorColors: 'var(--fuse-border)',
                     },
                 },
             },
-            series     : this.data.budgetDistribution.series,
-            stroke     : {
+            series: this.data.budgetDistribution.series,
+            stroke: {
                 width: 2,
             },
-            tooltip    : {
+            tooltip: {
                 theme: 'dark',
-                y    : {
+                y: {
                     formatter: (val: number): string => `${val}%`,
                 },
             },
-            xaxis      : {
-                labels    : {
-                    show : true,
+            xaxis: {
+                labels: {
+                    show: true,
                     style: {
-                        fontSize  : '12px',
+                        fontSize: '12px',
                         fontWeight: '500',
                     },
                 },
                 categories: this.data.budgetDistribution.categories,
             },
-            yaxis      : {
-                max       : (max: number): number => parseInt((max + 10).toFixed(0), 10),
+            yaxis: {
+                max: (max: number): number => parseInt((max + 10).toFixed(0), 10),
                 tickAmount: 7,
             },
         };
 
         // Weekly expenses
         this.chartWeeklyExpenses = {
-            chart  : {
+            chart: {
                 animations: {
                     enabled: false,
                 },
                 fontFamily: 'inherit',
-                foreColor : 'inherit',
-                height    : '100%',
-                type      : 'line',
-                sparkline : {
+                foreColor: 'inherit',
+                height: '100%',
+                type: 'line',
+                sparkline: {
                     enabled: true,
                 },
             },
-            colors : ['#22D3EE'],
-            series : this.data.weeklyExpenses.series,
-            stroke : {
+            colors: ['#22D3EE'],
+            series: this.data.weeklyExpenses.series,
+            stroke: {
                 curve: 'smooth',
             },
             tooltip: {
                 theme: 'dark',
             },
-            xaxis  : {
-                type      : 'category',
+            xaxis: {
+                type: 'category',
                 categories: this.data.weeklyExpenses.labels,
             },
-            yaxis  : {
+            yaxis: {
                 labels: {
                     formatter: (val): string => `$${val}`,
                 },
@@ -480,31 +470,31 @@ export class DetailsProjectComponent {
 
         // Monthly expenses
         this.chartMonthlyExpenses = {
-            chart  : {
+            chart: {
                 animations: {
                     enabled: false,
                 },
                 fontFamily: 'inherit',
-                foreColor : 'inherit',
-                height    : '100%',
-                type      : 'line',
-                sparkline : {
+                foreColor: 'inherit',
+                height: '100%',
+                type: 'line',
+                sparkline: {
                     enabled: true,
                 },
             },
-            colors : ['#4ADE80'],
-            series : this.data.monthlyExpenses.series,
-            stroke : {
+            colors: ['#4ADE80'],
+            series: this.data.monthlyExpenses.series,
+            stroke: {
                 curve: 'smooth',
             },
             tooltip: {
                 theme: 'dark',
             },
-            xaxis  : {
-                type      : 'category',
+            xaxis: {
+                type: 'category',
                 categories: this.data.monthlyExpenses.labels,
             },
-            yaxis  : {
+            yaxis: {
                 labels: {
                     formatter: (val): string => `$${val}`,
                 },
@@ -513,31 +503,31 @@ export class DetailsProjectComponent {
 
         // Yearly expenses
         this.chartYearlyExpenses = {
-            chart  : {
+            chart: {
                 animations: {
                     enabled: false,
                 },
                 fontFamily: 'inherit',
-                foreColor : 'inherit',
-                height    : '100%',
-                type      : 'line',
-                sparkline : {
+                foreColor: 'inherit',
+                height: '100%',
+                type: 'line',
+                sparkline: {
                     enabled: true,
                 },
             },
-            colors : ['#FB7185'],
-            series : this.data.yearlyExpenses.series,
-            stroke : {
+            colors: ['#FB7185'],
+            series: this.data.yearlyExpenses.series,
+            stroke: {
                 curve: 'smooth',
             },
             tooltip: {
                 theme: 'dark',
             },
-            xaxis  : {
-                type      : 'category',
+            xaxis: {
+                type: 'category',
                 categories: this.data.yearlyExpenses.labels,
             },
-            yaxis  : {
+            yaxis: {
                 labels: {
                     formatter: (val): string => `$${val}`,
                 },

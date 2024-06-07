@@ -50,7 +50,7 @@ export class AddCloudServiceComponent implements OnInit {
     }
     const formData = this.cloudServiceForm.value;
     this.cloudServiceService.addCloudService(formData).subscribe(response => {
-      console.log('Cloud service added:', response);
+      //console.log('Cloud service added:', response);
       this.cloudServiceForm.reset();
     });
   }

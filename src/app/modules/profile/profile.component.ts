@@ -80,13 +80,13 @@ export class ProfileComponent implements OnInit {
 
     this.userService.get().subscribe(
       user => {
-        console.log('User fetched:', user);
+        //console.log('User fetched:', user);
         this.currentUser = user;
 
         if (this.currentUser && this.currentUser.image) {
           const transformedUrl = this.currentUser.image.replace('/upload/', '/upload/w_128,h_128,c_fill/');
           this.imageUrl = transformedUrl;
-          console.log(this.imageUrl); // Check if URL is logged
+          //console.log(this.imageUrl); // Check if URL is logged
         }
       },
       error => {
@@ -136,7 +136,7 @@ export class ProfileComponent implements OnInit {
     // Call the service method to update user info
     this.userService.update(updatedUser).subscribe(
       (response) => {
-        console.log('User updated successfully:', response);
+        // console.log('User updated successfully:', response);
         // this.getUserData(response);
         this.currentUser = response
         window.location.reload();
@@ -239,7 +239,7 @@ export class ProfileComponent implements OnInit {
       const file = files[0];
       this.userService.uploadImage(file).subscribe(
         (response) => {
-          console.log('Image uploaded successfully:', response);
+          //console.log('Image uploaded successfully:', response);
           // Handle success (if needed)
         },
         (error) => {

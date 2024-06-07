@@ -71,7 +71,7 @@ export class AuthResetPasswordComponent implements OnInit {
 
         const token = urlParams.get('token');
         this.token = this.route.snapshot.params.token;
-        console.log(this.token)
+        // console.log(this.token)
         if (this.token == undefined) {
             console.error('token not found');
             return;
@@ -79,7 +79,7 @@ export class AuthResetPasswordComponent implements OnInit {
         localStorage.setItem('resetLink', this.token);
         // Return if the form is invalid
         if (this.resetPasswordForm.invalid) {
-            return console.log("Ghalet");
+            return console.log("invalid");
         }
 
         // Disable the form
@@ -87,7 +87,7 @@ export class AuthResetPasswordComponent implements OnInit {
 
         // Hide the alert
         this.showAlert = false;
-        console.log(this.resetPasswordForm.get('newPass').value);
+        //console.log(this.resetPasswordForm.get('newPass').value);
         // Send the request to the server
         this._authService.resetPassword(this.resetPasswordForm.get('newPass').value)
             .pipe(

@@ -63,7 +63,7 @@ export class AuthService {
      */
     set resetPasswordToken(token: string) {
         localStorage.setItem('resetLink', token);
-        console.log(token);
+        // console.log(token);
     }
     get resetPasswordToken(): string {
         return localStorage.getItem('resetLink') ?? '';
@@ -76,7 +76,7 @@ export class AuthService {
             newPass: password,
             resetLink: token
         };
-        console.log(requestBody.newPass);
+        //console.log(requestBody.newPass);
 
         return this._httpClient.post(url, requestBody).pipe(
             tap(() => {
@@ -132,14 +132,14 @@ export class AuthService {
                 // Store the access token in the local storage
                 this.accessToken = response.token;
 
-                console.log(this.accessToken)
+                // console.log(this.accessToken)
                 localStorage.setItem('userRole', response.user.Role);
                 // Set the authenticated flag to true
                 this._authenticated = true;
 
-                console.log("signed-in response :", response.user);
-                console.log("Current userin the response", response.user);
-                console.log("helloe", this._authenticated);
+                //console.log("signed-in response :", response.user);
+                //console.log("Current userin the response", response.user);
+                //console.log("helloe", this._authenticated);
                 this._userService.user = response.user;
 
 

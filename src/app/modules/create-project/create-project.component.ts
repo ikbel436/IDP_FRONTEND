@@ -17,130 +17,124 @@ import { MatSelectModule } from '@angular/material/select';
 @Component({
   selector: 'app-create-project',
   standalone: true,
-  imports: [MatButtonModule,MatOptionModule,MatSelectModule,CommonModule, MatIconModule, FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, NgIf, QuillEditorComponent],
+  imports: [MatButtonModule, MatOptionModule, MatSelectModule, CommonModule, MatIconModule, FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, NgIf, QuillEditorComponent],
   templateUrl: './create-project.component.html',
   styleUrl: './create-project.component.scss'
 })
 export class CreateProjectComponent {
-  
+
   databaseOptions: string[] = ['MySQL', 'MongoDB', 'PostgreSQL', 'SQLite', 'Other'];
-  
+
   providerOptions: string[] = ['AWS', 'Azure', 'GCP'];
   projectForm: FormGroup;
   constructor(
     public matDialogRef: MatDialogRef<ProjectComponent>,
     private fb: FormBuilder,
-    private projectSerivce:DetailsProjectService,
+    private projectSerivce: DetailsProjectService,
     @Inject(MAT_DIALOG_DATA) public data: any
-)
-{ 
-//     this.projectForm = this.fb.group({
-//   name: ['', Validators.required],
-//   description: ['', Validators.required],
-//   provider: ['', Validators.required],
-//   lien: ['', Validators.required],
-//   backendDockerImage: ['', Validators.required],
-//   frontendDockerImage: ['', Validators.required],
-//   databaseType: ['', Validators.required]
-// });
-}
-selectProjectForm: UntypedFormGroup;
-    quillModules: any = {
-        toolbar: [
-            ['bold', 'italic', 'underline'],
-            [{align: []}, {list: 'ordered'}, {list: 'bullet'}],
-            ['clean'],
-        ],
-    };
-// -----------------------------------------------------------------------------------------------------
-// @ Lifecycle hooks
-// -----------------------------------------------------------------------------------------------------
-
-/**
- * On init
- */
-ngOnInit(): void
-{  
-  this.projectForm = this.fb.group({
-  name: [this.data?.project?.name || ''],
-  provider: [this.data?.project?.provider || ''],
-  lien: [this.data?.project?.lien || ''],
-  description: [this.data?.project?.description || ''],
-  backendDockerImage: [this.data?.project?.backendDockerImage || ''],
-  frontendDockerImage: [this.data?.project?.frontendDockerImage || ''],
-  databaseType: [this.data?.project?.databaseType || '']
-});
-  
-}
-save(): void {
-  if (this.projectForm.valid) {
-    this.matDialogRef.close(this.projectForm.value);
+  ) {
+    //     this.projectForm = this.fb.group({
+    //   name: ['', Validators.required],
+    //   description: ['', Validators.required],
+    //   provider: ['', Validators.required],
+    //   lien: ['', Validators.required],
+    //   backendDockerImage: ['', Validators.required],
+    //   frontendDockerImage: ['', Validators.required],
+    //   databaseType: ['', Validators.required]
+    // });
   }
-}
-onSubmit() {
-  if (this.projectForm.valid) {
-    this.projectSerivce.createProject(this.projectForm.value).subscribe(
-      response => {
-        console.log('Project created successfully', response);
-        this.matDialogRef.close(response); // Close dialog on success
-      },
-      error => {
-        console.error('Error creating project', error);
-      }
-    );
-  } else {
-    console.error('Form is invalid');
-    this.logValidationErrors();
-  }
-}
+  selectProjectForm: UntypedFormGroup;
+  quillModules: any = {
+    toolbar: [
+      ['bold', 'italic', 'underline'],
+      [{ align: [] }, { list: 'ordered' }, { list: 'bullet' }],
+      ['clean'],
+    ],
+  };
+  // -----------------------------------------------------------------------------------------------------
+  // @ Lifecycle hooks
+  // -----------------------------------------------------------------------------------------------------
 
-logValidationErrors() {
-  Object.keys(this.projectForm.controls).forEach(key => {
-    const controlErrors = this.projectForm.get(key).errors;
-    if (controlErrors != null) {
-      Object.keys(controlErrors).forEach(keyError => {
-        console.error(`Control: ${key}, Error: ${keyError}, Value: ${controlErrors[keyError]}`);
-      });
+  /**
+   * On init
+   */
+  ngOnInit(): void {
+    this.projectForm = this.fb.group({
+      name: [this.data?.project?.name || ''],
+      provider: [this.data?.project?.provider || ''],
+      lien: [this.data?.project?.lien || ''],
+      description: [this.data?.project?.description || ''],
+      backendDockerImage: [this.data?.project?.backendDockerImage || ''],
+      frontendDockerImage: [this.data?.project?.frontendDockerImage || ''],
+      databaseType: [this.data?.project?.databaseType || '']
+    });
+
+  }
+  save(): void {
+    if (this.projectForm.valid) {
+      this.matDialogRef.close(this.projectForm.value);
     }
-  });
-}
- /**
-     * Show the copy field with the given field name
-     *
-     * @param name
-     */
+  }
+  onSubmit() {
+    if (this.projectForm.valid) {
+      this.projectSerivce.createProject(this.projectForm.value).subscribe(
+        response => {
+          //console.log('Project created successfully', response);
+          this.matDialogRef.close(response); // Close dialog on success
+        },
+        error => {
+          console.error('Error creating project', error);
+        }
+      );
+    } else {
+      console.error('Form is invalid');
+      this.logValidationErrors();
+    }
+  }
+
+  logValidationErrors() {
+    Object.keys(this.projectForm.controls).forEach(key => {
+      const controlErrors = this.projectForm.get(key).errors;
+      if (controlErrors != null) {
+        Object.keys(controlErrors).forEach(keyError => {
+          console.error(`Control: ${key}, Error: ${keyError}, Value: ${controlErrors[keyError]}`);
+        });
+      }
+    });
+  }
+  /**
+      * Show the copy field with the given field name
+      *
+      * @param name
+      */
 
 
- /**
-  * Save and close
-  */
- saveAndClose(): void
- {
-     // Save the message as a draft
-     this.saveAsDraft();
+  /**
+   * Save and close
+   */
+  saveAndClose(): void {
+    // Save the message as a draft
+    this.saveAsDraft();
 
-     // Close the dialog
-     this.matDialogRef.close();
- }
+    // Close the dialog
+    this.matDialogRef.close();
+  }
 
- /**
-  * Discard the message
-  */
- discard(): void
- {
- }
+  /**
+   * Discard the message
+   */
+  discard(): void {
+  }
 
- /**
-  * Save the message as a draft
-  */
- saveAsDraft(): void
- {
- }
+  /**
+   * Save the message as a draft
+   */
+  saveAsDraft(): void {
+  }
 
- /**
-  * Send the message
-  */
- send(): void
- {
- }
+  /**
+   * Send the message
+   */
+  send(): void {
+  }
 }
