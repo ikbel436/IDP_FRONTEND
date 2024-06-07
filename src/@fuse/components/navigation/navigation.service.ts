@@ -12,7 +12,7 @@ export class FuseNavigationService {
     /**
      * Constructor
      */
-    constructor() {}
+    constructor() { }
     getUserRole(): string {
         return localStorage.getItem('userRole') ?? '';
     }
@@ -27,24 +27,18 @@ export class FuseNavigationService {
 
     getAdminNavigation(): any[] {
         return [
+
+            { type: 'basic', title: 'Settings', icon: 'heroicons_outline:cog-8-tooth', link: '/settings' },
+            { type: 'basic', title: 'Profile', icon: 'heroicons_outline:user-circle', link: '/profile' },
             {
-                type: 'basic',
-                title: 'Settings',
-                icon: 'heroicons_outline:cog-8-tooth',
-                link: '/settings',
+                type: 'group', title: 'Manage Cloud Providers Services', icon: 'heroicons_outline:cloud', link: '/cloudProviderServices',
+                children: [
+                    { type: 'basic', title: 'Add Cloud Services', icon: 'heroicons_outline:pencil-square', link: '/addCloudService' },
+                    { type: 'basic', title: 'Cloud Services', icon: 'heroicons_outline:list-bullet', link: '/listCloudServices' },]
             },
-            {
-                type: 'basic',
-                title: 'Profile',
-                icon: 'heroicons_outline:user-circle',
-                link: '/profile',
-            },
-            {
-                type: 'basic',
-                title: 'Cloud Providers Services',
-                icon: 'heroicons_outline:cloud',
-                link: '/cloudProviderServices',
-            },
+
+
+
         ];
     }
 
@@ -82,34 +76,13 @@ export class FuseNavigationService {
                 id: 'Cloud',
                 title: 'Self-Service',
                 icon: 'heroicons_outline:bolt',
-                type: 'group',
-                children: [
-                    {
-                        type: 'basic',
-                        title: 'Configure Infrastructure',
-                        icon: 'heroicons_outline:cloud',
-                        link: '/configInfrastructure',
-                    },
-                    // {
-                    //     type: 'basic',
-                    //     title: 'Cloud Infrastructure Templates',
-                    //     icon: 'heroicons_outline:cloud',
-                    //     link: '/templateTerraform',
-                    // },
-                    {
-                        type: 'basic',
-                        title: 'Create Service',
-                        icon: 'heroicons_outline:cloud',
-                        link: '/services',
-                    },
-                     {
-                        type: 'basic',
-                        title: 'Cloud Infrastructure Templates',
-                        icon: 'heroicons_outline:cloud',
-                        link: '/templateTerraform',
-                    },
-                ],
+                type: 'group', children: [
+                    { type: 'basic', title: 'Configure Infrastructure', icon: 'heroicons_outline:cloud', link: '/configInfrastructure' },
+                    { type: 'basic', title: 'Cloud Infrastructure Templates', icon: 'heroicons_outline:cloud', link: '/templateTerraform' },
+                    { type: 'basic', title: 'Cloud Services', icon: 'heroicons_outline:list-bullet', link: '/listCloudServices' },
+                ]
             },
+
         ];
     }
     // -----------------------------------------------------------------------------------------------------
