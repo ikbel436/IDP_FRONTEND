@@ -125,39 +125,39 @@ constructor(
 //             console.log('Compose dialog was closed!');
 //         });
 // }
-deleteSelectedProduct1(project: InventoryProject): void {
-    // Open the confirmation dialog
-    const confirmation = this._fuseConfirmationService.open({
-      title: 'Delete project',
-      message: 'Are you sure you want to remove this project? This action cannot be undone!',
-      actions: {
-        confirm: {
-          label: 'Delete',
-        },
-      },
-    });
+// deleteSelectedProduct1(project: InventoryProject): void {
+//     // Open the confirmation dialog
+//     const confirmation = this._fuseConfirmationService.open({
+//       title: 'Delete project',
+//       message: 'Are you sure you want to remove this project? This action cannot be undone!',
+//       actions: {
+//         confirm: {
+//           label: 'Delete',
+//         },
+//       },
+//     });
   
-    // Subscribe to the confirmation dialog closed action
-    confirmation.afterClosed().subscribe((result) => {
-      // If the confirm button pressed...
-      if (result === 'confirmed') {
-        // Delete the project on the server
-        this._inventoryService.deleteProduct(project._id).subscribe(() => {
-          // Close the details
-          this.closeDetails();
+//     // Subscribe to the confirmation dialog closed action
+//     confirmation.afterClosed().subscribe((result) => {
+//       // If the confirm button pressed...
+//       if (result === 'confirmed') {
+//         // Delete the project on the server
+//         this._inventoryService.deleteProduct(project._id).subscribe(() => {
+//           // Close the details
+//           this.closeDetails();
           
-          // Remove the project from the local array
-          const index = this.testProjects.findIndex(p => p._id === project._id);
-          if (index !== -1) {
-            this.testProjects.splice(index, 1);
-          }
+//           // Remove the project from the local array
+//           const index = this.testProjects.findIndex(p => p._id === project._id);
+//           if (index !== -1) {
+//             this.testProjects.splice(index, 1);
+//           }
           
-          // Refresh the project list
-          this.fetchProjects();
-        });
-      }
-    });
-  }
+//           // Refresh the project list
+//           this.fetchProjects();
+//         });
+//       }
+//     });
+//   }
 openComposeDialog(project?: any): void {
     const dialogRef = this._matDialog.open(CreateProjectComponent, {
       width: '600px',
@@ -340,51 +340,51 @@ showDetails = false;
 
 private showDetailsMap = new Map<string, boolean>();
 
-toggleDetails(productId: string): void {
- // Check if the product is already selected
- if (this.selectProject && this.selectProject._id === productId) {
-     // If the product is already selected, close the details
-     this.closeDetails();
-     return;
- }
- console.log('Project ID:', productId);
- // Attempt to get the project by ID
- this._inventoryService.getProjectsByIds(productId).subscribe((project) => {
-    console.log('Received project:', project);
-     // Toggle the visibility of the details
-     console.log(productId);
-     this.showDetails =!this.showDetails;
-     this.showDetailsMap.set(productId,!this.showDetailsMap.get(productId));
+// toggleDetails(productId: string): void {
+//  // Check if the product is already selected
+//  if (this.selectProject && this.selectProject._id === productId) {
+//      // If the product is already selected, close the details
+//      this.closeDetails();
+//      return;
+//  }
+//  console.log('Project ID:', productId);
+//  // Attempt to get the project by ID
+//  this._inventoryService.getProjectsByIds(productId).subscribe((project) => {
+//     console.log('Received project:', project);
+//      // Toggle the visibility of the details
+//      console.log(productId);
+//      this.showDetails =!this.showDetails;
+//      this.showDetailsMap.set(productId,!this.showDetailsMap.get(productId));
 
-     // Set the selected project
-     this.selectProject = project;
+//      // Set the selected project
+//      this.selectProject = project;
 
-     // Patch the form with the selected project's data
-     this.selectProjectForm.patchValue({
-         _id: project._id,
-         name: project.name,
-         provider: project.provider,
-         lien: project.lien,
-         description: project.description,
-         reference: project.reference,
-         backendDockerImage: project.backendDockerImage,
-         frontendDockerImage:project.frontendDockerImage,
-         databaseType:project.databaseType
+//      // Patch the form with the selected project's data
+//     //  this.selectProjectForm.patchValue({
+//     //      _id: project._id,
+//     //      name: project.name,
+//     //      provider: project.provider,
+//     //      lien: project.lien,
+//     //      description: project.description,
+//     //      reference: project.reference,
+//     //      backendDockerImage: project.backendDockerImage,
+//     //      frontendDockerImage:project.frontendDockerImage,
+//     //      databaseType:project.databaseType
 
 
-     });
-     console.log(this.selectProjectForm.getRawValue())
+//     //  });
+//      console.log(this.selectProjectForm.getRawValue())
 
-     // Mark the component for change detection
-     this._changeDetectorRef.markForCheck();
+//      // Mark the component for change detection
+//      this._changeDetectorRef.markForCheck();
 
-     // Optionally, log the selected project again after patching the form
-     console.log(this.selectProject);
- }, error => {
-     // Handle any errors that occur during the subscription
-     console.error('Error fetching project:', error);
- });
-}
+//      // Optionally, log the selected project again after patching the form
+//      console.log(this.selectProject);
+//  }, error => {
+//      // Handle any errors that occur during the subscription
+//      console.error('Error fetching project:', error);
+//  });
+// }
 /**
  * Close the details
  */

@@ -25,7 +25,7 @@ export class ProjectService {
     /**
      * Constructor
      */
-    constructor(private _httpClient: HttpClient) { }
+    constructor(private _httpClient: HttpClient) {}
 
     /**
      * Api Base URL
@@ -69,7 +69,10 @@ export class ProjectService {
      * @param updatedProject
      */
     updateProject1(projectId: string, updatedProject: any): Observable<any> {
-        return this._httpClient.put(`${this.apiUrl}/project/${projectId}`, updatedProject);
+        return this._httpClient.put(
+            `${this.apiUrl}/project/${projectId}`,
+            updatedProject
+        );
     }
 
     /**
@@ -81,60 +84,44 @@ export class ProjectService {
         return this._httpClient.delete(`${this.apiUrl}/projects/${projectId}`);
     }
 
-
     /**
      * Get
      * Project
      * */
 
     getProjects(): Observable<InventoryProject[]> {
-
         const token = this.accessToken;
         const headers = new HttpHeaders().set(
             'Authorization',
             `Bearer ${token}`
         );
-        return this._httpClient.get<InventoryProject[]>(`${this.apiUrl}/get`, { headers });
+        return this._httpClient.get<InventoryProject[]>(`${this.apiUrl}/get`, {
+            headers,
+        });
     }
 
     /**
-      * Get product by id
-      */
+     * Get product by id
+     */
     getProjectsByIds(id: string) {
-
-        return this._httpClient.get<InventoryProject>(`${this.apiUrl}/get/${id}`);
+        return this._httpClient.get<InventoryProject>(
+            `${this.apiUrl}/get/${id}`
+        );
     }
     /**
-       * Create product
-       */
-    createProject(
-        project: InventoryProject
-    ): Observable<InventoryProject> {
+     * Create product
+     */
+    createProject(project: InventoryProject): Observable<InventoryProject> {
         const token = this.accessToken;
         const headers = new HttpHeaders().set(
             'Authorization',
             `Bearer ${token}`
         );
-      
 
-        return this.projects$.pipe(
-            take(1),
-            switchMap(projects => this._httpClient.post<InventoryProject>(`${this.apiUrl}/project`, project, {
-                headers,
-            }).pipe(
-                map((newProduct) => {
-                    // Update the _project with the new product
-                    this._project.next(newProduct);
-
-                    // Return the new product
-                    return newProduct;
-                }),
-            )),
+        return this._httpClient.post<InventoryProject>(
+            `${this.apiUrl}/project`,
+            project,
+            { headers }
         );
     }
-
-
-
-
-
 }
