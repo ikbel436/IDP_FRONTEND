@@ -35,8 +35,7 @@
                                     <mat-option value="Oracle Cloud">Oracle Cloud</mat-option>
                                     <mat-option value="IBM">IBM</mat-option>
                                 </mat-select>
-                                <mat-icon class="icon-size-5" matPrefix
-                                    [svgIcon]="'heroicons_solid:cloud'"></mat-icon>
+                                <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:cloud'"></mat-icon>
                                 <mat-error
                                     *ngIf="cloudServiceForm.get('provider').invalid && cloudServiceForm.get('provider').touched">
                                     Provider is required
@@ -49,7 +48,7 @@
                                 <mat-label for="serviceType">Service Type</mat-label>
                                 <!-- <input [formControl]="cloudServiceForm.get('serviceType')" matInput id="serviceType"
                                     [placeholder]="'Enter Service Name'"> -->
-                                    <mat-select [formControl]="cloudServiceForm.get('serviceType')" id="serviceType"
+                                <mat-select [formControl]="cloudServiceForm.get('serviceType')" id="serviceType"
                                     [placeholder]="'Enter Service Type'">
                                     <mat-option value="Storage">Storage</mat-option>
                                     <mat-option value="Compute">Compute</mat-option>
@@ -57,17 +56,16 @@
                                     <mat-option value="Networking">Networking</mat-option>
                                     <mat-option value="Security">Security</mat-option>
                                 </mat-select>
-                                
-                                <mat-icon class="icon-size-5" matPrefix
-                                    [svgIcon]="'heroicons_solid:cube'"></mat-icon>
+
+                                <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:cube'"></mat-icon>
                                 <mat-error
                                     *ngIf="cloudServiceForm.get('serviceType').invalid && cloudServiceForm.get('serviceType').touched">
                                     Service Type is required
                                 </mat-error>
                             </mat-form-field>
-                        <br/>
-                        <br/>
-                        <br/>
+                            <br />
+                            <br />
+                            <br />
                         </div>
                         <div class="flex">
                             <mat-form-field class="flex-auto"
@@ -75,8 +73,7 @@
                                 <mat-label for="serviceName">Service Name</mat-label>
                                 <input [formControl]="cloudServiceForm.get('serviceName')" matInput id="serviceName"
                                     [placeholder]="'Enter Service Name'">
-                                <mat-icon class="icon-size-5" matPrefix
-                                    [svgIcon]="'heroicons_solid:pencil'"></mat-icon>
+                                <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:pencil'"></mat-icon>
                                 <mat-error
                                     *ngIf="cloudServiceForm.get('serviceName').invalid && cloudServiceForm.get('serviceName').touched">
                                     Service Name is required
@@ -97,10 +94,10 @@
                                 </mat-error>
                             </mat-form-field>
                         </div>
-                        <div class="flex items-center">
+                        <!--div class="flex items-center">
                             <mat-slide-toggle
                                 [formControl]="cloudServiceForm.get('available')">Available</mat-slide-toggle>
-                        </div>
+                        </div-->
                         <div class="flex justify-end mt-6">
                             <button mat-raised-button color="primary" type="submit">Add</button>
                         </div>

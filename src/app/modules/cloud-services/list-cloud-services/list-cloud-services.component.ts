@@ -57,6 +57,7 @@ export class ListCloudServicesComponent implements OnInit {
 
 
   cloudServices: CloudService[] = [];
+  originalCloudServices: CloudService[] = [];
   uniqueProviders: string[] = [];
   selectedProvider: string | null = null;
   userRole: string;
@@ -97,7 +98,8 @@ export class ListCloudServicesComponent implements OnInit {
 
   fetchCloudServices(): void {
     this.cloudServiceService.getCloudServices().subscribe(cloudServices => {
-      this.cloudServices = cloudServices;
+      this.originalCloudServices = cloudServices; // Populate the original list
+      this.cloudServices = [...this.originalCloudServices]; // Initialize cloudServices with the original list
       // Extract unique provider names for filter dropdown
       this.uniqueProviders = Array.from(new Set(cloudServices.map(service => service.provider)));
       // If a provider is already selected, filter services for that provider
@@ -112,14 +114,14 @@ export class ListCloudServicesComponent implements OnInit {
     if (this.selectedProvider) {
       this.filterServicesByProvider();
     } else {
-      // If no provider selected, fetch all services again
-      this.fetchCloudServices();
+      // If no provider selected, show all services
+      this.cloudServices = [...this.originalCloudServices];
     }
   }
 
   filterServicesByProvider(): void {
-    // Filter services based on selected provider
-    this.cloudServices = this.cloudServices.filter(service => service.provider === this.selectedProvider);
+    // Filter services based on selected provider from the original list
+    this.cloudServices = this.originalCloudServices.filter(service => service.provider === this.selectedProvider);
   }
 
   /*fetchCloudServices(): void {
