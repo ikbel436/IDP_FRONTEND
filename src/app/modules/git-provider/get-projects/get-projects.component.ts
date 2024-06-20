@@ -104,9 +104,8 @@ export class GetProjectsComponent {
       next: (repositories) => {
         if (Array.isArray(repositories)) {
           this.dataSource.data = repositories;
-          this.repositoriesSubject.next(repositories); // Update the BehaviorSubject with the fetched data
+          this.repositoriesSubject.next(repositories);
           this.repositoriesSubject.subscribe(repositories => {
-            console.log(repositories);
             if (!Array.isArray(repositories) || repositories.length === 0) {
               this.openDialog();
             }
