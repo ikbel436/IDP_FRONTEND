@@ -82,7 +82,7 @@ export class SettingsNotificationsComponent implements OnInit {
       )
       .subscribe({
         next: (user) => {
-          this._ToastService.createSuccessToast('notifications', 'updateSuccess');
+          this._ToastService.createSuccessToast('updateSuccess');
           this._userService.user$.subscribe((user) => {
             // user.additionalInformation.notificationsAgreements = this.notificationsForm.value;
           });
