@@ -155,7 +155,7 @@ export class GetProjectsComponent {
             language: repo.language,
           }));
 
-          this.http.post('http://localhost:3000/Repos/Addrepos', mappedResponse).subscribe({
+          this.http.post('http://localhost:3000/Repos/RepoTouser', mappedResponse).subscribe({
             next: () => {
               this.dataSource.data = mappedResponse;
               return "Repositories saved successfully."

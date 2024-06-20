@@ -1,4 +1,4 @@
-import { NgClass, NgFor } from '@angular/common';
+import { CommonModule, NgClass, NgFor, NgIf } from '@angular/common';
 import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -43,6 +43,7 @@ import { Subject, takeUntil } from 'rxjs';
         NgFor,
         NgClass,
         MatTooltipModule,
+        CommonModule,
     ],
 })
 export class SettingsComponent implements OnInit, OnDestroy {
@@ -90,6 +91,41 @@ export class SettingsComponent implements OnInit, OnDestroy {
     // -----------------------------------------------------------------------------------------------------
     // @ Public methods
     // -----------------------------------------------------------------------------------------------------
+
+    /*
+     These two methods are checking if the 
+    user has projects and repositories stored in the local
+    storage. 
+   */
+    hasProjects(): boolean {
+        return !!localStorage.getItem('myProjects');
+    }
+
+    // Method to check if the user has repositories
+    hasRepos(): boolean {
+        return !!localStorage.getItem('myRepos');
+    }
+
+
+
+   /**
+    * The function `getStepRoute` takes a step ID as input and returns the corresponding route based on
+    * a predefined mapping object.
+    * @param {string} stepId - A string representing the ID of a step in a process.
+    * @returns The `getStepRoute` function returns the route associated with the given `stepId`
+    */
+    getStepRoute(stepId: string): string {
+        // Assuming you have a mapping object that maps step IDs to routes
+        const stepRoutes = {
+            'provider-setup': '/gitProvider',
+            'service-setup': '/services',
+            'deployment': '/deployment',
+            'review': '/review',
+            'confirmation': '/confirmation'
+        };
+    
+        return stepRoutes[stepId];
+    }
 
     /**
      * Set the layout on the config
