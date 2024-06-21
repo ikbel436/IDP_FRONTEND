@@ -84,7 +84,7 @@ export class FuseNavigationService {
                 title: 'Self-Service',
                 icon: 'heroicons_outline:bolt',
                 type: 'group', children: [
-                    // { type: 'basic', title: 'Configure Infrastructure', icon: 'heroicons_outline:cloud', link: '/configInfrastructure' },
+                    { type: 'basic', title: 'Self Service Hub', icon: 'heroicons_outline:server', link: '/configInfrastructure' },
                     //{ type: 'basic', title: 'Cloud Infrastructure Templates', icon: 'heroicons_outline:cloud', link: '/templateTerraform' },
                     //{ type: 'basic', title: 'Cloud Services', icon: 'heroicons_outline:list-bullet', link: '/listCloudServices' },
                     { type: 'basic', title: 'Create Services', icon: 'heroicons_outline:list-bullet', link: '/services' },

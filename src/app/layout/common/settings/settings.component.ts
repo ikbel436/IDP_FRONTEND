@@ -1,4 +1,5 @@
 import { CommonModule, NgClass, NgFor, NgIf } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -13,7 +14,7 @@ import {
     Themes,
 } from '@fuse/services/config';
 
-import { Subject, takeUntil } from 'rxjs';
+import { Observable, Subject, takeUntil } from 'rxjs';
 
 @Component({
     selector: 'settings',
@@ -53,13 +54,15 @@ export class SettingsComponent implements OnInit, OnDestroy {
     theme: string;
     themes: Themes;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
-
+    
     /**
      * Constructor
      */
     constructor(
         private _router: Router,
-        private _fuseConfigService: FuseConfigService
+        private _fuseConfigService: FuseConfigService,
+        private http: HttpClient
+
     ) {}
 
     // -----------------------------------------------------------------------------------------------------
@@ -97,14 +100,21 @@ export class SettingsComponent implements OnInit, OnDestroy {
     user has projects and repositories stored in the local
     storage. 
    */
+
+    loadRepositories(): Observable<any[]> {
+        return this.http.get<any[]>('http://localhost:3000/Repos/get');
+      }
+      
     hasProjects(): boolean {
         return !!localStorage.getItem('myProjects');
     }
 
-    // Method to check if the user has repositories
     hasRepos(): boolean {
         return !!localStorage.getItem('myRepos');
     }
+    // Method to check if the user has repositories
+   
+      
 
 
 
