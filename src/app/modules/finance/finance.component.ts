@@ -32,6 +32,7 @@ import { InventoryProject } from 'app/mock-api/apps/project/project.types';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { GetProjectsComponent } from '../git-provider/get-projects/get-projects.component';
 import { BundleComponent } from './bundle/bundle.component';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 export interface Repository {
     name: string;
@@ -67,7 +68,8 @@ export interface Repository {
         DatePipe,
         CommonModule,
         MatFormFieldModule,
-        GetProjectsComponent
+        GetProjectsComponent,
+        MatCheckboxModule,
     ],
 })
 export class FinanceComponent implements OnInit, AfterViewInit, OnDestroy {
@@ -122,7 +124,8 @@ export class FinanceComponent implements OnInit, AfterViewInit, OnDestroy {
     openBundleDialog(): void {
         this.collectSelectedProjects(); // Ensure selected projects are collected
         const dialogRef = this._matDialog.open(BundleComponent, {
-          width: '250px',
+          width: '500px',
+          height: '500px',
           data: { selectedProjects: this.selectedProjects }
         });
       

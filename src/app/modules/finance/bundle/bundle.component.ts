@@ -1,6 +1,11 @@
 import { Component, Inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import {
+    MAT_DIALOG_DATA,
+    MatDialog,
+    MatDialogModule,
+    MatDialogRef,
+} from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
@@ -26,10 +31,9 @@ import { MatInputModule } from '@angular/material/input';
         MatSortModule,
         MatProgressBarModule,
         MatFormFieldModule,
-        MatDialogModule ,
+        MatDialogModule,
         FormsModule,
-        MatInputModule
-        
+        MatInputModule,
     ],
     templateUrl: './bundle.component.html',
     styleUrl: './bundle.component.scss',
@@ -37,22 +41,29 @@ import { MatInputModule } from '@angular/material/input';
 export class BundleComponent {
     constructor(
         public matDialogRef: MatDialogRef<BundleComponent>,
-        @Inject(MAT_DIALOG_DATA) public data: any, private http: HttpClient
+        @Inject(MAT_DIALOG_DATA) public data: any,
+        private http: HttpClient
     ) {}
     onNoClick(): void {
-      this.matDialogRef.close();
+        this.matDialogRef.close();
     }
     onSave(bundleName: string, bundleDescription: string): void {
-      const selectedProjects = this.data.selectedProjects;
-      console.log('Selected projects:', selectedProjects);
-      this.http.post('http://localhost:3000/Bundle/BundleTouser', { name: bundleName, description: bundleDescription, Projects: selectedProjects }).subscribe(
-        response => {
-          console.log('Bundle created successfully:', response);
-          this.matDialogRef.close(true);
-        },
-        error => {
-          console.error('Error creating bundle:', error);
-        }
-      );
+        const selectedProjects = this.data.selectedProjects;
+        console.log('Selected projects:', selectedProjects);
+        this.http
+            .post('http://localhost:3000/Bundle/BundleTouser', {
+                name: bundleName,
+                description: bundleDescription,
+                Projects: selectedProjects,
+            })
+            .subscribe(
+                (response) => {
+                    console.log('Bundle created successfully:', response);
+                    this.matDialogRef.close(true);
+                },
+                (error) => {
+                    console.error('Error creating bundle:', error);
+                }
+            );
     }
 }

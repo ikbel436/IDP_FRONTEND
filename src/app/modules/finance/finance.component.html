@@ -1,4 +1,3 @@
-
 <div class="flex flex-col flex-auto w-full">
     <div class="flex flex-wrap w-full max-w-screen-xl mx-auto p-6 md:p-8">
         <!-- Title and action buttons -->
@@ -28,7 +27,6 @@
                 </button>
                 <button class="sm:inline-flex">
                     <app-get-projects></app-get-projects>
-
                 </button>
                 <button
                     (click)="openComposeDialog()"
@@ -55,7 +53,6 @@
                         <button mat-menu-item>Reports</button>
                         <button mat-menu-item>Settings</button>
                     </mat-menu>
-                  
                 </div>
             </div>
         </div>
@@ -76,7 +73,6 @@
                     </div>
                 </div>
 
-
                 <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
                     <!-- <div class="pb-4 bg-white dark:bg-gray-900">
                         <label for="table-search" class="sr-only">Search</label>
@@ -89,9 +85,17 @@
                             <input type="text" id="table-search" class="block pt-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search for items">
                         </div>
                     </div> -->
-                    <button class="sm:inline-flex ml-3" mat-stroked-button [class.hidden]="selectedProjects.length"  (click)="openBundleDialog()">
-                        <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:cog-8-tooth'"></mat-icon>
-                        <span class="ml-2">Settings</span>
+                    <button
+                        class="sm:inline-flex ml-3"
+                        mat-stroked-button
+                        [class.hidden]="selectedProjects.length"
+                        (click)="openBundleDialog()"
+                    >
+                        <mat-icon
+                            class="icon-size-5"
+                            [svgIcon]="'heroicons_solid:cog-8-tooth'"
+                        ></mat-icon>
+                        <span class="ml-2">Create Bundle</span>
                     </button>
                     <table
                         mat-table
@@ -101,10 +105,15 @@
                     >
                     <ng-container matColumnDef="checkbox">
                         <th mat-header-cell *matHeaderCellDef>Select</th>
-                        <td class="w-4 p-4" mat-cell *matCellDef="let element">
-                            <input id="checkbox-all-search" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" [checked]="element.selected" (change)="element.selected = $event.target.checked">
+                        <td mat-cell *matCellDef="let element" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                            <mat-checkbox
+                                [checked]="element.selected"
+                                (change)="element.selected = $event.checked"
+                                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                            ></mat-checkbox>
                         </td>
                     </ng-container>
+                    
                         <!-- Define columns -->
                         <ng-container matColumnDef="name">
                             <th mat-header-cell *matHeaderCellDef>Title</th>
@@ -552,22 +561,40 @@
                             </td>
                         </ng-container> -->
 
-                                   <!-- Add actions column -->
-                                   <ng-container matColumnDef="actions">
-                                    <th mat-header-cell *matHeaderCellDef></th>
-                                    <td mat-cell *matCellDef="let element">
-                                        <div class="ml-auto -mt-2 -mr-2">
-                                            <button mat-icon-button [matMenuTriggerFor]="actionMenu">
-                                                <mat-icon class="icon-size-5" [svgIcon]="'heroicons_mini:ellipsis-vertical'"></mat-icon>
-                                            </button>
-                                            <mat-menu #actionMenu="matMenu">
-                                                <button mat-menu-item (click)="editRow(element)">Edit</button>
-                                                <button mat-menu-item (click)="deleteRow(element._id)">Delete</button>
-                                            </mat-menu>
-                                        </div>
-                                    </td>
-                                </ng-container>
-                            
+                        <!-- Add actions column -->
+                        <ng-container matColumnDef="actions">
+                            <th mat-header-cell *matHeaderCellDef></th>
+                            <td mat-cell *matCellDef="let element">
+                                <div class="ml-auto -mt-2 -mr-2">
+                                    <button
+                                        mat-icon-button
+                                        [matMenuTriggerFor]="actionMenu"
+                                    >
+                                        <mat-icon
+                                            class="icon-size-5"
+                                            [svgIcon]="
+                                                'heroicons_mini:ellipsis-vertical'
+                                            "
+                                        ></mat-icon>
+                                    </button>
+                                    <mat-menu #actionMenu="matMenu">
+                                        <button
+                                            mat-menu-item
+                                            (click)="editRow(element)"
+                                        >
+                                            Edit
+                                        </button>
+                                        <button
+                                            mat-menu-item
+                                            (click)="deleteRow(element._id)"
+                                        >
+                                            Delete
+                                        </button>
+                                    </mat-menu>
+                                </div>
+                            </td>
+                        </ng-container>
+
                         <!-- Header Row -->
                         <tr
                             mat-header-row
@@ -580,7 +607,6 @@
                         ></tr>
                     </table>
                 </div>
-                
             </div>
 
             <!-- Budget -->
@@ -590,10 +616,11 @@
                         <div
                             class="mr-4 text-lg font-medium tracking-tight leading-6 truncate"
                         >
-                        My Open Pull Requests
+                            My Open Pull Requests
                         </div>
                         <div class="text-secondary font-medium">
-                Recent Pull Requests                        </div>
+                            Recent Pull Requests
+                        </div>
                     </div>
                     <div class="ml-auto -mt-2 -mr-2">
                         <button
@@ -632,9 +659,9 @@
                     </div>
                 </div>
                 <div class="mt-6">
-                    Last month; you had <strong>223</strong> pull requests
-                    , <strong>122</strong> pushes and
-                    <strong>4</strong> Repos in total.
+                    Last month; you had <strong>223</strong> pull requests ,
+                    <strong>122</strong> pushes and <strong>4</strong> Repos in
+                    total.
                 </div>
                 <div class="my-8 space-y-8">
                     <div class="flex flex-col">
@@ -718,9 +745,7 @@
                                 <div class="text-sm font-medium text-secondary">
                                     Repositories
                                 </div>
-                                <div class="mt-2 font-medium text-2xl">
-                                    18
-                                </div>
+                                <div class="mt-2 font-medium text-2xl">18</div>
                                 <mat-progress-bar
                                     class="mt-3 rounded-full"
                                     [mode]="'determinate'"
