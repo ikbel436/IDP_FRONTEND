@@ -31,6 +31,7 @@ import { DetailsProjectService } from '../details-project/details-project.servic
 import { InventoryProject } from 'app/mock-api/apps/project/project.types';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { GetProjectsComponent } from '../git-provider/get-projects/get-projects.component';
+import { BundleComponent } from './bundle/bundle.component';
 
 export interface Repository {
     name: string;
@@ -51,6 +52,7 @@ export interface Repository {
     templateUrl: './finance.component.html',
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush,
+    styleUrl: './finance.component.scss',
     standalone: true,
     imports: [
         MatButtonModule,
@@ -75,8 +77,9 @@ export class FinanceComponent implements OnInit, AfterViewInit, OnDestroy {
     errorMessage: string = '';
     @Input() selectedProviderId: string;
     @Output() newProjectId = new EventEmitter<string>();
-   
+    projects: any[] = [];
     displayedColumns: string[] = [
+        'checkbox',
         'name',
         'language',
         'createdAt',
@@ -89,10 +92,10 @@ export class FinanceComponent implements OnInit, AfterViewInit, OnDestroy {
         'DBType',
         'actions',
     ];
-
+    selectedProjects: any[] = []; 
     data: any;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
-
+//    selectedProject: any; 
     /**
      * Constructor
      */
@@ -116,7 +119,29 @@ export class FinanceComponent implements OnInit, AfterViewInit, OnDestroy {
     ngOnInit(): void {
         this.getProjectData();
     }
+    openBundleDialog(): void {
+        this.collectSelectedProjects(); // Ensure selected projects are collected
+        const dialogRef = this._matDialog.open(BundleComponent, {
+          width: '250px',
+          data: { selectedProjects: this.selectedProjects }
+        });
+      
+        dialogRef.afterClosed().subscribe(result => {
+          if (result) {
+            console.log('The dialog was closed');
+            // Handle the result, e.g., save the new bundle
+          }
+        });
+      }
+      
 
+    collectSelectedProjects() {
+        this.projects = this.dataSource.data;
+      this.selectedProjects = this.projects.filter(project => project.selected);
+      console.log('Projects before filtering:', this.projects);
+      console.log('Selected projects:', this.selectedProjects);
+    }
+    
  
     editRow(element: any): void {
         this.openComposeDialog(element);
