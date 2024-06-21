@@ -81,7 +81,6 @@ export class GetProjectsComponent {
     'cloneUrl',
     'language',
   ];
-  //repositories: any[] = [];
   selectedProvider: 'github' | 'bitbucket' = 'github';
   errorMessage: string = '';
   repositoriesSubject = new BehaviorSubject<any[]>([]);
@@ -92,7 +91,6 @@ export class GetProjectsComponent {
     private localStorageService: LocalStorageService,
     private http: HttpClient
   ) {
-    // this.loadRepositories();
   }
 
   ngOnInit(): void {

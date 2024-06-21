@@ -1,3 +1,4 @@
+
 <div class="flex flex-col flex-auto w-full">
     <div class="flex flex-wrap w-full max-w-screen-xl mx-auto p-6 md:p-8">
         <!-- Title and action buttons -->
@@ -25,6 +26,10 @@
                     ></mat-icon>
                     <span class="ml-2">Settings</span>
                 </button>
+                <button class="sm:inline-flex ml-3">
+                    <app-get-projects></app-get-projects>
+
+                </button>
                 <button
                     (click)="openComposeDialog()"
                     class="hidden sm:inline-flex ml-3"
@@ -50,6 +55,7 @@
                         <button mat-menu-item>Reports</button>
                         <button mat-menu-item>Settings</button>
                     </mat-menu>
+                  
                 </div>
             </div>
         </div>

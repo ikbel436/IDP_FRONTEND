@@ -30,6 +30,7 @@ import { FinanceService } from './finance.service';
 import { DetailsProjectService } from '../details-project/details-project.service';
 import { InventoryProject } from 'app/mock-api/apps/project/project.types';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { GetProjectsComponent } from '../git-provider/get-projects/get-projects.component';
 
 export interface Repository {
     name: string;
@@ -64,6 +65,7 @@ export interface Repository {
         DatePipe,
         CommonModule,
         MatFormFieldModule,
+        GetProjectsComponent
     ],
 })
 export class FinanceComponent implements OnInit, AfterViewInit, OnDestroy {
