@@ -23,7 +23,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { BitbucketCredComponent } from './bitbucket-cred.component';
 import { MatDialog } from '@angular/material/dialog';
-import { Subscription } from 'rxjs';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import { GitProviderService } from 'app/core/services/git-provider.service';
 import { LocalStorageService } from 'app/modules/auth/utils/localStorage.service';
 import { HttpClient } from '@angular/common/http';
@@ -84,29 +84,32 @@ export class GetProjectsComponent {
   //repositories: any[] = [];
   selectedProvider: 'github' | 'bitbucket' = 'github';
   errorMessage: string = '';
+  repositoriesSubject = new BehaviorSubject<any[]>([]);
+
   constructor(
     public dialog: MatDialog,
     private gitProviderService: GitProviderService,
     private localStorageService: LocalStorageService,
     private http: HttpClient
   ) {
-    this.loadRepositories();
+    // this.loadRepositories();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.loadRepositories();
-
-    const repositories = this.localStorageService.getData('repositories');
-    if (!Array.isArray(repositories) || repositories.length === 0) {
-      this.openDialog();
-    }
   }
-
+  
   loadRepositories(): void {
     this.http.get('http://localhost:3000/Repos/get').subscribe({
       next: (repositories) => {
         if (Array.isArray(repositories)) {
           this.dataSource.data = repositories;
+          this.repositoriesSubject.next(repositories);
+          this.repositoriesSubject.subscribe(repositories => {
+            if (!Array.isArray(repositories) || repositories.length === 0) {
+              this.openDialog();
+            }
+          });
         } else {
           this.errorMessage = 'No repositories found.';
         }
@@ -117,6 +120,9 @@ export class GetProjectsComponent {
       },
     });
   }
+  
+
+
 
 
   ngOnDestroy(): void {
@@ -155,7 +161,7 @@ export class GetProjectsComponent {
             language: repo.language,
           }));
 
-          this.http.post('http://localhost:3000/Repos/Addrepos', mappedResponse).subscribe({
+          this.http.post('http://localhost:3000/Repos/RepoTouser', mappedResponse).subscribe({
             next: () => {
               this.dataSource.data = mappedResponse;
               return "Repositories saved successfully."

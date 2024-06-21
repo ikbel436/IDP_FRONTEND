@@ -280,7 +280,7 @@ export class SettingsAccountComponent implements OnInit {
           // Show the toast only if it hasn't been shown for this update session
           if (!this.toastShownForUpdate) {
             this._toastService.createSuccessToast(
-              this._translocoService.translate('confirmationDialog.titles.account'),
+             
               'updateSuccess'
             );
             this.toastShownForUpdate = true;
@@ -386,7 +386,7 @@ export class SettingsAccountComponent implements OnInit {
             // Show the toast only if it hasn't been shown for this update session
             if (!this.toastShownForUpdate) {
               this._toastService.createSuccessToast(
-                this._translocoService.translate('confirmationDialog.titles.account'),
+             
                 'updateSuccess'
               );
               this.toastShownForUpdate = true;
@@ -432,7 +432,6 @@ export class SettingsAccountComponent implements OnInit {
           // Show the toast only if it hasn't been shown for this update session
           if (!this.toastShownForUpdate) {
             this._toastService.createSuccessToast(
-              this._translocoService.translate('confirmationDialog.titles.account'),
               'updateSuccess'
             );
             this.toastShownForUpdate = true;

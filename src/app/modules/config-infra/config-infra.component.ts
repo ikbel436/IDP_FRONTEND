@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { FormsModule, ReactiveFormsModule, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormsModule, ReactiveFormsModule, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatOptionModule } from '@angular/material/core';
@@ -10,13 +10,15 @@ import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { MatStepperModule } from '@angular/material/stepper';
+import { FuseHighlightComponent } from '@fuse/components/highlight';
 
 import { CommonModule } from '@angular/common';
 import { TerraformService } from '@fuse/services/terraform/terraform.service';
+import { ToastService } from 'app/services/toast.service';
 @Component({
   selector: 'app-config-infra',
   standalone: true,
-  imports: [MatIconModule, FormsModule, CommonModule, ReactiveFormsModule, MatStepperModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatOptionModule, MatButtonModule, MatCheckboxModule, MatRadioModule],
+  imports: [MatIconModule, FormsModule,FuseHighlightComponent, CommonModule, ReactiveFormsModule, MatStepperModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatOptionModule, MatButtonModule, MatCheckboxModule, MatRadioModule],
 
   templateUrl: './config-infra.component.html',
   styleUrl: './config-infra.component.scss'
@@ -48,33 +50,91 @@ export class ConfigInfraComponent {
   /**
     * Constructor
     */
-  constructor(private _formBuilder: UntypedFormBuilder, private _httpClient: HttpClient, private terraformService: TerraformService) {
+  constructor(private _formBuilder: UntypedFormBuilder, private _httpClient: HttpClient, private terraformService: TerraformService,private _toastService: ToastService,
+  ) {
   }
   ngOnInit(): void {
     // Horizontal stepper form
     this.horizontalStepperForm = this._formBuilder.group({
+
       step1: this._formBuilder.group({
         ec2Selected: [false],
         s3Selected: [false]
       }),
       step2: this._formBuilder.group({
-        //  region: ['', Validators.required],
         ami: ['', Validators.required],
         instance_type: ['', Validators.required],
         name: ['', Validators.required]
       }),
       step3: this._formBuilder.group({
-
-        //  s3BucketName: ['', Validators.required]
-
+        names3: ['']
 
       }),
     });
 
-    // Vertical stepper form
 
   }
+  // -----------------------------------------------------------------------------------------------------
+  //@ Small Functions 
+  // -----------------------------------------------------------------------------------------------------
 
+    lowercaseValidator(control: AbstractControl): {[key: string]: any} | null {
+    const value = control.value;
+    // Check if the value is not empty and is in lowercase
+    if (value &&!/^[a-z]+$/.test(value)) {
+      return {'lowercase': true};
+    }
+    return null;
+  }
+
+  copyToClipboard(text: string): void {
+    navigator.clipboard.writeText(text).then(() => {
+      this._toastService.createSuccessToast(
+        'The Terraform configuration has been copied to the clipboard.'
+      );    }).catch(err => {
+      console.error('Error copying text: ', err);
+    });
+  }
+
+
+  generateJsonConfiguration(): string {
+    const step2Data = this.horizontalStepperForm.get('step2').value;
+    const step1Data = this.horizontalStepperForm.get('step1').value;
+    const step3Data = this.horizontalStepperForm.get('step3').value; 
+  
+    let config = {
+      provider: "aws",
+      region: step2Data.region,
+      profile: "default",
+      resources: []
+    };
+  
+    if (step1Data.ec2Selected) {
+      config.resources.push({
+        resourceType: `"aws_instance" "${step2Data.name}"`,
+        name: step2Data.name,
+        ami: step2Data.ami,
+        instanceType: step2Data.instance_type,
+        keyName: "2024key",
+        tags: {
+         Terraform   : "true",
+          Environment : "dev"
+        }
+      });
+    }
+  
+    if (step1Data.s3Selected) {
+      config.resources.push({
+        resourceType: `"${step3Data.names3}" , "aws_s3_bucket_policy"`,
+        name: step3Data.names3,
+        bucket: "aws_s3_bucket",
+        policy:"{\"Version\":\"2012-10-17\",\"Statement\":[{\"Sid\":\"PrivateContent\",\"Effect\":\"Deny\",\"Principal\":\"*\",\"Action\":\"s3:GetObject\",\"Resource\":\"arn:aws:s3:::string/*\"}]}"
+      });
+    }
+    
+    return JSON.stringify(config, null, 2);
+  }
+  
 
 
   onSubmit() {
@@ -109,4 +169,9 @@ export class ConfigInfraComponent {
       this.horizontalStepperForm.markAllAsTouched();
     }
   }
+
+
+  
+
 }
+
