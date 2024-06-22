@@ -128,6 +128,7 @@ export class FinanceComponent implements OnInit, AfterViewInit, OnDestroy {
           height: '500px',
           data: { selectedProjects: this.selectedProjects }
         });
+        
       
         dialogRef.afterClosed().subscribe(result => {
           if (result) {

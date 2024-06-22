@@ -18,9 +18,12 @@ import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldControl } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatOptionModule } from '@angular/material/core';
+import { MatChipsModule } from '@angular/material/chips';
 @Component({
     selector: 'app-bundle',
     standalone: true,
+    
     imports: [
         CommonModule,
         MatButtonModule,
@@ -34,11 +37,15 @@ import { MatInputModule } from '@angular/material/input';
         MatDialogModule,
         FormsModule,
         MatInputModule,
+        MatOptionModule,
+        MatChipsModule,
     ],
     templateUrl: './bundle.component.html',
     styleUrl: './bundle.component.scss',
 })
 export class BundleComponent {
+    selectedProjects: any[] = [];
+    formFieldHelpers: string[] = [''];
     constructor(
         public matDialogRef: MatDialogRef<BundleComponent>,
         @Inject(MAT_DIALOG_DATA) public data: any,
@@ -51,19 +58,32 @@ export class BundleComponent {
         const selectedProjects = this.data.selectedProjects;
         console.log('Selected projects:', selectedProjects);
         this.http
-            .post('http://localhost:3000/Bundle/BundleTouser', {
+          .post('http://localhost:3000/Bundle/BundleTouser', {
                 name: bundleName,
                 description: bundleDescription,
                 Projects: selectedProjects,
             })
-            .subscribe(
+          .subscribe(
                 (response) => {
                     console.log('Bundle created successfully:', response);
                     this.matDialogRef.close(true);
+                    // Clear the chips after saving
+                    this.selectedProjects = [];
                 },
                 (error) => {
                     console.error('Error creating bundle:', error);
                 }
             );
     }
+    
+
+    removeChip(projectToRemove: any): void {
+        const index = this.data.selectedProjects.findIndex(project => project.id === projectToRemove.id);
+        if (index > -1) {
+            this.data.selectedProjects.splice(index, 1);
+        }
+    }
+    
+    
+    
 }
