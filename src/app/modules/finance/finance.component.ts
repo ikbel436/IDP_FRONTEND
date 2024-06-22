@@ -95,6 +95,7 @@ export class FinanceComponent implements OnInit, AfterViewInit, OnDestroy {
         'actions',
     ];
     selectedProjects: any[] = []; 
+    bundles: any[] = [];
     data: any;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 //    selectedProject: any; 
@@ -120,6 +121,7 @@ export class FinanceComponent implements OnInit, AfterViewInit, OnDestroy {
      */
     ngOnInit(): void {
         this.getProjectData();
+        this.fetchBundles();
     }
     openBundleDialog(): void {
         this.collectSelectedProjects(); // Ensure selected projects are collected
@@ -236,6 +238,20 @@ export class FinanceComponent implements OnInit, AfterViewInit, OnDestroy {
     // -----------------------------------------------------------------------------------------------------
     // @ Private methods
     // -----------------------------------------------------------------------------------------------------
+
+    fetchBundles(): void {
+        this.financeService.getBundles().subscribe(
+          (bundles) => {
+            this.bundles = bundles;
+            this.cd.detectChanges(); // Trigger change detection manually
+          },
+          (error) => {
+            console.error('Failed to fetch bundles:', error);
+          }
+        );
+      }
+      
+
     handleUpdatedRepository(data: { provider: string }, dialogRef: any): void {
         this.financeService
             .getRepositoryById(data.provider)
