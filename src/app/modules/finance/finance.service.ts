@@ -96,5 +96,13 @@ export class FinanceService {
         return this._httpClient.get<{ projects: InventoryProject[] }>(`${this.apiUrl}/get`);
       }
 
+        /**
+         * Get user's Bundles
+         * @returns An Observable of all Bundles
+         */
+
+      getBundles(): Observable<any[]> {
+        return this._httpClient.get<any[]>('http://localhost:3000/Bundle/get');
+      }
     
 }

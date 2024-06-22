@@ -30,6 +30,9 @@ import { FinanceService } from './finance.service';
 import { DetailsProjectService } from '../details-project/details-project.service';
 import { InventoryProject } from 'app/mock-api/apps/project/project.types';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { GetProjectsComponent } from '../git-provider/get-projects/get-projects.component';
+import { BundleComponent } from './bundle/bundle.component';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 export interface Repository {
     name: string;
@@ -50,6 +53,7 @@ export interface Repository {
     templateUrl: './finance.component.html',
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush,
+    styleUrl: './finance.component.scss',
     standalone: true,
     imports: [
         MatButtonModule,
@@ -64,6 +68,8 @@ export interface Repository {
         DatePipe,
         CommonModule,
         MatFormFieldModule,
+        GetProjectsComponent,
+        MatCheckboxModule,
     ],
 })
 export class FinanceComponent implements OnInit, AfterViewInit, OnDestroy {
@@ -73,8 +79,9 @@ export class FinanceComponent implements OnInit, AfterViewInit, OnDestroy {
     errorMessage: string = '';
     @Input() selectedProviderId: string;
     @Output() newProjectId = new EventEmitter<string>();
-   
+    projects: any[] = [];
     displayedColumns: string[] = [
+        'checkbox',
         'name',
         'language',
         'createdAt',
@@ -87,10 +94,11 @@ export class FinanceComponent implements OnInit, AfterViewInit, OnDestroy {
         'DBType',
         'actions',
     ];
-
+    selectedProjects: any[] = []; 
+    bundles: any[] = [];
     data: any;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
-
+//    selectedProject: any; 
     /**
      * Constructor
      */
@@ -113,8 +121,33 @@ export class FinanceComponent implements OnInit, AfterViewInit, OnDestroy {
      */
     ngOnInit(): void {
         this.getProjectData();
+        this.fetchBundles();
     }
+    openBundleDialog(): void {
+        this.collectSelectedProjects(); // Ensure selected projects are collected
+        const dialogRef = this._matDialog.open(BundleComponent, {
+          width: '500px',
+          height: '500px',
+          data: { selectedProjects: this.selectedProjects }
+        });
+        
+      
+        dialogRef.afterClosed().subscribe(result => {
+          if (result) {
+            console.log('The dialog was closed');
+            // Handle the result, e.g., save the new bundle
+          }
+        });
+      }
+      
 
+    collectSelectedProjects() {
+        this.projects = this.dataSource.data;
+      this.selectedProjects = this.projects.filter(project => project.selected);
+      console.log('Projects before filtering:', this.projects);
+      console.log('Selected projects:', this.selectedProjects);
+    }
+    
  
     editRow(element: any): void {
         this.openComposeDialog(element);
@@ -205,6 +238,20 @@ export class FinanceComponent implements OnInit, AfterViewInit, OnDestroy {
     // -----------------------------------------------------------------------------------------------------
     // @ Private methods
     // -----------------------------------------------------------------------------------------------------
+
+    fetchBundles(): void {
+        this.financeService.getBundles().subscribe(
+          (bundles) => {
+            this.bundles = bundles;
+            this.cd.detectChanges(); // Trigger change detection manually
+          },
+          (error) => {
+            console.error('Failed to fetch bundles:', error);
+          }
+        );
+      }
+      
+
     handleUpdatedRepository(data: { provider: string }, dialogRef: any): void {
         this.financeService
             .getRepositoryById(data.provider)
