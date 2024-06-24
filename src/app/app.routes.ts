@@ -100,6 +100,7 @@ export const appRoutes: Route[] = [
             { path: 'addCloudService', loadChildren: () => import('app/modules/cloud-services/add-cloud-service/add-cloud-services.routes') },
             { path: 'listCloudServices', loadChildren: () => import('app/modules/cloud-services/list-cloud-services/list-cloud-services.routes') },
             { path: 'services', loadChildren: () => import('app/modules/finance/finance.routes') },
+            { path: 'CI-services', loadChildren: () => import('app/modules/selfServicePipelines/ci-pipelines/ci-pipelines.routes') },
 
             // Apps
 
