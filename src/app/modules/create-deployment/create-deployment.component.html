@@ -1,0 +1,106 @@
+<h1 mat-dialog-title>Configure Bundle</h1>
+<div mat-dialog-content>
+  <form [formGroup]="stepperForm">
+    <mat-horizontal-stepper linear>
+      <!-- Step 1: Choose Database and Configure Env Vars -->
+      <mat-step [stepControl]="databaseStep">
+        <form [formGroup]="databaseStep">
+          <ng-template matStepLabel>Database Configuration</ng-template>
+          <div>
+            <mat-form-field>
+              <mat-label>Database Type</mat-label>
+              <mat-select formControlName="dbType">
+                <mat-option value="mysql">MySQL</mat-option>
+                <mat-option value="mongodb">MongoDB</mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Port</mat-label>
+              <input matInput formControlName="port" type="number">
+            </mat-form-field>
+          </div>
+          <div formArrayName="envVars">
+            <div *ngFor="let envVar of envVars.controls; let i=index" [formGroupName]="i">
+              <div>
+                <mat-form-field>
+                  <mat-label>Key</mat-label>
+                  <input matInput formControlName="name">
+                </mat-form-field>
+                <mat-form-field>
+                  <mat-label>Value</mat-label>
+                  <input matInput formControlName="value">
+                </mat-form-field>
+                <button mat-button type="button" (click)="removeEnvVar(i)">Remove</button>
+              </div>
+            </div>
+            <button mat-button type="button" (click)="addEnvVar()">Add Env Variable</button>
+          </div>
+          <div>
+            <button mat-button matStepperNext (click)="generateDatabaseDeployment()">Next</button>
+          </div>
+        </form>
+      </mat-step>
+
+      <!-- Step 2: Generate Project Deployment -->
+      <mat-step [stepControl]="projectStep">
+        <form [formGroup]="projectStep">
+          <ng-template matStepLabel>Project Deployment</ng-template>
+          <div>
+            <mat-form-field>
+              <mat-label>Project</mat-label>
+              <mat-select formControlName="project">
+                <mat-option *ngFor="let project of projects" [value]="project">{{ project }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div formArrayName="projectEnvVars">
+            <div *ngFor="let projectEnvVar of projectEnvVars.controls; let i=index" [formGroupName]="i">
+              <div>
+                <mat-form-field>
+                  <mat-label>Key</mat-label>
+                  <input matInput formControlName="name">
+                </mat-form-field>
+                <mat-form-field>
+                  <mat-label>Value</mat-label>
+                  <input matInput formControlName="value">
+                </mat-form-field>
+                <button mat-button type="button" (click)="removeProjectEnvVar(i)">Remove</button>
+              </div>
+            </div>
+            <button mat-button type="button" (click)="addProjectEnvVar()">Add Env Variable</button>
+          </div>
+          <div>
+            <mat-form-field>
+              <mat-label>Service Name</mat-label>
+              <input matInput formControlName="serviceName">
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Docker Image</mat-label>
+              <input matInput formControlName="dockerImage">
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Port</mat-label>
+              <input matInput formControlName="port" type="number">
+            </mat-form-field>
+          </div>
+          <div>
+            <mat-checkbox formControlName="expose">Expose Service</mat-checkbox>
+          </div>
+          <div>
+            <mat-form-field>
+              <mat-label>Host</mat-label>
+              <input matInput formControlName="host" [disabled]="!projectStep.value.expose">
+            </mat-form-field>
+          </div>
+          <div>
+            <button mat-button matStepperPrevious>Back</button>
+            <button mat-button (click)="generateProjectDeployment()">Submit</button>
+          </div>
+        </form>
+      </mat-step>
+    </mat-horizontal-stepper>
+  </form>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onCancel()">Cancel</button>
+</div>
