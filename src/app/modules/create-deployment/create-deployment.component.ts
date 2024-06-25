@@ -16,6 +16,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { HttpClientModule } from '@angular/common/http';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { ProjectService } from 'app/mock-api/apps/project/project.service';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-create-deployment',
@@ -48,15 +50,9 @@ export class CreateDeploymentComponent {
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<CreateDeploymentComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
-    private apiService: DeploymentService
-  ) {
-    console.log(this.data.bundle.Projects); // Debug: Check the structure of Projects array
-
-    // Use the IDs directly as project names
-    this.projects = this.data.bundle.Projects;
-
-    console.log(this.projects); // Debug: Check the resulting projects array
-
+    private apiService: DeploymentService,
+    private projectServicce: ProjectService
+  )  {
     this.stepperForm = this.fb.group({
       databaseStep: this.fb.group({
         dbType: ['', Validators.required],
@@ -78,6 +74,10 @@ export class CreateDeploymentComponent {
         host: ['']
       })
     });
+  }
+
+  ngOnInit(): void {
+    this.fetchProjectNames();
   }
 
   get databaseStep(): FormGroup {
@@ -134,6 +134,20 @@ export class CreateDeploymentComponent {
   removeProjectEnvVar(index: number): void {
     this.projectEnvVars.removeAt(index);
   }
+  fetchProjectNames(): void {
+    const projectIds = this.data.bundle.Projects;
+    const projectRequests = projectIds.map(id => this.projectServicce.getProjectsByIds(id));
+
+    forkJoin(projectRequests).subscribe(
+      (projects: any[]) => {
+        this.projects = projects.map(project => project.name);
+        console.log(this.projects); 
+      },
+      error => {
+        console.error('Error fetching project names:', error);
+      }
+    );
+  }
 
   generateDatabaseDeployment(): void {
     const deploymentData = {
@@ -176,5 +190,4 @@ export class CreateDeploymentComponent {
 
   onCancel(): void {
     this.dialogRef.close();
-  }
-}
+  }}
