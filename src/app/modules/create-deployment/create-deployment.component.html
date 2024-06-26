@@ -37,6 +37,7 @@
                             formControlName="serviceName"
                             [placeholder]="'Service Name'"
                             type="string"
+                            
                         />
 
                         <mat-icon
@@ -147,8 +148,8 @@
             </mat-step>
 
             <mat-step
-                [formGroupName]="'step3'"
-                [stepControl]="stepperForm.get('step3')"
+                [formGroupName]="'step2'"
+                [stepControl]="stepperForm.get('step2')"
                 #verticalStepperStep2
             >
                 <br />
@@ -348,9 +349,9 @@
                         mat-flat-button
                         [color]="'accent'"
                         type="button"
-                        matStepperPrevious
+                        (click)="onSubmit()"
                     >
-                        Back
+                        Apply Deployments
                     </button>
                     <button
                         class="px-8"

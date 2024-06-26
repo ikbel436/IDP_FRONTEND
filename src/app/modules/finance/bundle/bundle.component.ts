@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
     MAT_DIALOG_DATA,
@@ -20,10 +20,11 @@ import { MatFormFieldControl } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatOptionModule } from '@angular/material/core';
 import { MatChipsModule } from '@angular/material/chips';
+
 @Component({
     selector: 'app-bundle',
     standalone: true,
-    
+
     imports: [
         CommonModule,
         MatButtonModule,
@@ -49,8 +50,10 @@ export class BundleComponent {
     constructor(
         public matDialogRef: MatDialogRef<BundleComponent>,
         @Inject(MAT_DIALOG_DATA) public data: any,
-        private http: HttpClient
-    ) {}
+        private http: HttpClient,
+    ) {
+
+    }
     onNoClick(): void {
         this.matDialogRef.close();
     }
@@ -58,12 +61,12 @@ export class BundleComponent {
         const selectedProjects = this.data.selectedProjects;
         console.log('Selected projects:', selectedProjects);
         this.http
-          .post('http://localhost:3000/Bundle/BundleTouser', {
+            .post('http://localhost:3000/Bundle/BundleTouser', {
                 name: bundleName,
                 description: bundleDescription,
                 Projects: selectedProjects,
             })
-          .subscribe(
+            .subscribe(
                 (response) => {
                     console.log('Bundle created successfully:', response);
                     this.matDialogRef.close(true);
@@ -75,15 +78,13 @@ export class BundleComponent {
                 }
             );
     }
-    
 
     removeChip(projectToRemove: any): void {
-        const index = this.data.selectedProjects.findIndex(project => project.id === projectToRemove.id);
+        const index = this.data.selectedProjects.findIndex(
+            (project) => project.id === projectToRemove.id
+        );
         if (index > -1) {
             this.data.selectedProjects.splice(index, 1);
         }
     }
-    
-    
-    
 }
