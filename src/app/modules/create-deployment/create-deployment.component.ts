@@ -118,7 +118,7 @@ export class CreateDeploymentComponent {
     createProjectGroup(projectName: string, dockerImage: string): FormGroup {
         return this.fb.group({
             projectName: [projectName, Validators.required],
-            dockerImage: [{ value: dockerImage, disabled: true }, Validators.required],
+            dockerImage: [dockerImage , Validators.required],
             serviceName: ['', Validators.required],
             port: ['', Validators.required],
             expose: [false],
@@ -148,10 +148,10 @@ export class CreateDeploymentComponent {
         forkJoin(projectRequests).subscribe(
             (projects: any[]) => {
                 projects.forEach((project) => {
-                    const projectGroup = this.createProjectGroup(project.name, project.DockerImage);
+                    const projectGroup = this.createProjectGroup(project.name, project.DockerImage[0]);
                     this.projectsArray.push(projectGroup);
                 });
-                console.log(this.projectsArray);
+                console.log("montaaaaaaaa",this.projectsArray);
             },
             (error) => {
                 console.error('Error fetching projects:', error);
@@ -169,7 +169,6 @@ export class CreateDeploymentComponent {
             envVariables: this.envVars.value,
             namespace: this.stepperForm.value.namespace,
         };
-        console.log('Deployment Data', deploymentData);
     
         this.apiService.generateDatabaseDeployment(deploymentData).subscribe(
             (response) => {
@@ -182,33 +181,33 @@ export class CreateDeploymentComponent {
     }
 
     generateProjectDeployment(index: number): void {
-        const projectGroup = this.projectsArray.at(index) as FormGroup;
-        const deploymentData = {
-            serviceName: projectGroup.value.serviceName,
-            port: projectGroup.value.port,
-            image: projectGroup.value.dockerImage,
-            envVariables: projectGroup.value.projectEnvVars,
-            namespace: this.stepperForm.value.namespace,
-        };
-    
-        const expose = projectGroup.value.expose;
-        const host = projectGroup.value.host;
-    
-        this.apiService
-          .generateDeployment({...deploymentData, expose, host })
-          .subscribe(
-                (response) => {
-                    console.log('Project deployment generated:', response);
-                    this.generatedFiles.push(response.deploymentFilePath);
-                },
-                (error) => {
-                    console.error(
-                        'Error generating project deployment:',
-                        error
-                    );
-                }
-            );
-    }
+    const projectGroup = this.projectsArray.at(index) as FormGroup;
+    const deploymentData = {
+        serviceName: projectGroup.value.serviceName,
+        port: projectGroup.value.port,
+        image: projectGroup.value.dockerImage,
+        envVariables: projectGroup.value.projectEnvVars,
+        namespace: this.stepperForm.value.namespace,
+    };
+
+    const expose = projectGroup.value.expose;
+    const host = projectGroup.value.host;
+
+    this.apiService
+      .generateDeployment({...deploymentData, expose, host })
+      .subscribe(
+            (response) => {
+                console.log('Deployment Data', deploymentData);
+                this.generatedFiles.push(response.deploymentFilePath);
+            },
+            (error) => {
+                console.error(
+                    'Error generating project deployment:',
+                    error
+                );
+            }
+        );
+}
 
     onSubmit(): void {
         const deploymentData = {
