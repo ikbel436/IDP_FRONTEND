@@ -33,6 +33,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { GetProjectsComponent } from '../git-provider/get-projects/get-projects.component';
 import { BundleComponent } from './bundle/bundle.component';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { CreateDeploymentComponent } from '../create-deployment/create-deployment.component';
+import { FuseLoadingBarComponent } from '@fuse/components/loading-bar';
 
 export interface Repository {
     name: string;
@@ -70,6 +72,7 @@ export interface Repository {
         MatFormFieldModule,
         GetProjectsComponent,
         MatCheckboxModule,
+        FuseLoadingBarComponent
     ],
 })
 export class FinanceComponent implements OnInit, AfterViewInit, OnDestroy {
@@ -123,6 +126,20 @@ export class FinanceComponent implements OnInit, AfterViewInit, OnDestroy {
         this.getProjectData();
         this.fetchBundles();
     }
+    openBundleConfig(bundle): void {
+        const dialogRef = this._matDialog.open(CreateDeploymentComponent, {
+          width: '600px',
+          data: { bundle }
+        });
+        this.cd.detectChanges(); 
+
+    
+        dialogRef.afterClosed().subscribe(result => {
+          if (result) {
+            console.log('Bundle configuration submitted:', result);
+          }
+        });
+      }
     openBundleDialog(): void {
         this.collectSelectedProjects(); // Ensure selected projects are collected
         const dialogRef = this._matDialog.open(BundleComponent, {

@@ -666,7 +666,7 @@
                     total.
                 </div> -->
                 <div *ngIf="bundles.length > 0" class="my-8 space-y-8">
-                    <div *ngFor="let bundle of bundles" class="flex flex-col">
+                    <div *ngFor="let bundle of bundles" class="flex flex-col" (click)="openBundleConfig(bundle)">
                         <div class="flex items-center">
                             <div
                                 class="flex items-center justify-center w-14 h-14 rounded bg-red-100 text-red-800 dark:bg-red-600 dark:text-red-50"
