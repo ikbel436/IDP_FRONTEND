@@ -63,15 +63,14 @@ export class CreateDeploymentComponent {
     docker: string[] = [];
     generatedFiles: string[] = [];
     token = 'YOUR_JWT_TOKEN';
-    horizontalStepperForm: UntypedFormGroup;
-    verticalStepperForm: UntypedFormGroup;
-    generatedConfigMap = false;
+    
+
     constructor(
-        private fb: UntypedFormBuilder,
+        private fb: FormBuilder,
         private dialogRef: MatDialogRef<CreateDeploymentComponent>,
         @Inject(MAT_DIALOG_DATA) public data: any,
         private apiService: DeploymentService,
-        private projectServicce: ProjectService
+        private projectService: ProjectService
     ) {
         this.stepperForm = this.fb.group({
             step1: this.fb.group({
@@ -80,43 +79,25 @@ export class CreateDeploymentComponent {
                 serviceName: ['', Validators.required],
                 envVars: this.fb.array([this.createEnvVariable()]),
             }),
-
-            step2: this.fb.group({
-                project: ['', Validators.required],
-                serviceName: ['', Validators.required],
-                dockerImage: ['', Validators.required],
-                port: ['', Validators.required],
-                projectEnvVars: this.fb.array([this.createEnvVariable()]),
-                expose: [false],
-                host: [''],
-            }),
+            projects: this.fb.array([]),
             namespace: [this.data.bundle.name, Validators.required],
         });
     }
 
     ngOnInit(): void {
-        this.fetchProjectNames();
-        this.fetchDockerNames();
-        // Vertical stepper form
+        this.fetchProjects();
     }
 
     get step1(): FormGroup {
         return this.stepperForm.get('step1') as FormGroup;
     }
 
-
-
-    get step2(): FormGroup {
-        return this.stepperForm.get('step2') as FormGroup;
-    }
-
     get envVars(): FormArray {
         return this.step1.get('envVars') as FormArray;
     }
 
-
-    get projectEnvVars(): FormArray {
-        return this.step2.get('projectEnvVars') as FormArray;
+    get projectsArray(): FormArray {
+        return this.stepperForm.get('projects') as FormArray;
     }
 
     createEnvVariable(): FormGroup {
@@ -134,49 +115,51 @@ export class CreateDeploymentComponent {
         this.envVars.removeAt(index);
     }
 
-
-
-
-
-    addProjectEnvVar(): void {
-        this.projectEnvVars.push(this.createEnvVariable());
+    createProjectGroup(projectName: string, dockerImage: string): FormGroup {
+        return this.fb.group({
+            projectName: [projectName, Validators.required],
+            dockerImage: [{ value: dockerImage, disabled: true }, Validators.required],
+            serviceName: ['', Validators.required],
+            port: ['', Validators.required],
+            expose: [false],
+            host: [''],
+            projectEnvVars: this.fb.array([this.createEnvVariable()]),
+        });
     }
 
-    removeProjectEnvVar(index: number): void {
-        this.projectEnvVars.removeAt(index);
+    addProjectEnvVar(index: number): void {
+        const projectGroup = this.projectsArray.at(index) as FormGroup;
+        const projectEnvVars = projectGroup.get('projectEnvVars') as FormArray;
+        projectEnvVars.push(this.createEnvVariable());
     }
-    fetchProjectNames(): void {
+
+    removeProjectEnvVar(projectIndex: number, envVarIndex: number): void {
+        const projectGroup = this.projectsArray.at(projectIndex) as FormGroup;
+        const projectEnvVars = projectGroup.get('projectEnvVars') as FormArray;
+        projectEnvVars.removeAt(envVarIndex);
+    }
+
+    fetchProjects(): void {
         const projectIds = this.data.bundle.Projects;
         const projectRequests = projectIds.map((id) =>
-            this.projectServicce.getProjectsByIds(id)
+            this.projectService.getProjectsByIds(id)
         );
 
         forkJoin(projectRequests).subscribe(
             (projects: any[]) => {
-                this.projects = projects.map((project) => project.name);
-                console.log(this.projects);
+                projects.forEach((project) => {
+                    const projectGroup = this.createProjectGroup(project.name, project.DockerImage);
+                    this.projectsArray.push(projectGroup);
+                });
+                console.log(this.projectsArray);
             },
             (error) => {
-                console.error('Error fetching project names:', error);
+                console.error('Error fetching projects:', error);
             }
         );
     }
-    fetchDockerNames(): void {
-        const projectIds = this.data.bundle.Projects;
-        const projectRequests = projectIds.map((id) =>
-            this.projectServicce.getProjectsByIds(id)
-        );
 
-        forkJoin(projectRequests).subscribe(
-            (docker: any[]) => {
-                this.docker = docker.map((project) => project.DockerImage);
-                console.log(this.docker);
-            },
-            (error) => {
-                console.error('Error fetching project names:', error);
-            }
-        );
-    }
+
     generateDatabaseDeployment(): void {
         const deploymentData = {
             dbType: this.step1.value.dbType,
@@ -186,8 +169,8 @@ export class CreateDeploymentComponent {
             envVariables: this.envVars.value,
             namespace: this.stepperForm.value.namespace,
         };
-        console.log('deployement Data', deploymentData);
-
+        console.log('Deployment Data', deploymentData);
+    
         this.apiService.generateDatabaseDeployment(deploymentData).subscribe(
             (response) => {
                 this.generatedFiles.push(response.deploymentFilePath);
@@ -198,21 +181,22 @@ export class CreateDeploymentComponent {
         );
     }
 
-    generateProjectDeployment(): void {
+    generateProjectDeployment(index: number): void {
+        const projectGroup = this.projectsArray.at(index) as FormGroup;
         const deploymentData = {
-            serviceName: this.step2.value.serviceName,
-            port: this.step2.value.port,
-            image: this.step2.value.dockerImage,
-            envVariables: this.step2.value.projectEnvVars,
+            serviceName: projectGroup.value.serviceName,
+            port: projectGroup.value.port,
+            image: projectGroup.value.dockerImage,
+            envVariables: projectGroup.value.projectEnvVars,
             namespace: this.stepperForm.value.namespace,
         };
-
-        const expose = this.step2.value.expose;
-        const host = this.step2.value.host;
-
+    
+        const expose = projectGroup.value.expose;
+        const host = projectGroup.value.host;
+    
         this.apiService
-            .generateDeployment({ ...deploymentData, expose, host })
-            .subscribe(
+          .generateDeployment({...deploymentData, expose, host })
+          .subscribe(
                 (response) => {
                     console.log('Project deployment generated:', response);
                     this.generatedFiles.push(response.deploymentFilePath);
@@ -234,7 +218,7 @@ export class CreateDeploymentComponent {
             bundles: this.data.bundle,
             namespace: this.stepperForm.value.namespace,
         };
-        console.log('deployment', deploymentData);
+        console.log('Deployment', deploymentData);
 
         this.apiService.applyK8sFiles(deploymentData).subscribe(
             (response) => {
@@ -247,9 +231,9 @@ export class CreateDeploymentComponent {
         );
     }
 
-    
-
     onCancel(): void {
         this.dialogRef.close();
     }
 }
+
+
