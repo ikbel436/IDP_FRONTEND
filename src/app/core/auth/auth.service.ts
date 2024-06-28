@@ -254,6 +254,9 @@ export class AuthService {
         this.accessToken = localStorage.getItem('accessToken');
         return of(true);
     }
+    isAdmin(): boolean {
+        return this.getUserRole() === 'admin';
+    }
     getCurrentUser(): Observable<any> {
         return this._httpClient.get<any>(`${this.apiUrl}/current`);
     }

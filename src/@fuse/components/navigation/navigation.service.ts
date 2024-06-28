@@ -41,7 +41,8 @@ export class FuseNavigationService {
                 type: 'group', title: 'Manage Cloud Providers Services', icon: 'heroicons_outline:cloud', link: '/cloudProviderServices',
                 children: [
                     { type: 'basic', title: 'Add Cloud Services', icon: 'heroicons_outline:pencil-square', link: '/addCloudService' },
-                    { type: 'basic', title: 'Cloud Services', icon: 'heroicons_outline:list-bullet', link: '/listCloudServices' },]
+                    { type: 'basic', title: 'Cloud Services', icon: 'heroicons_outline:list-bullet', link: '/listCloudServices' },
+                    { type: 'basic', title: 'Deployments', icon: 'heroicons_outline:list-bullet', link: '/DeploymentsAdmin' },]
             },
 
 
@@ -88,7 +89,7 @@ export class FuseNavigationService {
                     //{ type: 'basic', title: 'Cloud Infrastructure Templates', icon: 'heroicons_outline:cloud', link: '/templateTerraform' },
                     //{ type: 'basic', title: 'Cloud Services', icon: 'heroicons_outline:list-bullet', link: '/listCloudServices' },
                     { type: 'basic', title: 'Create Project', icon: 'heroicons_outline:folder', link: '/services' },
-                    // { type: 'basic', title: 'Add Repositories', icon: 'heroicons_outline:folder', link: '/gitProvider' },
+                    { type: 'basic', title: 'Deployments Projects', icon: 'heroicons_outline:cloud', link: '/DeploymentsUser' },
 
                 ]
             },

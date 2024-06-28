@@ -35,6 +35,7 @@ import { BundleComponent } from './bundle/bundle.component';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { CreateDeploymentComponent } from '../create-deployment/create-deployment.component';
 import { FuseLoadingBarComponent } from '@fuse/components/loading-bar';
+import { RouterModule } from '@angular/router';
 
 export interface Repository {
     name: string;
@@ -72,7 +73,7 @@ export interface Repository {
         MatFormFieldModule,
         GetProjectsComponent,
         MatCheckboxModule,
-        FuseLoadingBarComponent
+        FuseLoadingBarComponent,RouterModule
     ],
 })
 export class FinanceComponent implements OnInit, AfterViewInit, OnDestroy {
