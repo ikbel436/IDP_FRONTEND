@@ -1,19 +1,7 @@
 import { Component, Inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {
-    FormArray,
-    FormBuilder,
-    FormGroup,
-    ReactiveFormsModule,
-    UntypedFormBuilder,
-    UntypedFormGroup,
-    Validators,
-} from '@angular/forms';
-import {
-    MAT_DIALOG_DATA,
-    MatDialogModule,
-    MatDialogRef,
-} from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { FormBuilder, FormGroup, FormArray, Validators, ReactiveFormsModule } from '@angular/forms';
 import { DeploymentService } from './deployment.service';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -31,6 +19,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { ProjectService } from 'app/mock-api/apps/project/project.service';
 import { Observable, forkJoin } from 'rxjs';
 import { FuseLoadingBarComponent } from '@fuse/components/loading-bar';
+import { HostsModalComponent } from './hosts-modal/hosts-modal.component';
 
 @Component({
     selector: 'app-create-deployment',
@@ -63,14 +52,15 @@ export class CreateDeploymentComponent {
     docker: string[] = [];
     generatedFiles: string[] = [];
     token = 'YOUR_JWT_TOKEN';
+    hosts: string[] = [];
     
-
     constructor(
         private fb: FormBuilder,
         private dialogRef: MatDialogRef<CreateDeploymentComponent>,
         @Inject(MAT_DIALOG_DATA) public data: any,
         private apiService: DeploymentService,
-        private projectService: ProjectService
+        private projectService: ProjectService,
+        private dialog: MatDialog
     ) {
         this.stepperForm = this.fb.group({
             step1: this.fb.group({
@@ -159,7 +149,6 @@ export class CreateDeploymentComponent {
         );
     }
 
-
     generateDatabaseDeployment(): void {
         const deploymentData = {
             dbType: this.step1.value.dbType,
@@ -181,33 +170,40 @@ export class CreateDeploymentComponent {
     }
 
     generateProjectDeployment(index: number): void {
-    const projectGroup = this.projectsArray.at(index) as FormGroup;
-    const deploymentData = {
-        serviceName: projectGroup.value.serviceName,
-        port: projectGroup.value.port,
-        image: projectGroup.value.dockerImage,
-        envVariables: projectGroup.value.projectEnvVars,
-        namespace: this.stepperForm.value.namespace,
-    };
-
-    const expose = projectGroup.value.expose;
-    const host = projectGroup.value.host;
-
-    this.apiService
-      .generateDeployment({...deploymentData, expose, host })
-      .subscribe(
-            (response) => {
-                console.log('Deployment Data', deploymentData);
-                this.generatedFiles.push(response.deploymentFilePath);
-            },
-            (error) => {
-                console.error(
-                    'Error generating project deployment:',
-                    error
-                );
-            }
-        );
-}
+        const projectGroup = this.projectsArray.at(index) as FormGroup;
+        const deploymentData = {
+            serviceName: projectGroup.value.serviceName,
+            port: projectGroup.value.port,
+            image: projectGroup.value.dockerImage,
+            envVariables: projectGroup.value.projectEnvVars,
+            namespace: this.stepperForm.value.namespace,
+        };
+    
+        const expose = projectGroup.value.expose;
+        const host = projectGroup.value.host;
+    
+        // Store the host if the project is exposed
+        if (expose) {
+            this.hosts.push(host);
+        }
+    
+        this.apiService
+           .generateDeployment({...deploymentData, expose, host })
+           .subscribe(
+                (response) => {
+                    console.log('Deployment Data', deploymentData);
+                    this.generatedFiles.push(response.deploymentFilePath);
+                    this.generatedFiles.push(response.ingressFilePath);
+                    console.log('Generated Files', this.generatedFiles);
+                },
+                (error) => {
+                    console.error(
+                        'Error generating project deployment:',
+                        error
+                    );
+                }
+            );
+    }
 
     onSubmit(): void {
         const deploymentData = {
@@ -217,22 +213,39 @@ export class CreateDeploymentComponent {
             bundles: this.data.bundle,
             namespace: this.stepperForm.value.namespace,
         };
-        console.log('Deployment', deploymentData);
-
+    
         this.apiService.applyK8sFiles(deploymentData).subscribe(
             (response) => {
+                console.log('Deployment', deploymentData);
                 console.log('Deployment applied:', response);
-                this.dialogRef.close(this.stepperForm.value);
+    
+                // Prepare the data to be passed to the modal
+                const hostsData = {
+                    hosts: this.hosts,
+                };
+    
+                // Open the modal and pass the hosts data
+                this.openHostsModal(hostsData);
             },
             (error) => {
                 console.error('Error applying deployment:', error);
             }
         );
     }
-
+    
+    openHostsModal(data: { hosts: string[] }): void {
+        const dialogRef = this.dialog.open(HostsModalComponent, {
+          data: data,
+        });
+      
+        console.log('Opening modal');
+        console.log('Hosts:', data.hosts);      
+        dialogRef.afterClosed().subscribe(result => {
+          console.log('The dialog was closed');
+        });
+    }
+    
     onCancel(): void {
         this.dialogRef.close();
     }
 }
-
-
