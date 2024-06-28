@@ -34,6 +34,7 @@ import { GetProjectsComponent } from '../git-provider/get-projects/get-projects.
 import { BundleComponent } from './bundle/bundle.component';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { CreateDeploymentComponent } from '../create-deployment/create-deployment.component';
+import { FuseLoadingBarComponent } from '@fuse/components/loading-bar';
 
 export interface Repository {
     name: string;
@@ -71,6 +72,7 @@ export interface Repository {
         MatFormFieldModule,
         GetProjectsComponent,
         MatCheckboxModule,
+        FuseLoadingBarComponent
     ],
 })
 export class FinanceComponent implements OnInit, AfterViewInit, OnDestroy {
@@ -129,6 +131,8 @@ export class FinanceComponent implements OnInit, AfterViewInit, OnDestroy {
           width: '600px',
           data: { bundle }
         });
+        this.cd.detectChanges(); 
+
     
         dialogRef.afterClosed().subscribe(result => {
           if (result) {
