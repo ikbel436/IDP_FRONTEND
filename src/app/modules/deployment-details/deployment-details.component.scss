@@ -1,0 +1,32 @@
+:host {
+    display: flex;
+    flex-direction: column;
+    max-height: 100%;
+  }
+  
+  .card-header {
+    background-color: #3f51b5;
+    color: white;
+    padding: 16px;
+    font-size: 1.25rem;
+  }
+  
+  .card-content {
+    padding: 16px;
+  }
+  
+  .card-footer {
+    display: flex;
+    justify-content: flex-end;
+    padding: 16px;
+  }
+  
+  .mat-form-field {
+    width: 100%;
+  }
+  
+  .list-disc {
+    list-style-type: disc;
+    padding-left: 1rem;
+  }
+  

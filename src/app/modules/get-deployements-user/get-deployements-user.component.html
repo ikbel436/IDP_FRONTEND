@@ -1,0 +1,57 @@
+<div class="container mx-auto p-6 md:p-8">
+    <!-- Title and action buttons -->
+    <div class="flex items-center justify-between w-full mb-8">
+      <div>
+        <h2 class="text-3xl font-semibold tracking-tight leading-8">Deployments</h2>
+        <div class="font-medium tracking-tight text-secondary">Keep track of your deployment status</div>
+      </div>
+      <div class="flex items-center ml-6">
+        <mat-form-field class="w-full sm:w-72 mt-4 sm:mt-0 sm:ml-4" [subscriptSizing]="'dynamic'">
+          <mat-icon matPrefix class="icon-size-5" [svgIcon]="'heroicons_solid:magnifying-glass'"></mat-icon>
+          <input matInput (input)="applyFilter($event.target.value)" placeholder="Search by title or description">
+        </mat-form-field>
+      </div>
+    </div>
+  
+    <!-- Deployment Cards -->
+
+<div class="container mx-auto p-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+      <ng-container *ngIf="dataSource.paginator">
+        <ng-container *ngFor="let deployment of dataSource.filteredData | slice: (dataSource.paginator.pageIndex * dataSource.paginator.pageSize): ((dataSource.paginator.pageIndex + 1) * dataSource.paginator.pageSize); trackBy: trackByFn">
+          <!-- Deployment Card -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">{{ deployment.name }}</div>
+            </div>
+            <div class="card-content">
+              <p class="text-secondary description">{{ deployment.description }}</p>
+              <div class="w-12 h-1 my-6 border-t-2"></div>
+              <div class="flex justify-between items-center mb-4">
+                <div class="created-at text-sm text-gray-500 flex items-center">
+                  <mat-icon class="icon-size-4 text-hint mr-1" [svgIcon]="'heroicons_solid:clock'"></mat-icon>
+                  {{ deployment.createdAt | date: 'medium' }}
+                </div>
+                <div class="status-badge text-sm font-bold px-2 py-0.5 rounded-full tracking-wide uppercase" [ngClass]="{
+                  'bg-red-200 text-red-800 dark:bg-red-600 dark:text-red-50': deployment.status === 'failed',
+                  'bg-green-200 text-green-800 dark:bg-green-600 dark:text-green-50': deployment.status === 'passed'
+                }">{{ deployment.status }}</div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <a mat-stroked-button  (click)="openDetails(deployment)">
+                <span class="inline-flex items-center">
+                  View Details
+                  <mat-icon class="ml-1.5 icon-size-5" [svgIcon]="'heroicons_solid:arrow-small-right'"></mat-icon>
+                </span>
+              </a>
+            </div>
+          </div>
+        </ng-container>
+      </ng-container>
+    </div>
+   
+  </div>
+  <mat-paginator [pageSizeOptions]="[6, 12, 18]" showFirstLastButtons></mat-paginator>
+  </div>
+  
