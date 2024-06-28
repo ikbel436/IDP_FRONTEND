@@ -101,6 +101,8 @@ export const appRoutes: Route[] = [
             { path: 'listCloudServices', loadChildren: () => import('app/modules/cloud-services/list-cloud-services/list-cloud-services.routes') },
             { path: 'services', loadChildren: () => import('app/modules/finance/finance.routes') },
             { path: 'DeploymentsAdmin', loadChildren: () => import('app/modules/get-deployments/get-deployments.routes') },
+         
+            
             // Apps
 
 
