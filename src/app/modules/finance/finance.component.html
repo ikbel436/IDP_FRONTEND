@@ -12,10 +12,11 @@
             </div>
             <div class="flex items-center ml-6">
               
-                <button class="sm:inline-flex">
+                <button (click)="startTour()" tourAnchor="home"  class="sm:inline-flex">
                     <app-get-projects></app-get-projects>
                 </button>
                 <button
+                tourAnchor="about"
                     (click)="openComposeDialog()"
                     class="hidden sm:inline-flex ml-3"
                     mat-flat-button
@@ -29,7 +30,7 @@
                 </button>
 
                 <!-- Actions menu (visible on xs) -->
-                <div class="sm:hidden">
+                <div  class="sm:hidden">
                     <button [matMenuTriggerFor]="actionsMenu" mat-icon-button>
                         <mat-icon
                             [svgIcon]="'heroicons_mini:ellipsis-vertical'"
@@ -73,6 +74,7 @@
                         </div>
                     </div> -->
                     <button
+                    tourAnchor="bundle"
                         class="sm:inline-flex ml-3"
                         mat-stroked-button
                         [class.hidden]="selectedProjects.length"
@@ -90,9 +92,9 @@
                         matSort
                         class="w-full bg-transparent"
                     >
-                    <ng-container matColumnDef="checkbox">
+                    <ng-container matColumnDef="checkbox" >
                         <th mat-header-cell *matHeaderCellDef>Select</th>
-                        <td mat-cell *matCellDef="let element" class="w-4 h-4 text-blue-600 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                        <td tourAnchor="contact" mat-cell *matCellDef="let element" class="w-4 h-4 text-blue-600 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
                             <mat-checkbox
                                 [checked]="element.selected"
                                 (change)="element.selected = $event.checked"
@@ -653,7 +655,7 @@
                     total.
                 </div> -->
                 <div *ngIf="bundles.length > 0" class="my-8 space-y-8">
-                    <div *ngFor="let bundle of bundles" class="flex flex-col" (click)="openBundleConfig(bundle)">
+                    <div  tourAnchor="bundles" *ngFor="let bundle of bundles" class="flex flex-col" (click)="openBundleConfig(bundle)">
                         <div class="flex items-center">
                             <div
                                 class="flex items-center justify-center w-14 h-14 rounded bg-red-100 text-red-800 dark:bg-red-600 dark:text-red-50"
@@ -698,3 +700,4 @@
         </div>
     </div>
 </div>
+<tour-step-template></tour-step-template>
