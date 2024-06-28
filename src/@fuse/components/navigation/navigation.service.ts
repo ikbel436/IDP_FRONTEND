@@ -41,7 +41,8 @@ export class FuseNavigationService {
                 type: 'group', title: 'Manage Cloud Providers Services', icon: 'heroicons_outline:cloud', link: '/cloudProviderServices',
                 children: [
                     { type: 'basic', title: 'Add Cloud Services', icon: 'heroicons_outline:pencil-square', link: '/addCloudService' },
-                    { type: 'basic', title: 'Cloud Services', icon: 'heroicons_outline:list-bullet', link: '/listCloudServices' },]
+                    { type: 'basic', title: 'Cloud Services', icon: 'heroicons_outline:list-bullet', link: '/listCloudServices' },
+                    { type: 'basic', title: 'Deployments', icon: 'heroicons_outline:list-bullet', link: '/DeploymentsAdmin' },]
             },
 
 
