@@ -1,7 +1,7 @@
 import { Component, Inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { FormBuilder, FormGroup, FormArray, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormArray, Validators, ReactiveFormsModule, AbstractControl } from '@angular/forms';
 import { DeploymentService } from './deployment.service';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -9,7 +9,6 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatTableModule } from '@angular/material/table';
 import { MatSortModule } from '@angular/material/sort';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -65,8 +64,8 @@ export class CreateDeploymentComponent {
         this.stepperForm = this.fb.group({
             step1: this.fb.group({
                 dbType: ['', [Validators.required]],
-                port: ['', Validators.required],
-                serviceName: ['', Validators.required],
+                port: ['', [Validators.required, Validators.pattern('^[0-9]+$')]],
+                serviceName: ['', [Validators.required, this.lowercaseValidator]],
                 envVars: this.fb.array([this.createEnvVariable()]),
             }),
             projects: this.fb.array([]),
@@ -92,8 +91,8 @@ export class CreateDeploymentComponent {
 
     createEnvVariable(): FormGroup {
         return this.fb.group({
-            name: [''],
-            value: [''],
+            name: ['', [Validators.required, this.lowercaseValidator]],
+            value: ['', [Validators.required, this.lowercaseValidator]],
         });
     }
 
@@ -109,10 +108,10 @@ export class CreateDeploymentComponent {
         return this.fb.group({
             projectName: [projectName, Validators.required],
             dockerImage: [dockerImage , Validators.required],
-            serviceName: ['', Validators.required],
-            port: ['', Validators.required],
+            serviceName: ['', [Validators.required, this.lowercaseValidator]],
+            port: ['', [Validators.required, Validators.pattern('^[0-9]+$')]],
             expose: [false],
-            host: [''],
+            host: ['', [this.lowercaseValidator, this.hostValidator]],
             projectEnvVars: this.fb.array([this.createEnvVariable()]),
         });
     }
@@ -141,7 +140,6 @@ export class CreateDeploymentComponent {
                     const projectGroup = this.createProjectGroup(project.name, project.DockerImage[0]);
                     this.projectsArray.push(projectGroup);
                 });
-                console.log("montaaaaaaaa",this.projectsArray);
             },
             (error) => {
                 console.error('Error fetching projects:', error);
@@ -191,10 +189,8 @@ export class CreateDeploymentComponent {
            .generateDeployment({...deploymentData, expose, host })
            .subscribe(
                 (response) => {
-                    console.log('Deployment Data', deploymentData);
                     this.generatedFiles.push(response.deploymentFilePath);
                     this.generatedFiles.push(response.ingressFilePath);
-                    console.log('Generated Files', this.generatedFiles);
                 },
                 (error) => {
                     console.error(
@@ -216,8 +212,6 @@ export class CreateDeploymentComponent {
     
         this.apiService.applyK8sFiles(deploymentData).subscribe(
             (response) => {
-                console.log('Deployment', deploymentData);
-                console.log('Deployment applied:', response);
     
                 // Prepare the data to be passed to the modal
                 const hostsData = {
@@ -238,14 +232,22 @@ export class CreateDeploymentComponent {
           data: data,
         });
       
-        console.log('Opening modal');
-        console.log('Hosts:', data.hosts);      
         dialogRef.afterClosed().subscribe(result => {
-          console.log('The dialog was closed');
         });
     }
     
     onCancel(): void {
         this.dialogRef.close();
+    }
+
+    // Custom validators
+    lowercaseValidator(control: AbstractControl): { [key: string]: any } | null {
+        const isLowercase = /^[a-z]+$/.test(control.value);
+        return isLowercase ? null : { lowercase: { value: control.value } };
+    }
+
+    hostValidator(control: AbstractControl): { [key: string]: any } | null {
+        const isValidHost = /^[a-z]+(\.[a-z]+)*$/.test(control.value);
+        return isValidHost ? null : { host: { value: control.value } };
     }
 }
