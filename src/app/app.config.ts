@@ -11,7 +11,7 @@ import { appRoutes } from 'app/app.routes';
 import { provideAuth } from 'app/core/auth/auth.provider';
 import { provideIcons } from 'app/core/icons/icons.provider';
 import { mockApiServices } from 'app/mock-api';
-
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { TranslocoHttpLoader } from './core/transloco/transloco.http-loader';
 import {
     RECAPTCHA_V3_SITE_KEY,
@@ -26,6 +26,7 @@ const RECAPTCHA_V3_STACKBLITZ_KEY = '6Lc4yOQpAAAAAEz55qmvhdLt2XdR6MA98qr2LDCG';
 const RECAPTCHA_V2_DUMMY_KEY = '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI';
 export const appConfig: ApplicationConfig = {
     providers: [
+        provideRouter(appRoutes),provideAnimationsAsync(),
         provideHotToastConfig(),
         provideAnimations(),
         provideHttpClient(),

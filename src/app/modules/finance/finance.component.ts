@@ -11,6 +11,7 @@ import {
     Output,
     ViewChild,
     ViewEncapsulation,
+    inject,
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
@@ -36,6 +37,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { CreateDeploymentComponent } from '../create-deployment/create-deployment.component';
 import { FuseLoadingBarComponent } from '@fuse/components/loading-bar';
 import { RouterModule } from '@angular/router';
+import { IStepOption, TourMatMenuModule, TourService } from 'ngx-ui-tour-md-menu';
 
 export interface Repository {
     name: string;
@@ -73,10 +75,44 @@ export interface Repository {
         MatFormFieldModule,
         GetProjectsComponent,
         MatCheckboxModule,
-        FuseLoadingBarComponent,RouterModule
+        FuseLoadingBarComponent,RouterModule,TourMatMenuModule
     ],
 })
 export class FinanceComponent implements OnInit, AfterViewInit, OnDestroy {
+    public readonly tourService = inject(TourService);
+    readonly tourSteps: IStepOption[] = [
+  
+      {
+        anchorId: 'home',
+        content: 'Import repositories from git provider.',
+        title: 'Repositories import',
+        enableBackdrop: true,
+      },
+      {
+        anchorId: 'about',
+        content: 'Add new project from repositorie',
+        title: 'Add Projects',
+        enableBackdrop: true,
+      },
+      {
+        anchorId: 'contact',
+        content: 'Select Projects to create bundles',
+        title: 'Select Projects',
+        enableBackdrop: true,
+      },
+      {
+        anchorId: 'bundle',
+        content: 'Create new Bundles from the projects selected',
+        title: 'Create Bundles',
+        enableBackdrop: true,
+      },
+      {
+        anchorId: 'bundles',
+        content: 'Select a bundle from the list to deploy the projects',
+        title: 'Select Bundle',
+        enableBackdrop: true,
+      },
+    ]
     @ViewChild('displayedColumns', { read: MatSort })
     displayedColumnsMatSort: MatSort;
     dataSource = new MatTableDataSource<any>();
@@ -124,9 +160,19 @@ export class FinanceComponent implements OnInit, AfterViewInit, OnDestroy {
      * On init
      */
     ngOnInit(): void {
+        this.tourService.initialize(this.tourSteps, {});
+        this.startTour();
+        this.startTour();
+        setTimeout(() => {
+          this.startTour();
+        }, 100);
         this.getProjectData();
         this.fetchBundles();
     }
+    startTour() {
+        this.tourService.start();
+    
+      }
     openBundleConfig(bundle): void {
         const dialogRef = this._matDialog.open(CreateDeploymentComponent, {
           width: '600px',
