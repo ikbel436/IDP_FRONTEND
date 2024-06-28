@@ -4,7 +4,6 @@ import { GetDeployementsUserComponent } from './get-deployements-user.component'
 
 
 
-
 export default [
     {
         path     : '',
