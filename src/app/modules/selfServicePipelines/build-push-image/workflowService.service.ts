@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -15,13 +15,20 @@ export class WorkflowService {
         return this.http.put<any>(`${this.baseUrl}/yaml`, { owner, token, repo, platform, yamlData });
     }
 
+
+
     // Example method to push workflow file to GitHub
     pushWorkflowToGitHub(owner: string, token: string, repo: string, platform: string): Observable<any> {
         return this.http.put<any>(`${this.baseUrl}/create-workflow`, { owner, token, repo, platform });
     }
 
-    // Example method to read YAML file from server
-    readYaml(platform: string): Observable<any> {
-        return this.http.get<any>(`${this.baseUrl}/yaml/${platform}`);
+    readYaml(platform: string): Observable<string> {
+        const params = new HttpParams().set('platform', platform);
+        return this.http.get<string>(`${this.baseUrl}/yaml/get`, { params });
+    }
+
+
+    updateYamlBranches(platform: string, branches: string[]): Observable<any> {
+        return this.http.put<any>(`${this.baseUrl}/yaml/branches`, { platform, branches });
     }
 }

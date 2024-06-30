@@ -1,24 +1,43 @@
 <div class="absolute inset-0 flex flex-col min-w-0 overflow-hidden">
+
     <mat-drawer-container class="flex-auto h-full">
+
         <!-- Drawer -->
         <mat-drawer class="w-72 dark:bg-gray-900" [autoFocus]="false" [mode]="drawerMode" [opened]="drawerOpened"
             #matDrawer>
             <div class="py-10">
                 <div class="mx-6 text-3xl font-bold tracking-tighter">CI/CD Pipelines</div>
 
-                <!-- Sidebar Menu -->
-                <div class="mx-6 mt-2">
+                <!-- Continuous Integration -->
+                <div class="mx-6 mt-4">
+                    <div class="text-lg font-semibold text-gray-400 mb-2">Continuous Integration</div>
                     <div class="flex items-center cursor-pointer" (click)="showContent('buildPush')">
                         <mat-icon class="mr-2 icon-size-5">build</mat-icon>
-                        <div class="text-lg font-semibold m-3">Docker Image</div>
+                        <div class="text-lg font-semibold m-3">Container Registry Push Portal</div>
                     </div>
+                    <!-- Add more CI items as needed -->
                 </div>
-                <br>
-                <div class="mx-6 mt-2">
+
+                <!-- Deployment -->
+                <div class="mx-6 mt-4">
+                    <div class="text-lg font-semibold text-gray-400 mb-2">Deployment</div>
                     <div class="flex items-center cursor-pointer" (click)="showContent('deploy')">
                         <mat-icon class="mr-2 icon-size-5">cloud_upload</mat-icon>
                         <div class="text-lg font-semibold m-3">Deploy your App</div>
                     </div>
+                    <!-- Add more Deployment items as needed -->
+                </div>
+
+                <!-- Security -->
+                <div class="mx-6 mt-4">
+                    <div class="text-lg font-semibold text-gray-400 mb-2">Security</div>
+                    <!-- Add security-related items -->
+                </div>
+
+                <!-- Automation -->
+                <div class="mx-6 mt-4">
+                    <div class="text-lg font-semibold text-gray-400 mb-2">Automation</div>
+                    <!-- Add automation-related items -->
                 </div>
 
             </div>

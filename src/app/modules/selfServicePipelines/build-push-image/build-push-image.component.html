@@ -1,7 +1,6 @@
-<div class="mt-16 mb-8 text-3xl font-bold">Vertical Stepper</div>
-
+<div class="mt-16 mb-8 text-3xl font-bold">Container Registry Push Portal</div>
 <form class="p-4 bg-card shadow rounded overflow-hidden" [formGroup]="verticalStepperForm">
-    <mat-vertical-stepper [linear]="true" #verticalStepper>
+    <mat-vertical-stepper [linear]="true" #stepper #verticalStepper (selectionChange)="onStepChange($event)">
         <mat-step [formGroupName]="'step1'" [stepControl]="verticalStepperForm.get('step1')" #verticalStepperStep1>
             <ng-template matStepLabel>Docker Images Registry </ng-template>
             <p class="my-6 font-medium">
@@ -10,11 +9,11 @@
 
             <div class="flex flex-col gt-xs:flex-row">
                 <mat-form-field class="flex-auto gt-xs:pr-3">
-                    <mat-select [formControlName]="'country'" [placeholder]="'Country / Region'" required>
-                        <mat-option value="country-1">Github Packages</mat-option>
-                        <mat-option value="country-2">Docker Hub</mat-option>
+                    <mat-select [formControlName]="'package'" [placeholder]="'Docker Images Registry'" required>
+                        <mat-option value="github">github</mat-option>
+                        <mat-option value="dockerhub">Docker Hub</mat-option>
                     </mat-select>
-                    <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:map-pin'"></mat-icon>
+                    <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_outline:inbox-stack'"></mat-icon>
                 </mat-form-field>
             </div>
             <div class="flex justify-end">
@@ -29,34 +28,38 @@
         <mat-step [formGroupName]="'step2'" [stepControl]="verticalStepperForm.get('step2')" #verticalStepperStep2>
             <ng-template matStepLabel>Update your Pipeline</ng-template>
             <p class="my-6 font-medium">
-                This is the docker-publish.yml file change your git branch
+                This is the docker-publish.yml file. Change your git branch.
             </p>
             <div class="flex flex-col gt-xs:flex-row">
-                <mat-form-field class="flex-auto gt-xs:pr-3">
-                    <input matInput [formControlName]="'firstName'" [placeholder]="'First name'" required>
-                    <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:user-circle'"></mat-icon>
-                </mat-form-field>
-                <mat-form-field class="flex-auto gt-xs:pl-3">
-                    <input matInput [formControlName]="'lastName'" [placeholder]="'Last name'" required>
-                    <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:user-circle'"></mat-icon>
+                <div class="flex-auto gt-xs:pr-3">
+                    <mat-form-field>
+                        <input matInput [formControlName]="'branch'" [placeholder]="'Enter your git branch'" required>
+                        <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_outline:command-line'"></mat-icon>
+                        <br>
+
+                    </mat-form-field>
+                </div>
+                <div class="flex-none">
+                    <button class="px-4" mat-flat-button [color]="'accent'" type="button"
+                        (click)="updateYamlBranches()">
+                        Update Branch
+                    </button>
+                </div>
+            </div>
+            <br>
+            <div class="dark max-w-[69rem] mt-8 p-4 rounded-2xl overflow-hidden">
+                <mat-form-field class="w-full">
+                    <textarea matInput [formControlName]="'yamlContent'" [rows]="10"
+                        class="w-full h-full border-none bg-transparent outline-none p-0" style="resize: none;"
+                        color="text-white"></textarea>
                 </mat-form-field>
             </div>
-            <div class="flex">
-                <mat-form-field class="flex-auto">
-                    <input matInput [formControlName]="'userName'" [placeholder]="'Username'" required>
-                    <span matPrefix>www.example.com/</span>
-                </mat-form-field>
-            </div>
-            <div class="flex">
-                <mat-form-field class="flex-auto">
-                    <textarea matInput [formControlName]="'about'" [placeholder]="'About'" [rows]="3"></textarea>
-                    <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:bars-3-bottom-left'"></mat-icon>
-                </mat-form-field>
-            </div>
+            <!--div class="flex">
+                <fuse-highlight [code]="yamlData" [lang]="'yaml'"></fuse-highlight>
+            </div-->
+            <br>
+
             <div class="flex justify-end">
-                <button class="px-8 mr-2" mat-flat-button [color]="'accent'" type="button" matStepperPrevious>
-                    Back
-                </button>
                 <button class="px-8" mat-flat-button [color]="'primary'"
                     [disabled]="verticalStepperStep2.stepControl.pristine || verticalStepperStep2.stepControl.invalid"
                     type="button" matStepperNext>
@@ -65,56 +68,70 @@
             </div>
         </mat-step>
 
+
+
+
+
+
         <mat-step [formGroupName]="'step3'" [stepControl]="verticalStepperForm.get('step3')">
             <ng-template matStepLabel>Push and Run your Pipeline </ng-template>
             <p class="my-6 font-medium">
                 All you have to do is enter your Github Repo name , your Github username and your Github classic token
             </p>
-            <div class="flex flex-col gt-sm:flex-row">
-                <div class="flex flex-col">
-                    <span class="font-medium mb-2">By Email</span>
-                    <div class="flex flex-col" [formGroupName]="'byEmail'">
-                        <mat-checkbox class="mb-1" [color]="'primary'" [formControlName]="'companyNews'">
-                            Company News
-                        </mat-checkbox>
-                        <mat-checkbox class="mb-1" [color]="'primary'" [formControlName]="'featuredProducts'">
-                            Featured Products
-                        </mat-checkbox>
-                        <mat-checkbox [color]="'primary'" [formControlName]="'messages'">
-                            Messages
-                        </mat-checkbox>
-                    </div>
-                </div>
-                <div class="flex flex-col mt-8 gt-sm:mt-0 gt-sm:ml-16">
-                    <span class="font-medium mb-2">Push Notifications</span>
-                    <mat-radio-group class="flex flex-col" [color]="'primary'" [formControlName]="'pushNotifications'">
-                        <mat-radio-button class="mb-2" [value]="'everything'">
-                            Everything
-                        </mat-radio-button>
-                        <mat-radio-button class="mb-2" [value]="'just-good'">
-                            Just the good stuff
-                        </mat-radio-button>
-                        <mat-radio-button [value]="'no-push'">
-                            No push notifications
-                        </mat-radio-button>
-                    </mat-radio-group>
-                </div>
+
+            <div class="flex flex-col gt-xs:flex-row">
+                <mat-form-field class="flex-auto gt-xs:pr-3">
+                    <input matInput [formControlName]="'owner'" [placeholder]="'Enter your github username'" required>
+                    <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_outline:user-circle'"></mat-icon>
+                    <br>
+
+                </mat-form-field>
+            </div>
+            <div class="flex flex-col gt-xs:flex-row">
+                <p>If you don't have a token, visit <a href="https://github.com/settings/tokens" target="_blank"
+                        style="color: blue; text-decoration: underline;">https://github.com/settings/tokens</a> to
+                    generate one. </p>
+
+
+                <br>
+                <mat-form-field class="flex-auto gt-xs:pr-3">
+
+                    <input matInput [formControlName]="'token'" type="password"
+                        [placeholder]="'Enter your github classic token'" required>
+                    <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_outline:key'"></mat-icon>
+                    <br>
+
+                </mat-form-field>
+            </div>
+            <div class="flex flex-col gt-xs:flex-row">
+                <mat-form-field class="flex-auto gt-xs:pr-3">
+                    <input matInput [formControlName]="'repo'" [placeholder]="'Enter your github repo'" required>
+                    <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_outline:command-line'"></mat-icon>
+                    <br>
+
+                </mat-form-field>
             </div>
             <div class="flex justify-end mt-8">
+                <button class="px-8" mat-flat-button color="primary" type="button" (click)="onSubmit()">Push
+                    Workflow</button>
                 <button class="px-8 mr-2" mat-flat-button [color]="'accent'" type="button" matStepperPrevious>
                     Back
                 </button>
                 <button class="px-8" mat-flat-button [color]="'primary'" type="button" matStepperNext>
                     Next
                 </button>
+
             </div>
         </mat-step>
 
         <mat-step>
             <ng-template matStepLabel>Done</ng-template>
-            <p class="my-6 font-medium">
-                Thank you for completing our form! You can reset the form if you would like to change your information.
-            </p>
+
+            <p class="my-6 font-medium">The workflow has been successfully pushed to your GitHub repository.</p>
+            <p class="my-6 font-medium">You selected a package and specified the branch for your workflow. You provided
+                your GitHub credentials
+                and repository information to push the workflow configuration to your GitHub repository.</p>
+
             <div class="flex justify-end mt-8">
                 <button class="px-8 mr-2" mat-flat-button [color]="'accent'" type="button" matStepperPrevious>
                     Back

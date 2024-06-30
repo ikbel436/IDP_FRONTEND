@@ -88,6 +88,7 @@ export class FuseNavigationService {
                     //{ type: 'basic', title: 'Cloud Infrastructure Templates', icon: 'heroicons_outline:cloud', link: '/templateTerraform' },
                     //{ type: 'basic', title: 'Cloud Services', icon: 'heroicons_outline:list-bullet', link: '/listCloudServices' },
                     { type: 'basic', title: 'Create Project', icon: 'heroicons_outline:folder', link: '/services' },
+                    { type: 'basic', title: 'CI/CD Self Service Pipelines', icon: 'heroicons_outline:code-bracket-square', link: '/CI-services' },
                     // { type: 'basic', title: 'Add Repositories', icon: 'heroicons_outline:folder', link: '/gitProvider' },
 
                 ]
