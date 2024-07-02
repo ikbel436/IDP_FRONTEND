@@ -1,4 +1,5 @@
-import { Component, Inject } from '@angular/core';
+// create-deployment.component.ts
+import { Component, Inject, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { FormBuilder, FormGroup, FormArray, Validators, ReactiveFormsModule, AbstractControl } from '@angular/forms';
@@ -9,16 +10,17 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatTableModule } from '@angular/material/table';
 import { MatSortModule } from '@angular/material/sort';
-import { MatStepperModule } from '@angular/material/stepper';
+import { MatStepperModule, MatStepper } from '@angular/material/stepper';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { HttpClientModule } from '@angular/common/http';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { ProjectService } from 'app/mock-api/apps/project/project.service';
-import { Observable, forkJoin } from 'rxjs';
+import { BehaviorSubject, Observable, forkJoin } from 'rxjs';
 import { FuseLoadingBarComponent } from '@fuse/components/loading-bar';
 import { HostsModalComponent } from './hosts-modal/hosts-modal.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
     selector: 'app-create-deployment',
@@ -52,14 +54,19 @@ export class CreateDeploymentComponent {
     generatedFiles: string[] = [];
     token = 'YOUR_JWT_TOKEN';
     hosts: string[] = [];
-    
+    showSnackbar$ = new BehaviorSubject<boolean>(false);
+
+    @ViewChild('verticalStepper') private verticalStepper: MatStepper;  // Inject the MatStepper
+
     constructor(
         private fb: FormBuilder,
         private dialogRef: MatDialogRef<CreateDeploymentComponent>,
         @Inject(MAT_DIALOG_DATA) public data: any,
         private apiService: DeploymentService,
         private projectService: ProjectService,
-        private dialog: MatDialog
+        private dialog: MatDialog,
+        private _snackBar: MatSnackBar
+
     ) {
         this.stepperForm = this.fb.group({
             step1: this.fb.group({
@@ -113,6 +120,7 @@ export class CreateDeploymentComponent {
             expose: [false],
             host: ['', [this.lowercaseValidator, this.hostValidator]],
             projectEnvVars: this.fb.array([this.createEnvVariable()]),
+            generated: [false]  // Add generated field to track the deployment state
         });
     }
 
@@ -160,6 +168,9 @@ export class CreateDeploymentComponent {
         this.apiService.generateDatabaseDeployment(deploymentData).subscribe(
             (response) => {
                 this.generatedFiles.push(response.deploymentFilePath);
+                this._snackBar.open('Database deployed', 'OK', {
+                    duration: 3000,
+                });
             },
             (error) => {
                 console.error('Error generating database deployment:', error);
@@ -169,6 +180,10 @@ export class CreateDeploymentComponent {
 
     generateProjectDeployment(index: number): void {
         const projectGroup = this.projectsArray.at(index) as FormGroup;
+        if (projectGroup.value.generated) {
+            return;
+        }
+
         const deploymentData = {
             serviceName: projectGroup.value.serviceName,
             port: projectGroup.value.port,
@@ -190,7 +205,23 @@ export class CreateDeploymentComponent {
            .subscribe(
                 (response) => {
                     this.generatedFiles.push(response.deploymentFilePath);
-                    this.generatedFiles.push(response.ingressFilePath);
+                    if (response.ingressFilePath) {
+                        this.generatedFiles.push(response.ingressFilePath);
+                    }
+
+                    projectGroup.patchValue({ generated: true });
+
+                    // Move to the next project form
+                    const nextIndex = index + 1;
+                    if (nextIndex < this.projectsArray.length) {
+                        this.projectsArray.at(nextIndex).get('serviceName').markAsTouched();
+                    } else {
+                        // Move to the next step in the stepper if all projects are deployed
+                        this.verticalStepper.next();
+                        this._snackBar.open('Project Deployed', 'OK', {
+                            duration: 3000,
+                        });
+                    }
                 },
                 (error) => {
                     console.error(
@@ -218,6 +249,9 @@ export class CreateDeploymentComponent {
                     hosts: this.hosts,
                 };
     
+                this._snackBar.open('Great you are almost done', 'OK', {
+                    duration: 3000,
+                });
                 // Open the modal and pass the hosts data
                 this.openHostsModal(hostsData);
             },
@@ -238,6 +272,8 @@ export class CreateDeploymentComponent {
     
     onCancel(): void {
         this.dialogRef.close();
+        this.saveAsDraft();
+
     }
 
     // Custom validators
@@ -250,4 +286,7 @@ export class CreateDeploymentComponent {
         const isValidHost = /^[a-z]+(\.[a-z]+)*$/.test(control.value);
         return isValidHost ? null : { host: { value: control.value } };
     }
+
+    saveAsDraft(): void {}
+
 }

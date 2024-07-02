@@ -161,8 +161,8 @@ export class FinanceComponent implements OnInit, AfterViewInit, OnDestroy {
      */
     ngOnInit(): void {
         this.tourService.initialize(this.tourSteps, {});
-        this.startTour();
-        this.startTour();
+        // this.startTour();
+        // this.startTour();
         setTimeout(() => {
           this.startTour();
         }, 100);

@@ -1,4 +1,14 @@
-<div class="mb-8 text-3xl font-bold">Configure Bundle</div>
+<div class="flex items-center justify-between mb-8 text-3xl font-bold">
+    <div>Configure Bundle</div>
+    <button mat-icon-button (click)="onCancel()" [tabIndex]="-1">
+        <mat-icon
+            class="text-current"
+            [svgIcon]="'heroicons_outline:x-mark'"
+        ></mat-icon>
+    </button>
+</div>
+
+
 <div class="max-h-[80vh] overflow-auto p-4 bg-card shadow rounded">
     <form [formGroup]="stepperForm">
         <mat-vertical-stepper [linear]="true" #verticalStepper>
@@ -160,10 +170,17 @@
                             </button>
                         </div>
                         <div class="flex justify-end p-3">
-                            <button class="px-8" mat-flat-button (click)="generateProjectDeployment(projectIndex)" [color]="'primary'" [disabled]="projectGroup.pristine || projectGroup.invalid" type="button">
+                            <button 
+                                class="px-8" 
+                                mat-flat-button 
+                                (click)="generateProjectDeployment(projectIndex)" 
+                                [color]="'primary'" 
+                                [disabled]="projectGroup.pristine || projectGroup.invalid || projectGroup.value.generated" 
+                                type="button">
                                 Generate Deployment for {{ projectGroup.value.projectName }}
                             </button>                          
                         </div>
+                        
                     </div>
                 </div>
                 
