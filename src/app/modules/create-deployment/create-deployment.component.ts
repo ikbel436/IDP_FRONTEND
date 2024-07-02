@@ -74,6 +74,7 @@ export class CreateDeploymentComponent {
                 port: ['', [Validators.required, Validators.pattern('^[0-9]+$')]],
                 serviceName: ['', [Validators.required, this.lowercaseValidator]],
                 envVars: this.fb.array([this.createEnvVariable()]),
+
             }),
             projects: this.fb.array([]),
             namespace: [this.data.bundle.name, Validators.required],
@@ -114,15 +115,22 @@ export class CreateDeploymentComponent {
     createProjectGroup(projectName: string, dockerImage: string): FormGroup {
         return this.fb.group({
             projectName: [projectName, Validators.required],
-            dockerImage: [dockerImage , Validators.required],
+            dockerImage: [dockerImage, Validators.required],
             serviceName: ['', [Validators.required, this.lowercaseValidator]],
             port: ['', [Validators.required, Validators.pattern('^[0-9]+$')]],
             expose: [false],
             host: ['', [this.lowercaseValidator, this.hostValidator]],
             projectEnvVars: this.fb.array([this.createEnvVariable()]),
-            generated: [false]  // Add generated field to track the deployment state
+            registryType: ['', Validators.required],  
+            generated: [false],  
+            privacy: ['', Validators.required],  
+            imagePullSecretName: [''],
+            dockerUsername: [''],
+            dockerPassword: [''],
+            dockerEmail: [''],
         });
     }
+    
 
     addProjectEnvVar(index: number): void {
         const projectGroup = this.projectsArray.at(index) as FormGroup;
@@ -190,6 +198,11 @@ export class CreateDeploymentComponent {
             image: projectGroup.value.dockerImage,
             envVariables: projectGroup.value.projectEnvVars,
             namespace: this.stepperForm.value.namespace,
+            imagePullSecretName: projectGroup.value.imagePullSecretName,
+            dockerUsername: projectGroup.value.dockerUsername,
+            dockerPassword: projectGroup.value.dockerPassword,
+            dockerEmail: projectGroup.value.dockerEmail,
+
         };
     
         const expose = projectGroup.value.expose;
