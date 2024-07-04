@@ -1,0 +1,188 @@
+<div class="mb-8 text-3xl font-bold">Configure Bundle</div>
+<div class="max-h-[80vh] overflow-auto p-4 bg-card shadow rounded">
+    <form [formGroup]="stepperForm">
+        <mat-vertical-stepper [linear]="true" #verticalStepper>
+            <mat-step [formGroupName]="'step1'" [stepControl]="stepperForm.get('step1')" #verticalStepperStep1>
+                <ng-template matStepLabel>Database Configuration</ng-template>
+                <p class="my-6 font-medium">
+                    Fill in your database Configuration to let us know your preferences
+                </p>
+                <div class="flex flex-col gt-xs:flex-row">
+                    <mat-form-field class="flex-auto gt-xs:pr-3">
+                        <mat-select [formControlName]="'dbType'" [placeholder]="'Database Type'" required>
+                            <mat-option value="mysql">MySQL</mat-option>
+                            <mat-option value="mongodb">MongoDB</mat-option>
+                        </mat-select>
+                        <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:book-open'"></mat-icon>
+                        <mat-error *ngIf="step1.get('dbType').hasError('required')">Required field!</mat-error>
+                    </mat-form-field>
+                    <mat-form-field class="flex-auto gt-xs:pl-3">
+                        <mat-label>Service Name</mat-label>
+                        <input matInput formControlName="serviceName" [placeholder]="'Service Name'" type="string" />
+                        <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:cog-6-tooth'"></mat-icon>
+                        <mat-error *ngIf="step1.get('serviceName').hasError('required')">Must not be empty!</mat-error>
+                        <mat-error *ngIf="step1.get('serviceName').hasError('lowercase') && !step1.get('serviceName').hasError('required')">Must be lowercase!</mat-error>
+                    </mat-form-field>
+                    <mat-form-field class="flex-auto gt-xs:pl-3">
+                        <mat-label>Port</mat-label>
+                        <input matInput formControlName="port" [placeholder]="'Port / 8080'" type="number" />
+                        <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:globe-alt'"></mat-icon>
+                        <mat-error *ngIf="step1.get('port').hasError('required')">Required field!</mat-error>
+                        <mat-error *ngIf="step1.get('port').hasError('pattern') && !step1.get('port').hasError('required')">Must be numeric!</mat-error>
+                    </mat-form-field>
+                </div>
+                <div formArrayName="envVars">
+                    <div *ngFor="let envVar of envVars.controls; let i = index" [formGroupName]="i">
+                        <div class="flex flex-col justify-start item-start space-y-3 w-full">
+                            <div class="flex justify-start items-center space-x-2 w-full">
+                                <mat-form-field class="w-full">
+                                    <mat-label>Key</mat-label>
+                                    <input matInput formControlName="name" [placeholder]="'Environment Key'" />
+                                    <mat-error *ngIf="envVar.get('name').hasError('required')">Must not be empty!</mat-error>
+                                    <mat-error *ngIf="envVar.get('name').hasError('lowercase') && !envVar.get('name').hasError('required')">Must be lowercase!</mat-error>
+                                </mat-form-field>
+                                <mat-form-field class="w-full">
+                                    <mat-label>Value</mat-label>
+                                    <input matInput formControlName="value" [placeholder]="'Environment Value'" />
+                                    <mat-error *ngIf="envVar.get('value').hasError('required')">Must not be empty!</mat-error>
+                                    <mat-error *ngIf="envVar.get('value').hasError('lowercase') && !envVar.get('value').hasError('required')">Must be lowercase!</mat-error>
+                                </mat-form-field>
+                            </div>
+                            <div class="flex justify-end w-full">
+                                <button class="px-8 mr-2" mat-flat-button [color]="'accent'" type="button" (click)="removeEnvVar(i)">
+                                    Remove
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <button (click)="addEnvVar()" type="button" class="text-gray-900 bg-gray-100 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-gray-500 me-2 mb-2">
+                        <svg role="img" width="30px" class="p-1" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                            <g>
+                                <path fill="#ECD53F" d="M0 0h200v200H0z" />
+                                <path fill="#000" d="M31 164h14v14H31z" />
+                                <g fill="#000" fill-rule="nonzero">
+                                    <path d="M91.986 178.41v-7.75H66.288v-12.52h23.094v-7.75H66.288v-10.198h24.82v-7.782H57v46zM108.585 178.41v-29.997l18.545 29.997h9.319v-46h-8.63v30.72l-18.826-30.72h-9.037v46zM167.92 178.41l16.474-46h-9.852l-11.265 34.045-11.641-34.045h-10.073l16.442 46z" />
+                                </g>
+                            </g>
+                        </svg>
+                        Add Env Variable
+                    </button>
+                </div>
+
+                <div class="flex justify-end">
+                    <button class="px-8" mat-flat-button (click)="generateDatabaseDeployment()" [color]="'primary'" [disabled]="verticalStepperStep1.stepControl.pristine || verticalStepperStep1.stepControl.invalid" type="button" matStepperNext>
+                        Next
+                    </button>
+                </div>
+            </mat-step>
+
+            <mat-step>
+                <ng-template matStepLabel>Project Deployment</ng-template>
+                <div formArrayName="projects">
+                    <div *ngFor="let projectGroup of projectsArray.controls; let projectIndex = index" [formGroupName]="projectIndex">
+                        <div class="flex flex-col gt-xs:flex-row">
+                            <mat-form-field class="flex-auto gt-xs:pr-3">
+                                <mat-label>Project Name</mat-label>
+                                <input matInput formControlName="projectName" disabled readonly />
+                                <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:cube-transparent'"></mat-icon>
+                            </mat-form-field>
+                            <mat-form-field class="flex-auto gt-xs:pr-3">
+                                <mat-label>Docker Image</mat-label>
+                                <input matInput formControlName="dockerImage" disabled readonly />
+                                <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:cube-transparent'"></mat-icon>
+                            </mat-form-field>
+                        </div>
+                        <div class="flex flex-col gt-xs:flex-row">
+                            <mat-form-field class="flex-auto gt-xs:pl-3">
+                                <mat-label>Service Name</mat-label>
+                                <input matInput formControlName="serviceName" [placeholder]="'Service Name'" type="string" />
+                                <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:cog-6-tooth'"></mat-icon>
+                                <mat-error *ngIf="projectGroup.get('serviceName').hasError('required')">Must not be empty!</mat-error>
+                                <mat-error *ngIf="projectGroup.get('serviceName').hasError('lowercase') && !projectGroup.get('serviceName').hasError('required')">Must be lowercase!</mat-error>
+                            </mat-form-field>
+                            <mat-form-field class="flex-auto gt-xs:pl-3">
+                                <mat-label>Port</mat-label>
+                                <input matInput formControlName="port" [placeholder]="'Port / 8080'" type="number" />
+                                <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:globe-alt'"></mat-icon>
+                                <mat-error *ngIf="projectGroup.get('port').hasError('required')">Required field!</mat-error>
+                                <mat-error *ngIf="projectGroup.get('port').hasError('pattern') && !projectGroup.get('port').hasError('required')">Must be numeric!</mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div>
+                            <mat-checkbox formControlName="expose">Expose Service</mat-checkbox>
+                        </div>
+                        <div class="flex">
+                            <mat-form-field class="flex-auto">
+                                <mat-label>Host</mat-label>
+                                <input matInput formControlName="host" [disabled]="!projectGroup.value.expose" />
+                                <span matPrefix>idp.insparkconnect.com/</span>
+                                <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:bars-3-bottom-left'"></mat-icon>
+                                <mat-error *ngIf="projectGroup.get('host').hasError('required')">Must not be empty!</mat-error>
+                                <mat-error *ngIf="projectGroup.get('host').hasError('lowercase') && !projectGroup.get('host').hasError('required')">Must be lowercase!</mat-error>
+                                <mat-error *ngIf="projectGroup.get('host').hasError('host') && !projectGroup.get('host').hasError('required') && !projectGroup.get('host').hasError('lowercase')">Invalid host!</mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div formArrayName="projectEnvVars">
+                            <div *ngFor="let projectEnvVar of projectGroup.controls.projectEnvVars.controls; let envVarIndex = index" [formGroupName]="envVarIndex">
+                                <div class="flex flex-col justify-start item-start space-y-3 w-full">
+                                    <div class="flex justify-start items-center space-x-2 w-full">
+                                        <mat-form-field class="w-full">
+                                            <mat-label>Key</mat-label>
+                                            <input matInput formControlName="name" />
+                                            <mat-error *ngIf="projectEnvVar.get('name').hasError('required')">Must not be empty!</mat-error>
+                                            <mat-error *ngIf="projectEnvVar.get('name').hasError('lowercase') && !projectEnvVar.get('name').hasError('required')">Must be lowercase!</mat-error>
+                                        </mat-form-field>
+                                        <mat-form-field class="w-full">
+                                            <mat-label>Value</mat-label>
+                                            <input matInput formControlName="value" />
+                                            <mat-error *ngIf="projectEnvVar.get('value').hasError('required')">Must not be empty!</mat-error>
+                                            <mat-error *ngIf="projectEnvVar.get('value').hasError('lowercase') && !projectEnvVar.get('value').hasError('required')">Must be lowercase!</mat-error>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="flex justify-end w-full">
+                                        <button class="px-8 mr-2" mat-flat-button [color]="'accent'" type="button" (click)="removeProjectEnvVar(projectIndex, envVarIndex)">
+                                            Remove
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <button (click)="addProjectEnvVar(projectIndex)" type="button" class="text-gray-900 bg-gray-100 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-gray-500 me-2 mb-2">
+                                <svg role="img" width="30px" class="p-1" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                                    <g>
+                                        <path fill="#ECD53F" d="M0 0h200v200H0z" />
+                                        <path fill="#000" d="M31 164h14v14H31z" />
+                                        <g fill="#000" fill-rule="nonzero">
+                                            <path d="M91.986 178.41v-7.75H66.288v-12.52h23.094v-7.75H66.288v-10.198h24.82v-7.782H57v46zM108.585 178.41v-29.997l18.545 29.997h9.319v-46h-8.63v30.72l-18.826-30.72h-9.037v46zM167.92 178.41l16.474-46h-9.852l-11.265 34.045-11.641-34.045h-10.073l16.442 46z" />
+                                        </g>
+                                    </g>
+                                </svg>
+                                Add Env Variable
+                            </button>
+                        </div>
+                        <div class="flex justify-end p-3">
+                            <button class="px-8" mat-flat-button (click)="generateProjectDeployment(projectIndex)" [color]="'primary'" [disabled]="projectGroup.pristine || projectGroup.invalid" type="button">
+                                Generate Deployment for {{ projectGroup.value.projectName }}
+                            </button>                          
+                        </div>
+                    </div>
+                </div>
+                
+            </mat-step>
+
+            <mat-step>
+                <ng-template matStepLabel>Done</ng-template>
+                <p class="my-6 font-medium">
+                    Thank you for completing our form! You can reset the form if you would like to change your information.
+                </p>
+                <div class="flex justify-end mt-8">
+                    <button class="px-8 mr-2" mat-flat-button [color]="'accent'" type="button" (click)="onSubmit()">
+                        Apply Deployments
+                    </button>
+                    <button class="px-8" mat-flat-button [color]="'primary'" type="reset" (click)="verticalStepper.reset()">
+                        Reset
+                    </button>
+                </div>
+            </mat-step>
+        </mat-vertical-stepper>
+    </form>
+</div>

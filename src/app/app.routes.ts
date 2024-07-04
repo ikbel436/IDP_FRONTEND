@@ -101,7 +101,8 @@ export const appRoutes: Route[] = [
             { path: 'listCloudServices', loadChildren: () => import('app/modules/cloud-services/list-cloud-services/list-cloud-services.routes') },
             { path: 'services', loadChildren: () => import('app/modules/finance/finance.routes') },
             { path: 'CI-services', loadChildren: () => import('app/modules/selfServicePipelines/ci-pipelines/ci-pipelines.routes') },
-
+            { path: 'DeploymentsAdmin', loadChildren: () => import('app/modules/get-deployments/get-deployments.routes') },
+            { path: 'DeploymentsUser', loadChildren: () => import('app/modules/get-deployements-user/get-deployments-user.routes') },
             // Apps
 
 

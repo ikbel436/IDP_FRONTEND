@@ -31,6 +31,7 @@ export class CreateProjectComponent {
     public matDialogRef: MatDialogRef<ProjectComponent>,
     private fb: FormBuilder,
     private projectSerivce: DetailsProjectService,
+  
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     //     this.projectForm = this.fb.group({
