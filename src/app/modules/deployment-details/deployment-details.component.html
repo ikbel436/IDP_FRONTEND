@@ -1,84 +1,124 @@
-<div class="flex flex-col flex-auto md:w-160 md:min-w-160 max-h-160 -m-6 overflow-y-auto">
+<div
+    class="flex flex-col flex-auto md:w-160 md:min-w-160 max-h-200 -m-6 overflow-y-auto"
+>
     <!-- Header -->
-    <div class="flex flex-0 items-center justify-between h-16 pr-3 sm:pr-5 pl-6 sm:pl-8 bg-primary text-on-primary">
+    <div
+        class="flex flex-0 items-center justify-between h-16 pr-3 sm:pr-5 pl-6 sm:pl-8 bg-primary text-on-primary"
+    >
         <div class="text-lg font-medium">Deployment Details</div>
-        <button
-            mat-icon-button
-            (click)="dialogRef.close()"
-            [tabIndex]="-1">
+        <button mat-icon-button (click)="dialogRef.close()" [tabIndex]="-1">
             <mat-icon
                 class="text-current"
-                [svgIcon]="'heroicons_outline:x-mark'"></mat-icon>
+                [svgIcon]="'heroicons_outline:x-mark'"
+            ></mat-icon>
         </button>
     </div>
 
     <!-- Deployment Details -->
-    <div class="flex flex-col flex-0 items-start w-full p-6 sm:p-8 space-y-6 overflow-y-auto">
-        
+    <div
+        class="flex flex-col flex-0 items-start w-full p-6 sm:p-8 space-y-6 overflow-y-auto"
+    >
         <!-- Name -->
         <mat-form-field class="w-full" [subscriptSizing]="'dynamic'">
             <mat-label>Name</mat-label>
-            <textarea matInput [(ngModel)]="deployment.name" rows="1" cdkTextareaAutosize [cdkAutosizeMinRows]="1" readonly></textarea>
+            <textarea
+                matInput
+                [(ngModel)]="deployment.name"
+                rows="1"
+                cdkTextareaAutosize
+                [cdkAutosizeMinRows]="1"
+                readonly
+            ></textarea>
         </mat-form-field>
 
         <!-- Description -->
         <mat-form-field class="w-full" [subscriptSizing]="'dynamic'">
             <mat-label>Description</mat-label>
-            <textarea matInput [(ngModel)]="deployment.description" rows="1" cdkTextareaAutosize [cdkAutosizeMinRows]="1" readonly></textarea>
+            <textarea
+                matInput
+                [(ngModel)]="deployment.description"
+                rows="1"
+                cdkTextareaAutosize
+                [cdkAutosizeMinRows]="1"
+                readonly
+            ></textarea>
         </mat-form-field>
 
         <!-- Namespace -->
         <mat-form-field class="w-full" [subscriptSizing]="'dynamic'">
             <mat-label>Namespace</mat-label>
-            <input matInput [(ngModel)]="deployment.namespace" readonly>
+            <input matInput [(ngModel)]="deployment.namespace" readonly />
         </mat-form-field>
 
         <!-- Created At -->
         <div class="flex items-center space-x-2">
-            <mat-icon class="icon-size-5 text-hint" [svgIcon]="'heroicons_solid:calendar'"></mat-icon>
-            <span class="text-md font-medium">{{ deployment.createdAt | date: 'longDate' }}</span>
+            <mat-icon
+                class="icon-size-5 text-hint"
+                [svgIcon]="'heroicons_solid:calendar'"
+            ></mat-icon>
+            <span class="text-md font-medium">{{
+                deployment.createdAt | date : "longDate"
+            }}</span>
         </div>
 
         <!-- Status -->
-        <div class="inline-flex items-center font-bold text-xs px-2.5 py-0.5 rounded-full tracking-wide uppercase"
-             [ngClass]="{
-               'bg-red-200 text-red-800 dark:bg-red-600 dark:text-red-50': deployment.status === 'failed',
-               'bg-green-200 text-green-800 dark:bg-green-600 dark:text-green-50': deployment.status === 'passed'
-             }">
+        <div
+            class="inline-flex items-center font-bold text-xs px-2.5 py-0.5 rounded-full tracking-wide uppercase"
+            [ngClass]="{
+                'bg-red-200 text-red-800 dark:bg-red-600 dark:text-red-50':
+                    deployment.status === 'failed',
+                'bg-green-200 text-green-800 dark:bg-green-600 dark:text-green-50':
+                    deployment.status === 'passed'
+            }"
+        >
             {{ deployment.status }}
         </div>
 
         <!-- Bundle Details -->
-        <div *ngFor="let bundle of deployment.bundle" class="w-full">
-            
-            <mat-form-field class="w-full" [subscriptSizing]="'dynamic'">
-                <mat-label>Bundle Name</mat-label>
-                <input matInput [(ngModel)]="bundle.name" readonly>
-            </mat-form-field>
+        <div *ngFor="let bundle of deployment.bundle" class="w-full space-y-6">
+            <div class="flex flex-col space-y-3">
+                <mat-form-field class="w-full" [subscriptSizing]="'dynamic'">
+                    <mat-label>Bundle Name</mat-label>
+                    <input matInput [(ngModel)]="bundle.name" readonly />
+                </mat-form-field>
 
-            <mat-form-field class="w-full" [subscriptSizing]="'dynamic'">
-                <mat-label>Bundle Description</mat-label>
-                <textarea matInput [(ngModel)]="bundle.description" rows="1" cdkTextareaAutosize [cdkAutosizeMinRows]="1" readonly></textarea>
-            </mat-form-field>
+                <mat-form-field class="w-full" [subscriptSizing]="'dynamic'">
+                    <mat-label>Bundle Description</mat-label>
+                    <textarea
+                        matInput
+                        [(ngModel)]="bundle.description"
+                        rows="1"
+                        cdkTextareaAutosize
+                        [cdkAutosizeMinRows]="1"
+                        readonly
+                    ></textarea>
+                </mat-form-field>
+            </div>
 
-            <div class="font-medium">Projects</div>
-           
-                <div class="flex">
-                    <mat-form-field [ngClass]="formFieldHelpers" class="flex-auto">
-                        <mat-chip-grid #chipGrid01>
-                            <mat-chip-row *ngFor="let project of bundle.Projects" [editable]="true">
-                                {{ project.name }}
-                                <mat-icon
-                                    class="icon-size-5"
-                                    matChipRemove
-                                    [svgIcon]="'heroicons_solid:minus-circle'">
-                                </mat-icon>
-                            </mat-chip-row>
-                            <input placeholder="" [matChipInputFor]="chipGrid01" readonly>
-                        </mat-chip-grid>
-                    </mat-form-field>
-                </div>
-           
+            <div class="flex flex-col space-y-3">
+                <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                    <mat-label>Projects</mat-label>
+                    <mat-chip-grid #chipGrid01>
+                        <mat-chip-row
+                            *ngFor="let project of bundle.Projects"
+                            [editable]="true"
+                        >
+                            {{ project.name }}
+                            <mat-icon
+                                class="icon-size-5"
+                                matChipRemove
+                                [svgIcon]="'heroicons_solid:minus-circle'"
+                            >
+                            </mat-icon>
+                        </mat-chip-row>
+                        <input
+                            placeholder=""
+                            [matChipInputFor]="chipGrid01"
+                            readonly
+                        />
+                    </mat-chip-grid>
+                </mat-form-field>
+            </div>
         </div>
     </div>
 </div>

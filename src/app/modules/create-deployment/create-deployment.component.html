@@ -1,13 +1,9 @@
 <div class="flex items-center justify-between mb-8 text-3xl font-bold">
     <div>Configure Bundle</div>
     <button mat-icon-button (click)="onCancel()" [tabIndex]="-1">
-        <mat-icon
-            class="text-current"
-            [svgIcon]="'heroicons_outline:x-mark'"
-        ></mat-icon>
+        <mat-icon class="text-current" [svgIcon]="'heroicons_outline:x-mark'"></mat-icon>
     </button>
 </div>
-
 
 <div class="max-h-[80vh] overflow-auto p-4 bg-card shadow rounded">
     <form [formGroup]="stepperForm">
@@ -88,7 +84,10 @@
 
             <mat-step>
                 <ng-template matStepLabel>Project Deployment</ng-template>
-                <div formArrayName="projects">
+                <p class="my-6 font-medium">
+                    Fill in the details of your project deployment to proceed
+                </p>
+                <div formArrayName="projects" class="m-3 p-3">
                     <div *ngFor="let projectGroup of projectsArray.controls; let projectIndex = index" [formGroupName]="projectIndex">
                         <div class="flex flex-col gt-xs:flex-row">
                             <mat-form-field class="flex-auto gt-xs:pr-3">
@@ -99,7 +98,7 @@
                           
                             <mat-form-field class="w-full mb-2" appearance="outline" floatLabel="always">
                                 <mat-label>Registry Type</mat-label>
-                                <mat-select formControlName="registryType">
+                                <mat-select formControlName="registryType" (selectionChange)="onRegistryTypeChange(projectIndex)">
                                     <mat-option value="dockerHub">Docker Hub</mat-option>
                                     <mat-option value="azure">Azure Registry</mat-option>
                                     <mat-option value="gcp">GCP Registry</mat-option>
@@ -110,9 +109,9 @@
                             <div class="p-4" *ngIf="projectGroup.get('registryType').value === 'dockerHub'">
                                 <ul class="grid w-full gap-6 md:grid-cols-2">
                                     <li>
-                                        <input type="radio" id="publicHosting" formControlName="privacy" value="public" class="hidden peer w-2 h-2" />
-                                        <label for="publicHosting" class="inline-flex items-center justify-between w-full p-5 text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">                           
-                                            <div class="block ">
+                                        <input type="radio" id="publicHosting{{projectIndex}}" formControlName="privacy" value="public" class="hidden peer w-2 h-2" />
+                                        <label for="publicHosting{{projectIndex}}" class="inline-flex items-center justify-between w-full p-5 text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700" (click)="onPrivacyChange(projectIndex, 'public')">                           
+                                            <div class="block">
                                                 <div class="w-full text-lg font-semibold">Public</div>
                                                 <div class="w-full">Good for small websites</div>
                                             </div>
@@ -122,8 +121,8 @@
                                         </label>
                                     </li>
                                     <li>
-                                        <input type="radio" id="privateHosting" formControlName="privacy" value="private" class="hidden peer w-2 h-2" />
-                                        <label for="privateHosting" class="inline-flex items-center justify-between w-full p-5 text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
+                                        <input type="radio" id="privateHosting{{projectIndex}}" formControlName="privacy" value="private" class="hidden peer w-2 h-2" />
+                                        <label for="privateHosting{{projectIndex}}" class="inline-flex items-center justify-between w-full p-5 text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700" (click)="onPrivacyChange(projectIndex, 'private')">
                                             <div class="block">
                                                 <div class="w-full text-lg font-semibold">Private</div>
                                                 <div class="w-full">Good for large websites</div>
@@ -136,12 +135,14 @@
                                 </ul>
                             </div>
                             
+                            
                             <!-- Conditionally render Docker Image input for Public -->
                             <div class="flex flex-col gt-xs:flex-row" *ngIf="projectGroup.get('privacy').value === 'public'">
                                 <mat-form-field class="flex-auto gt-xs:pr-3">
                                     <mat-label>Docker Image</mat-label>
-                                    <input matInput formControlName="dockerImage" />
+                                    <input matInput formControlName="dockerImage" required />
                                     <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:cube-transparent'"></mat-icon>
+                                    <mat-error *ngIf="projectGroup.get('dockerImage').hasError('required')">Must not be empty!</mat-error>
                                 </mat-form-field>
                             </div>
                             
@@ -149,28 +150,33 @@
                             <div class="flex flex-col gt-xs:flex-row" *ngIf="projectGroup.get('privacy').value === 'private'">
                                 <mat-form-field class="flex-auto gt-xs:pr-3">
                                     <mat-label>Docker Image</mat-label>
-                                    <input matInput formControlName="dockerImage"/>
+                                    <input matInput formControlName="dockerImage" required />
                                     <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:cube-transparent'"></mat-icon>
+                                    <mat-error *ngIf="projectGroup.get('dockerImage').hasError('required')">Must not be empty!</mat-error>
                                 </mat-form-field>
                                 <mat-form-field class="flex-auto gt-xs:pr-3">
                                     <mat-label>Image Pull Secret Name</mat-label>
-                                    <input matInput formControlName="imagePullSecretName" />
+                                    <input matInput formControlName="imagePullSecretName" required />
+                                    <mat-error *ngIf="projectGroup.get('imagePullSecretName').hasError('required')">Must not be empty!</mat-error>
                                 </mat-form-field>
                                 <mat-form-field class="flex-auto gt-xs:pr-3">
                                     <mat-label>Docker Username</mat-label>
-                                    <input matInput formControlName="dockerUsername" />
+                                    <input matInput formControlName="dockerUsername" required />
+                                    <mat-error *ngIf="projectGroup.get('dockerUsername').hasError('required')">Must not be empty!</mat-error>
                                 </mat-form-field>
                                 <mat-form-field class="flex-auto gt-xs:pr-3">
                                     <mat-label>Docker Password</mat-label>
-                                    <input matInput formControlName="dockerPassword" type="password" />
+                                    <input matInput formControlName="dockerPassword" type="password" required />
+                                    <mat-error *ngIf="projectGroup.get('dockerPassword').hasError('required')">Must not be empty!</mat-error>
                                 </mat-form-field>
                                 <mat-form-field class="flex-auto gt-xs:pr-3">
                                     <mat-label>Docker Email</mat-label>
-                                    <input matInput formControlName="dockerEmail" />
+                                    <input matInput formControlName="dockerEmail" required />
+                                    <mat-error *ngIf="projectGroup.get('dockerEmail').hasError('required')">Must not be empty!</mat-error>
+                                    <mat-error *ngIf="projectGroup.get('dockerEmail').hasError('email')">Invalid email!</mat-error>
                                 </mat-form-field>
                             </div>
-
-                            </div>
+                        </div>
                         <div class="flex flex-col gt-xs:flex-row">
                             <mat-form-field class="flex-auto gt-xs:pl-3">
                                 <mat-label>Service Name</mat-label>

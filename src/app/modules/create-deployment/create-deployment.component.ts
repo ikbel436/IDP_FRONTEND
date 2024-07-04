@@ -1,4 +1,3 @@
-// create-deployment.component.ts
 import { Component, Inject, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -66,7 +65,6 @@ export class CreateDeploymentComponent {
         private projectService: ProjectService,
         private dialog: MatDialog,
         private _snackBar: MatSnackBar
-
     ) {
         this.stepperForm = this.fb.group({
             step1: this.fb.group({
@@ -121,9 +119,9 @@ export class CreateDeploymentComponent {
             expose: [false],
             host: ['', [this.lowercaseValidator, this.hostValidator]],
             projectEnvVars: this.fb.array([this.createEnvVariable()]),
-            registryType: ['', Validators.required],  
-            generated: [false],  
-            privacy: ['', Validators.required],  
+            registryType: ['', Validators.required],
+            generated: [false],
+            privacy: ['', Validators.required],
             imagePullSecretName: [''],
             dockerUsername: [''],
             dockerPassword: [''],
@@ -131,6 +129,35 @@ export class CreateDeploymentComponent {
         });
     }
     
+    onRegistryTypeChange(projectIndex: number): void {
+        const projectGroup = this.projectsArray.at(projectIndex) as FormGroup;
+        this.clearValidators(projectGroup);
+    }
+
+    onPrivacyChange(projectIndex: number, privacy: string): void {
+        const projectGroup = this.projectsArray.at(projectIndex) as FormGroup;
+        this.clearValidators(projectGroup);
+    
+        if (privacy === 'private') {
+            projectGroup.get('imagePullSecretName').setValidators(Validators.required);
+            projectGroup.get('dockerUsername').setValidators(Validators.required);
+            projectGroup.get('dockerPassword').setValidators(Validators.required);
+            projectGroup.get('dockerEmail').setValidators([Validators.required, Validators.email]);
+        } else if (privacy === 'public') {
+            projectGroup.get('dockerImage').setValidators(Validators.required);
+        }
+    
+        projectGroup.get('privacy').setValue(privacy); // Set the privacy value for the specific project
+        projectGroup.updateValueAndValidity();
+    }
+
+    clearValidators(group: FormGroup): void {
+        group.get('imagePullSecretName').clearValidators();
+        group.get('dockerUsername').clearValidators();
+        group.get('dockerPassword').clearValidators();
+        group.get('dockerEmail').clearValidators();
+        group.get('dockerImage').clearValidators();
+    }
 
     addProjectEnvVar(index: number): void {
         const projectGroup = this.projectsArray.at(index) as FormGroup;
@@ -158,6 +185,10 @@ export class CreateDeploymentComponent {
                 });
             },
             (error) => {
+                this._snackBar.open('Error fetching projects', 'OK', {
+                    duration: 3000,
+                    panelClass: ['mat-snack-bar-error']
+                });
                 console.error('Error fetching projects:', error);
             }
         );
@@ -181,6 +212,10 @@ export class CreateDeploymentComponent {
                 });
             },
             (error) => {
+                this._snackBar.open('Error generating database deployment', 'OK', {
+                    duration: 3000,
+                    panelClass: ['mat-snack-bar-error']
+                });
                 console.error('Error generating database deployment:', error);
             }
         );
@@ -208,14 +243,11 @@ export class CreateDeploymentComponent {
         const expose = projectGroup.value.expose;
         const host = projectGroup.value.host;
     
-        // Store the host if the project is exposed
         if (expose) {
             this.hosts.push(host);
         }
     
-        this.apiService
-           .generateDeployment({...deploymentData, expose, host })
-           .subscribe(
+        this.apiService.generateDeployment({...deploymentData, expose, host }).subscribe(
                 (response) => {
                     this.generatedFiles.push(response.deploymentFilePath);
                     if (response.ingressFilePath) {
@@ -224,12 +256,10 @@ export class CreateDeploymentComponent {
 
                     projectGroup.patchValue({ generated: true });
 
-                    // Move to the next project form
                     const nextIndex = index + 1;
                     if (nextIndex < this.projectsArray.length) {
                         this.projectsArray.at(nextIndex).get('serviceName').markAsTouched();
                     } else {
-                        // Move to the next step in the stepper if all projects are deployed
                         this.verticalStepper.next();
                         this._snackBar.open('Project Deployed', 'OK', {
                             duration: 3000,
@@ -237,10 +267,11 @@ export class CreateDeploymentComponent {
                     }
                 },
                 (error) => {
-                    console.error(
-                        'Error generating project deployment:',
-                        error
-                    );
+                    this._snackBar.open('Error generating project deployment', 'OK', {
+                        duration: 3000,
+                        panelClass: ['mat-snack-bar-error']
+                    });
+                    console.error('Error generating project deployment:', error);
                 }
             );
     }
@@ -256,19 +287,17 @@ export class CreateDeploymentComponent {
     
         this.apiService.applyK8sFiles(deploymentData).subscribe(
             (response) => {
-    
-                // Prepare the data to be passed to the modal
-                const hostsData = {
-                    hosts: this.hosts,
-                };
-    
+                const hostsData = { hosts: this.hosts };
                 this._snackBar.open('Great you are almost done', 'OK', {
                     duration: 3000,
                 });
-                // Open the modal and pass the hosts data
                 this.openHostsModal(hostsData);
             },
             (error) => {
+                this._snackBar.open('Error applying deployment', 'OK', {
+                    duration: 3000,
+                    panelClass: ['mat-snack-bar-error']
+                });
                 console.error('Error applying deployment:', error);
             }
         );
@@ -286,10 +315,8 @@ export class CreateDeploymentComponent {
     onCancel(): void {
         this.dialogRef.close();
         this.saveAsDraft();
-
     }
 
-    // Custom validators
     lowercaseValidator(control: AbstractControl): { [key: string]: any } | null {
         const isLowercase = /^[a-z]+$/.test(control.value);
         return isLowercase ? null : { lowercase: { value: control.value } };
@@ -301,5 +328,4 @@ export class CreateDeploymentComponent {
     }
 
     saveAsDraft(): void {}
-
 }

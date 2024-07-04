@@ -80,39 +80,40 @@ export interface Repository {
 })
 export class FinanceComponent implements OnInit, AfterViewInit, OnDestroy {
     public readonly tourService = inject(TourService);
-    readonly tourSteps: IStepOption[] = [
-  
-      {
-        anchorId: 'home',
-        content: 'Import repositories from git provider.',
-        title: 'Repositories import',
-        enableBackdrop: true,
-      },
-      {
-        anchorId: 'about',
-        content: 'Add new project from repositorie',
-        title: 'Add Projects',
-        enableBackdrop: true,
-      },
-      {
-        anchorId: 'contact',
-        content: 'Select Projects to create bundles',
-        title: 'Select Projects',
-        enableBackdrop: true,
-      },
-      {
-        anchorId: 'bundle',
-        content: 'Create new Bundles from the projects selected',
-        title: 'Create Bundles',
-        enableBackdrop: true,
-      },
-      {
-        anchorId: 'bundles',
-        content: 'Select a bundle from the list to deploy the projects',
-        title: 'Select Bundle',
-        enableBackdrop: true,
-      },
-    ]
+    hasStartedTour = false;
+   readonly tourSteps: IStepOption[] = [
+  {
+    anchorId: 'home',
+    content: 'Discover the power of our Git provider integration! Easily import your repositories and start managing your projects with ease.',
+    title: 'Repositories Import',
+    enableBackdrop: true,
+  },
+  {
+    anchorId: 'about',
+    content: 'Add new projects to your workspace with just a few clicks. Streamline your development process and stay on top of your project portfolio.',
+    title: 'Add New Projects',
+    enableBackdrop: true,
+  },
+  {
+    anchorId: 'contact',
+    content: 'Select the projects you want to bundle together. Consolidate your efforts and optimize your deployment workflow.',
+    title: 'Select Projects',
+    enableBackdrop: true,
+  },
+  {
+    anchorId: 'bundle',
+    content: 'Create custom bundles from the selected projects. Group related components, services, and configurations to simplify your deployment process.',
+    title: 'Create Bundles',
+    enableBackdrop: true,
+  },
+  {
+    anchorId: 'bundles',
+    content: 'Choose a bundle from the list and deploy your projects with a single click. Streamline your application delivery and ensure consistent deployments.',
+    title: 'Select Bundle',
+    enableBackdrop: true,
+  },
+];
+
     @ViewChild('displayedColumns', { read: MatSort })
     displayedColumnsMatSort: MatSort;
     dataSource = new MatTableDataSource<any>();
@@ -160,15 +161,19 @@ export class FinanceComponent implements OnInit, AfterViewInit, OnDestroy {
      * On init
      */
     ngOnInit(): void {
-        this.tourService.initialize(this.tourSteps, {});
-        // this.startTour();
-        // this.startTour();
+      this.tourService.initialize(this.tourSteps, {});
+      const hasStartedTour = localStorage.getItem('hasStartedTour');
+      if (!hasStartedTour) {
         setTimeout(() => {
           this.startTour();
+          localStorage.setItem('hasStartedTour', 'true');
         }, 100);
-        this.getProjectData();
-        this.fetchBundles();
+      }
+      this.getProjectData();
+      this.fetchBundles();
     }
+    
+    
     startTour() {
         this.tourService.start();
     

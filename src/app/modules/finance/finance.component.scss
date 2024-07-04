@@ -1,0 +1,48 @@
+::ng-deep {
+    .tour-step-backdrop {
+      background-color: rgba(0, 0, 0, 0.5); // Adjust the backdrop color
+    }
+  
+    .tour-step-content {
+      background-color: #ffffff; // Adjust the content background color
+      color: #333333; // Adjust the content text color
+      padding: 16px; // Adjust the content padding
+      border-radius: 4px; // Adjust the content border radius
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); // Adjust the content box shadow
+    }
+  
+    .tour-step-arrow {
+      border-color: #ffffff; // Adjust the arrow color
+    }
+  }
+  
+  .tour-next-button-color {
+    background-color: red;
+    color: red; // Adjust the next button background color
+  }
+  .mat-mdc-card-title{
+    font-size:large;
+    font-family:Arial, Helvetica, sans-serif
+    }
+
+    .mat-body{
+       font-size: medium;
+       font-family:Arial, Helvetica, sans-serif;
+       font-weight: semi-bold;
+      
+      }
+      .mat-mdc-button 
+      {
+        font-size: medium;
+        font-family:Arial, Helvetica, sans-serif;
+        font-weight: semi-bold;
+      }
+      
+      .mat-mdc-button-touch-target
+      {
+        color: gray;
+        border: #333333;
+        border-radius: 50%;
+        size: 100cap;
+      }
+      

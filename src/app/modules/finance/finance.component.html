@@ -12,7 +12,7 @@
             </div>
             <div class="flex items-center ml-6">
               
-                <button (click)="startTour()" tourAnchor="home"  class="sm:inline-flex">
+                <button tourAnchor="home"  class="sm:inline-flex">
                     <app-get-projects></app-get-projects>
                 </button>
                 <button
@@ -659,10 +659,10 @@
                     <div  tourAnchor="bundles" *ngFor="let bundle of bundles" class="flex flex-col" (click)="openBundleConfig(bundle)">
                         <div class="flex items-center">
                             <div
-                                class="flex items-center justify-center w-14 h-14 rounded bg-red-100 text-red-800 dark:bg-red-600 dark:text-red-50"
+                                class="flex items-center justify-center w-14 h-14 max-h-14 max-w-14 min-h-14 min-w-14 rounded bg-red-100 text-red-800 dark:bg-red-600 dark:text-red-50"
                             >
                                 <mat-icon
-                                    class="text-current"
+                                    class="text-current icon-size-6"
                                     [svgIcon]="'mat_outline:bookmarks'"
                                 ></mat-icon>
                             </div>
@@ -701,4 +701,4 @@
         </div>
     </div>
 </div>
-<tour-step-template></tour-step-template>
+<tour-step-template class="testing"></tour-step-template>
