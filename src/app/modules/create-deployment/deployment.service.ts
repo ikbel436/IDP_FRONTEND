@@ -9,7 +9,7 @@ export class DeploymentService {
 
   constructor(private http: HttpClient) { }
 
-  private apiUrl = 'http://localhost:3000';
+  private apiUrl = 'http://localhost:3000/k8';
  
   private getHeaders(token: string) {
     return new HttpHeaders({

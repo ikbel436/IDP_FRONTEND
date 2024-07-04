@@ -8,6 +8,7 @@
         Create New Bundle
     </h3>
     <button
+        (click)="onNoClick()"
         type="button"
         class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
         data-modal-toggle="crud-modal"
@@ -67,7 +68,6 @@
                 placeholder="Write bundle description here"
             ></textarea>
         </div>
-        
     </div>
     <div class="flex p-5">
         <mat-form-field [ngClass]="formFieldHelpers" class="flex-auto">
@@ -76,11 +76,12 @@
                     <mat-chip-row [editable]="true">
                         {{ project.name }}
                         <mat-icon
-                        class="icon-size-5"
-                        matChipRemove
-                        [svgIcon]="'heroicons_solid:minus-circle'"
-                        (click)="removeChip(project)">
-                    </mat-icon>                    
+                            class="icon-size-5"
+                            matChipRemove
+                            [svgIcon]="'heroicons_solid:minus-circle'"
+                            (click)="removeChip(project)"
+                        >
+                        </mat-icon>
                     </mat-chip-row>
                 </ng-container>
                 <input [matChipInputFor]="chipGrid02" />
