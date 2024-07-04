@@ -13,6 +13,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatStepper, MatStepperModule } from '@angular/material/stepper';
 import { WorkflowService } from './workflowService.service';
 import { FuseHighlightComponent } from '@fuse/components/highlight';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-build-push-image',
@@ -42,7 +43,8 @@ export class BuildPushImageComponent implements OnInit {
     * Constructor
     */
   constructor(private _formBuilder: UntypedFormBuilder,
-    private workflowService: WorkflowService
+    private workflowService: WorkflowService,
+    private _snackBar: MatSnackBar
   ) {
   }
   ngOnInit(): void {
@@ -73,8 +75,16 @@ export class BuildPushImageComponent implements OnInit {
     this.workflowService.updateYaml(this.owner, this.token, this.repo, this.platform, this.yamlData)
       .subscribe(response => {
         if (response.success) {
-          console.log('YAML file updated successfully');
+          this._snackBar.open('YAML file updated successfully', 'Close', {
+            duration: 3000,
+            panelClass: ['snackbar-success']
+          });
         }
+      }, error => {
+        this._snackBar.open('Error updating YAML file', 'Close', {
+          duration: 3000,
+          panelClass: ['snackbar-error']
+        });
       });
   }
 
@@ -87,9 +97,16 @@ export class BuildPushImageComponent implements OnInit {
         if (response) {
           this.yamlData = response;
           this.verticalStepperForm.get('step2.yamlContent').setValue(response);
+          this._snackBar.open('YAML content fetched successfully', 'Close', {
+            duration: 3000,
+            panelClass: ['snackbar-success']
+          });
         }
       }, error => {
-        console.error('Error fetching YAML content:', error);
+        this._snackBar.open('Error fetching YAML content', 'Close', {
+          duration: 3000,
+          panelClass: ['snackbar-error']
+        });
       });
   }
 
@@ -124,13 +141,21 @@ export class BuildPushImageComponent implements OnInit {
         (response) => {
           this.workflowUrl = response.workflowUrl;
           this.registryUrl = response.registryUrl;
-          this.processMessage = 'The workflow has been successfully pushed to GitHub. You can view the status of your workflow and access the Docker image in the GitHub Container Registry.';
+          this.processMessage = 'The workflow has been successfully pushed to GitHub.';
           this.finalStep = true;
+          this._snackBar.open('Workflow pushed to GitHub successfully', 'Close', {
+            duration: 3000,
+            panelClass: ['snackbar-success']
+          });
         },
         (error) => {
           console.error('Error:', error);
           this.processMessage = 'An error occurred while pushing the workflow. Please try again.';
           this.finalStep = true;
+          this._snackBar.open('Error pushing workflow to GitHub', 'Close', {
+            duration: 3000,
+            panelClass: ['snackbar-error']
+          });
         }
       );
     }
