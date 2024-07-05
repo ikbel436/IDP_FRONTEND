@@ -20,21 +20,21 @@
                             <mat-option value="mongodb">MongoDB</mat-option>
                         </mat-select>
                         <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:book-open'"></mat-icon>
-                        <mat-error *ngIf="step1.get('dbType').hasError('required')">Required field!</mat-error>
+                        <mat-error *ngIf="step1.get('dbType').hasError('required')">Please select a database type.</mat-error>
                     </mat-form-field>
                     <mat-form-field class="flex-auto gt-xs:pl-3">
                         <mat-label>Service Name</mat-label>
                         <input matInput formControlName="serviceName" [placeholder]="'Service Name'" type="string" />
                         <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:cog-6-tooth'"></mat-icon>
-                        <mat-error *ngIf="step1.get('serviceName').hasError('required')">Must not be empty!</mat-error>
-                        <mat-error *ngIf="step1.get('serviceName').hasError('lowercase') && !step1.get('serviceName').hasError('required')">Must be lowercase!</mat-error>
+                        <mat-error *ngIf="step1.get('serviceName').hasError('required')">The service name is required.</mat-error>
+                        <mat-error *ngIf="step1.get('serviceName').hasError('lowercase') &&!step1.get('serviceName').hasError('required')">The service name must be in lowercase.</mat-error>                        
                     </mat-form-field>
                     <mat-form-field class="flex-auto gt-xs:pl-3">
                         <mat-label>Port</mat-label>
                         <input matInput formControlName="port" [placeholder]="'Port / 8080'" type="number" />
                         <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:globe-alt'"></mat-icon>
-                        <mat-error *ngIf="step1.get('port').hasError('required')">Required field!</mat-error>
-                        <mat-error *ngIf="step1.get('port').hasError('pattern') && !step1.get('port').hasError('required')">Must be numeric!</mat-error>
+                        <mat-error *ngIf="step1.get('port').hasError('required')">A port number is required.</mat-error>
+                        <mat-error *ngIf="step1.get('port').hasError('pattern') &&!step1.get('port').hasError('required')">The port number must be numeric.</mat-error>
                     </mat-form-field>
                 </div>
                 <div formArrayName="envVars">
@@ -44,14 +44,15 @@
                                 <mat-form-field class="w-full">
                                     <mat-label>Key</mat-label>
                                     <input matInput formControlName="name" [placeholder]="'Environment Key'" />
-                                    <mat-error *ngIf="envVar.get('name').hasError('required')">Must not be empty!</mat-error>
-                                    <mat-error *ngIf="envVar.get('name').hasError('lowercase') && !envVar.get('name').hasError('required')">Must be lowercase!</mat-error>
+                                    <mat-error *ngIf="envVar.get('name').hasError('required')">An environment variable name is required.</mat-error>
+                                    <mat-error *ngIf="envVar.get('name').hasError('lowercase') &&!envVar.get('name').hasError('required')">Environment variable names must be in lowercase.</mat-error>
+                                    
                                 </mat-form-field>
                                 <mat-form-field class="w-full">
                                     <mat-label>Value</mat-label>
                                     <input matInput formControlName="value" [placeholder]="'Environment Value'" />
-                                    <mat-error *ngIf="envVar.get('value').hasError('required')">Must not be empty!</mat-error>
-                                    <mat-error *ngIf="envVar.get('value').hasError('lowercase') && !envVar.get('value').hasError('required')">Must be lowercase!</mat-error>
+                                    <mat-error *ngIf="envVar.get('value').hasError('required')">An environment variable value is required.</mat-error>
+                                    <mat-error *ngIf="envVar.get('value').hasError('lowercase') &&!envVar.get('value').hasError('required')">Environment variable values must be in lowercase.</mat-error>
                                 </mat-form-field>
                             </div>
                             <div class="flex justify-end w-full">
@@ -92,12 +93,14 @@
                         <div class="flex flex-col gt-xs:flex-row">
                             <mat-form-field class="flex-auto gt-xs:pr-3">
                                 <mat-label>Project Name</mat-label>
+                                <mat-error *ngIf="projectGroup.get('projectName').hasError('required')">The project name is required.</mat-error>
                                 <input matInput formControlName="projectName" disabled readonly />
                                 <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:cube-transparent'"></mat-icon>
                             </mat-form-field>
                           
                             <mat-form-field class="w-full mb-2" appearance="outline" floatLabel="always">
                                 <mat-label>Registry Type</mat-label>
+                                <mat-error *ngIf="projectGroup.get('registryType').hasError('required')">Select a registry type.</mat-error>
                                 <mat-select formControlName="registryType" (selectionChange)="onRegistryTypeChange(projectIndex)">
                                     <mat-option value="dockerHub">Docker Hub</mat-option>
                                     <mat-option value="azure">Azure Registry</mat-option>
@@ -142,8 +145,8 @@
                                     <mat-label>Docker Image</mat-label>
                                     <input matInput formControlName="dockerImage" required />
                                     <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:cube-transparent'"></mat-icon>
-                                    <mat-error *ngIf="projectGroup.get('dockerImage').hasError('required')">Must not be empty!</mat-error>
-                                </mat-form-field>
+                                    <mat-error *ngIf="projectGroup.get('dockerImage').hasError('required')">A Docker image is required for public hosting.</mat-error>
+                                    </mat-form-field>
                             </div>
                             
                             <!-- Conditionally render Private fields -->
@@ -152,28 +155,28 @@
                                     <mat-label>Docker Image</mat-label>
                                     <input matInput formControlName="dockerImage" required />
                                     <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:cube-transparent'"></mat-icon>
-                                    <mat-error *ngIf="projectGroup.get('dockerImage').hasError('required')">Must not be empty!</mat-error>
+                                    <mat-error *ngIf="projectGroup.get('dockerImage').hasError('required')">A Docker image and credentials are required for private hosting.</mat-error>
                                 </mat-form-field>
                                 <mat-form-field class="flex-auto gt-xs:pr-3">
                                     <mat-label>Image Pull Secret Name</mat-label>
                                     <input matInput formControlName="imagePullSecretName" required />
-                                    <mat-error *ngIf="projectGroup.get('imagePullSecretName').hasError('required')">Must not be empty!</mat-error>
+                                    <mat-error *ngIf="projectGroup.get('imagePullSecretName').hasError('required')">An image pull secret name is required for private hosting.</mat-error>
                                 </mat-form-field>
                                 <mat-form-field class="flex-auto gt-xs:pr-3">
                                     <mat-label>Docker Username</mat-label>
                                     <input matInput formControlName="dockerUsername" required />
-                                    <mat-error *ngIf="projectGroup.get('dockerUsername').hasError('required')">Must not be empty!</mat-error>
+                                    <mat-error *ngIf="projectGroup.get('dockerUsername').hasError('required')">A Docker username is required for private hosting.</mat-error>
                                 </mat-form-field>
                                 <mat-form-field class="flex-auto gt-xs:pr-3">
                                     <mat-label>Docker Password</mat-label>
                                     <input matInput formControlName="dockerPassword" type="password" required />
-                                    <mat-error *ngIf="projectGroup.get('dockerPassword').hasError('required')">Must not be empty!</mat-error>
+                                    <mat-error *ngIf="projectGroup.get('dockerPassword').hasError('required')">A Docker password is required for private hosting.</mat-error>
                                 </mat-form-field>
                                 <mat-form-field class="flex-auto gt-xs:pr-3">
                                     <mat-label>Docker Email</mat-label>
                                     <input matInput formControlName="dockerEmail" required />
-                                    <mat-error *ngIf="projectGroup.get('dockerEmail').hasError('required')">Must not be empty!</mat-error>
-                                    <mat-error *ngIf="projectGroup.get('dockerEmail').hasError('email')">Invalid email!</mat-error>
+                                    <mat-error *ngIf="projectGroup.get('dockerEmail').hasError('required')">A Docker email is required for private hosting.</mat-error>
+                                    <mat-error *ngIf="projectGroup.get('dockerEmail').hasError('email')">Please enter a valid Docker email address.</mat-error>                                    
                                 </mat-form-field>
                             </div>
                         </div>
@@ -182,15 +185,15 @@
                                 <mat-label>Service Name</mat-label>
                                 <input matInput formControlName="serviceName" [placeholder]="'Service Name'" type="string" />
                                 <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:cog-6-tooth'"></mat-icon>
-                                <mat-error *ngIf="projectGroup.get('serviceName').hasError('required')">Must not be empty!</mat-error>
-                                <mat-error *ngIf="projectGroup.get('serviceName').hasError('lowercase') && !projectGroup.get('serviceName').hasError('required')">Must be lowercase!</mat-error>
+                                <mat-error *ngIf="projectGroup.get('serviceName').hasError('required')">The service name is required.</mat-error>
+                                <mat-error *ngIf="projectGroup.get('serviceName').hasError('lowercase') && !projectGroup.get('serviceName').hasError('required')">The service name must be in lowercase</mat-error>
                             </mat-form-field>
                             <mat-form-field class="flex-auto gt-xs:pl-3">
                                 <mat-label>Port</mat-label>
                                 <input matInput formControlName="port" [placeholder]="'Port / 8080'" type="number" />
                                 <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:globe-alt'"></mat-icon>
-                                <mat-error *ngIf="projectGroup.get('port').hasError('required')">Required field!</mat-error>
-                                <mat-error *ngIf="projectGroup.get('port').hasError('pattern') && !projectGroup.get('port').hasError('required')">Must be numeric!</mat-error>
+                                <mat-error *ngIf="projectGroup.get('port').hasError('required')">A port number is required.</mat-error>
+                                <mat-error *ngIf="projectGroup.get('port').hasError('pattern') && !projectGroup.get('port').hasError('required')">The port number must be numeric.</mat-error>
                             </mat-form-field>
                         </div>
                         <div>
@@ -202,9 +205,9 @@
                                 <input matInput formControlName="host" [disabled]="!projectGroup.value.expose" />
                                 <span matPrefix>idp.insparkconnect.com/</span>
                                 <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:bars-3-bottom-left'"></mat-icon>
-                                <mat-error *ngIf="projectGroup.get('host').hasError('required')">Must not be empty!</mat-error>
-                                <mat-error *ngIf="projectGroup.get('host').hasError('lowercase') && !projectGroup.get('host').hasError('required')">Must be lowercase!</mat-error>
-                                <mat-error *ngIf="projectGroup.get('host').hasError('host') && !projectGroup.get('host').hasError('required') && !projectGroup.get('host').hasError('lowercase')">Invalid host!</mat-error>
+                                <mat-error *ngIf="projectGroup.get('host').hasError('required')">A host is required for exposing services.</mat-error>
+                                <mat-error *ngIf="projectGroup.get('host').hasError('lowercase') &&!projectGroup.get('host').hasError('required')">The host must be in lowercase.</mat-error>
+                                <mat-error *ngIf="projectGroup.get('host').hasError('host') &&!projectGroup.get('host').hasError('required') &&!projectGroup.get('host').hasError('lowercase')">The host is invalid. Please ensure it follows the expected format.</mat-error>
                             </mat-form-field>
                         </div>
                         <div formArrayName="projectEnvVars">
@@ -214,14 +217,14 @@
                                         <mat-form-field class="w-full">
                                             <mat-label>Key</mat-label>
                                             <input matInput formControlName="name" />
-                                            <mat-error *ngIf="projectEnvVar.get('name').hasError('required')">Must not be empty!</mat-error>
-                                            <mat-error *ngIf="projectEnvVar.get('name').hasError('lowercase') && !projectEnvVar.get('name').hasError('required')">Must be lowercase!</mat-error>
+                                            <mat-error *ngIf="projectEnvVar.get('name').hasError('required')">An environment variable name is required.</mat-error>
+                                            <mat-error *ngIf="projectEnvVar.get('name').hasError('lowercase') &&!projectEnvVar.get('name').hasError('required')">Environment variable names must be in lowercase.</mat-error>
                                         </mat-form-field>
                                         <mat-form-field class="w-full">
                                             <mat-label>Value</mat-label>
                                             <input matInput formControlName="value" />
-                                            <mat-error *ngIf="projectEnvVar.get('value').hasError('required')">Must not be empty!</mat-error>
-                                            <mat-error *ngIf="projectEnvVar.get('value').hasError('lowercase') && !projectEnvVar.get('value').hasError('required')">Must be lowercase!</mat-error>
+                                            <mat-error *ngIf="projectEnvVar.get('value').hasError('required')">An environment variable value is required.</mat-error>
+                                            <mat-error *ngIf="projectEnvVar.get('value').hasError('lowercase') &&!projectEnvVar.get('value').hasError('required')">Environment variable values must be in lowercase.</mat-error>                                            
                                         </mat-form-field>
                                     </div>
                                     <div class="flex justify-end w-full">
