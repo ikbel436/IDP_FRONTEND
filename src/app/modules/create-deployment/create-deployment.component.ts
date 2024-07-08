@@ -276,16 +276,42 @@ export class CreateDeploymentComponent {
             );
     }
 
+    // onSubmit(): void {
+    //     const deploymentData = {
+    //         files: this.generatedFiles,
+    //         name: this.stepperForm.value.namespace,
+    //         description: this.data.bundle.description,
+    //         bundles: this.data.bundle,
+    //         namespace: this.stepperForm.value.namespace,
+    //     };
+    
+    //     this.apiService.applyK8sFiles(deploymentData).subscribe(
+    //         (response) => {
+    //             const hostsData = { hosts: this.hosts };
+    //             this._snackBar.open('Great you are almost done', 'OK', {
+    //                 duration: 3000,
+    //             });
+    //             this.openHostsModal(hostsData);
+    //         },
+    //         (error) => {
+    //             this._snackBar.open('Error applying deployment', 'OK', {
+    //                 duration: 3000,
+    //                 panelClass: ['mat-snack-bar-error']
+    //             });
+    //             console.error('Error applying deployment:', error);
+    //         }
+    //     );
+    // }
     onSubmit(): void {
         const deploymentData = {
-            files: this.generatedFiles,
+            filePaths: this.generatedFiles,
             name: this.stepperForm.value.namespace,
-            description: this.data.bundle.description,
-            bundles: this.data.bundle,
+             description: this.data.bundle.description,
+             bundles: this.data.bundle,
             namespace: this.stepperForm.value.namespace,
         };
     
-        this.apiService.applyK8sFiles(deploymentData).subscribe(
+        this.apiService.pushFiles(deploymentData).subscribe(
             (response) => {
                 const hostsData = { hosts: this.hosts };
                 this._snackBar.open('Great you are almost done', 'OK', {

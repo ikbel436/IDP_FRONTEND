@@ -31,4 +31,8 @@ export class DeploymentService {
    
     return this.http.post(`${this.apiUrl}/apply-generated-k8s-files`, data);
   }
+  pushFiles(data: any): Observable<any> {
+   
+    return this.http.post(`${this.apiUrl}/testPush`, data);
+  }
 }
