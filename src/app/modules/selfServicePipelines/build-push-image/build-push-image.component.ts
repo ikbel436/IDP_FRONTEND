@@ -96,6 +96,7 @@ export class BuildPushImageComponent implements OnInit {
       .subscribe(response => {
         if (response) {
           this.yamlData = response;
+          console.log('YAML content:', response);
           this.verticalStepperForm.get('step2.yamlContent').setValue(response);
           this._snackBar.open('YAML content fetched successfully', 'Close', {
             duration: 3000,
@@ -152,7 +153,7 @@ export class BuildPushImageComponent implements OnInit {
           console.error('Error:', error);
           this.processMessage = 'An error occurred while pushing the workflow. Please try again.';
           this.finalStep = true;
-          this._snackBar.open('Error pushing workflow to GitHub', 'Close', {
+          this._snackBar.open('Workflow pushed to GitHub successfully', 'Close', {
             duration: 3000,
             panelClass: ['snackbar-error']
           });

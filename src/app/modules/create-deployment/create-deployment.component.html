@@ -168,7 +168,7 @@
                                     <mat-error *ngIf="projectGroup.get('dockerUsername').hasError('required')">A Docker username is required for private hosting.</mat-error>
                                 </mat-form-field>
                                 <mat-form-field class="flex-auto gt-xs:pr-3">
-                                    <mat-label>Docker Password</mat-label>
+                                    <mat-label>Docker Token</mat-label>
                                     <input matInput formControlName="dockerPassword" type="password" required />
                                     <mat-error *ngIf="projectGroup.get('dockerPassword').hasError('required')">A Docker password is required for private hosting.</mat-error>
                                 </mat-form-field>

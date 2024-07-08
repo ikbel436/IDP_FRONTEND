@@ -1,4 +1,4 @@
-<div class="mt-16 mb-8 text-3xl font-bold">Container Registry Push Portal</div>
+<div class="mt-1 mb-8 text-3xl font-bold">Container Registry Push Portal</div>
 <form class="p-4 bg-card shadow rounded overflow-hidden" [formGroup]="verticalStepperForm">
     <mat-vertical-stepper [linear]="true" #stepper #verticalStepper (selectionChange)="onStepChange($event)">
         <mat-step [formGroupName]="'step1'" [stepControl]="verticalStepperForm.get('step1')" #verticalStepperStep1>
@@ -40,20 +40,21 @@
                     </mat-form-field>
                 </div>
                 <div class="flex-none">
-                    <button class="px-4" mat-flat-button [color]="'accent'" type="button"
+                    <button  class="px-4" mat-flat-button [color]="'accent'" type="button"
                         (click)="updateYamlBranches()">
                         Update Branch
+                        
                     </button>
                 </div>
             </div>
             <br>
             <div class="dark max-w-[69rem] mt-8 p-4 rounded-2xl overflow-hidden">
-                <mat-form-field class="w-full">
-                    <textarea matInput [formControlName]="'yamlContent'" [rows]="10"
-                        class="w-full h-full border-none bg-transparent outline-none p-0" style="resize: none;"
-                        color="text-white"></textarea>
-                </mat-form-field>
-            </div>
+                <pre>{{ yamlData }}</pre>
+              </div>
+              
+              
+              
+            
             <!--div class="flex">
                 <fuse-highlight [code]="yamlData" [lang]="'yaml'"></fuse-highlight>
             </div-->
@@ -111,17 +112,20 @@
 
                 </mat-form-field>
             </div>
-            <div class="flex justify-end mt-8">
-                <button class="px-8" mat-flat-button color="primary" type="button" (click)="onSubmit()">Push
-                    Workflow</button>
-                <button class="px-8 mr-2" mat-flat-button [color]="'accent'" type="button" matStepperPrevious>
+            <div class="flex justify-end mt-8 space-x-2">
+                <button class="px-8 mb-2" mat-flat-button color="primary" type="button" (click)="onSubmit()">
+                    Push Workflow
+                </button>
+                <button class="px-8 mr-2 mb-2" mat-flat-button [color]="'accent'" type="button" matStepperPrevious>
                     Back
                 </button>
-                <button class="px-8" mat-flat-button [color]="'primary'" type="button" matStepperNext>
+                <button class="px-8 mb-2" mat-flat-button [color]="'primary'" type="button" matStepperNext>
                     Next
                 </button>
-
             </div>
+            
+            
+            
         </mat-step>
 
         <mat-step>

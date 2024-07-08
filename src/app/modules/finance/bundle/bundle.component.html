@@ -1,6 +1,4 @@
 <!-- Modal content -->
-<!-- <div class="relative bg-white rounded-lg shadow dark:bg-gray-700 max-w-screen-md mx-auto h-auto md:max-h-screen"> -->
-<!-- Modal header -->
 <div
     class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600"
 >
@@ -69,7 +67,7 @@
             ></textarea>
         </div>
     </div>
-    <div class="flex p-5">
+    <div class="flex p-5 justify-center">
         <mat-form-field [ngClass]="formFieldHelpers" class="flex-auto">
             <mat-chip-grid #chipGrid02>
                 <ng-container *ngFor="let project of data.selectedProjects">
@@ -88,6 +86,7 @@
             </mat-chip-grid>
         </mat-form-field>
     </div>
+    
 
     <div
         class="flex items-center p-4 md:p-5 space-x-3 rtl:space-x-reverse border-t border-gray-200 rounded-b dark:border-gray-600"
@@ -111,7 +110,7 @@
                     clip-rule="evenodd"
                 ></path>
             </svg>
-            Add new
+            Add new Bundle
         </button>
 
         <button
@@ -135,4 +134,3 @@
         </button>
     </div>
 </form>
-<!-- </div> -->
