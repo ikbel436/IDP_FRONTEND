@@ -97,8 +97,8 @@ export class CreateDeploymentComponent {
 
     createEnvVariable(): FormGroup {
         return this.fb.group({
-            name: ['', [Validators.required, this.lowercaseValidator]],
-            value: ['', [Validators.required, this.lowercaseValidator]],
+            name: ['', [Validators.required]],
+            value: ['', [Validators.required]],
         });
     }
 

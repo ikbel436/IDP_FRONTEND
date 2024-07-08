@@ -1,6 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ToastService } from 'app/services/toast.service';
 
 @Component({
@@ -13,7 +13,8 @@ import { ToastService } from 'app/services/toast.service';
 export class HostsModalComponent {
     constructor(
         @Inject(MAT_DIALOG_DATA) public data: { hosts: string[] },
-        private _toastService: ToastService
+        private _toastService: ToastService,
+        private dialogRef: MatDialogRef<HostsModalComponent>
     ) {
         console.log('Received hosts:', this.data.hosts);
     }
@@ -28,5 +29,9 @@ export class HostsModalComponent {
             .catch((err) => {
                 console.error('Error copying text: ', err);
             });
+    }
+
+    closeModal(): void {
+        this.dialogRef.close(); // Close the dialog
     }
 }

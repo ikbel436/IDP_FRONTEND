@@ -45,14 +45,14 @@
                                     <mat-label>Key</mat-label>
                                     <input matInput formControlName="name" [placeholder]="'Environment Key'" />
                                     <mat-error *ngIf="envVar.get('name').hasError('required')">An environment variable name is required.</mat-error>
-                                    <mat-error *ngIf="envVar.get('name').hasError('lowercase') &&!envVar.get('name').hasError('required')">Environment variable names must be in lowercase.</mat-error>
+                                    <!-- <mat-error *ngIf="envVar.get('name').hasError('lowercase') &&!envVar.get('name').hasError('required')">Environment variable names must be in lowercase.</mat-error> -->
                                     
                                 </mat-form-field>
                                 <mat-form-field class="w-full">
                                     <mat-label>Value</mat-label>
                                     <input matInput formControlName="value" [placeholder]="'Environment Value'" />
                                     <mat-error *ngIf="envVar.get('value').hasError('required')">An environment variable value is required.</mat-error>
-                                    <mat-error *ngIf="envVar.get('value').hasError('lowercase') &&!envVar.get('value').hasError('required')">Environment variable values must be in lowercase.</mat-error>
+                                    <!-- <mat-error *ngIf="envVar.get('value').hasError('lowercase') &&!envVar.get('value').hasError('required')">Environment variable values must be in lowercase.</mat-error> -->
                                 </mat-form-field>
                             </div>
                             <div class="flex justify-end w-full">
@@ -218,13 +218,13 @@
                                             <mat-label>Key</mat-label>
                                             <input matInput formControlName="name" />
                                             <mat-error *ngIf="projectEnvVar.get('name').hasError('required')">An environment variable name is required.</mat-error>
-                                            <mat-error *ngIf="projectEnvVar.get('name').hasError('lowercase') &&!projectEnvVar.get('name').hasError('required')">Environment variable names must be in lowercase.</mat-error>
+                                            <!-- <mat-error *ngIf="projectEnvVar.get('name').hasError('lowercase') &&!projectEnvVar.get('name').hasError('required')">Environment variable names must be in lowercase.</mat-error> -->
                                         </mat-form-field>
                                         <mat-form-field class="w-full">
                                             <mat-label>Value</mat-label>
                                             <input matInput formControlName="value" />
                                             <mat-error *ngIf="projectEnvVar.get('value').hasError('required')">An environment variable value is required.</mat-error>
-                                            <mat-error *ngIf="projectEnvVar.get('value').hasError('lowercase') &&!projectEnvVar.get('value').hasError('required')">Environment variable values must be in lowercase.</mat-error>                                            
+                                            <!-- <mat-error *ngIf="projectEnvVar.get('value').hasError('lowercase') &&!projectEnvVar.get('value').hasError('required')">Environment variable values must be in lowercase.</mat-error>                                             -->
                                         </mat-form-field>
                                     </div>
                                     <div class="flex justify-end w-full">
