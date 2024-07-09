@@ -12,14 +12,14 @@ import { ClientGuard } from './core/auth/guards/client.guard';
 export const appRoutes: Route[] = [
 
     // Redirect empty path to '/dashboards/project'
-    { path: '', pathMatch: 'full', redirectTo: '/userHome' },
+    { path: '', pathMatch: 'full', redirectTo: '/home' },
 
     // Redirect signed-in user to the '/dashboards/project'
     //
     // After the user signs in, the sign-in page will redirect the user to the 'signed-in-redirect'
     // path. Below is another redirection for that path to redirect the user to the desired
     // location. This is a small convenience to keep all main routes together here on this file.
-    { path: 'signed-in-redirect', pathMatch: 'full', redirectTo: '/userHome' },
+    { path: 'signed-in-redirect', pathMatch: 'full', redirectTo: '/home' },
     {
         path: 'settings',
         canActivate: [AuthGuard],
@@ -74,6 +74,7 @@ export const appRoutes: Route[] = [
         },
         children: [
             { path: 'home', loadChildren: () => import('app/modules/landing/home/home.routes') },
+            { path: 'discord', loadChildren: () => import('app/modules/discord/discord.routes') },
         ]
     },
 
