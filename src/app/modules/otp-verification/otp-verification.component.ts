@@ -1,7 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgOtpInputModule } from 'ng-otp-input';
 import { AuthService } from 'app/core/auth/auth.service';
+import { Router } from '@angular/router';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 interface OtpChangeEvent {
     value: string;
@@ -16,30 +18,70 @@ interface OtpChangeEvent {
 })
 export class OTPVerificationComponent {
     otpValue: string = '';
-    isLoading = false; // Flag to indicate loading state
+    isLoading = false;
+    countdownTime: number = 0;
+    inputFieldsValid: boolean[] = Array(6).fill(false);
+    sentToEmail: string | null = null;
 
-    constructor(private authService: AuthService) {}
+    @ViewChild('timerRef') timerElement: ElementRef;
+
+    constructor(
+        private authService: AuthService,
+        private router: Router,
+        private _snackBar: MatSnackBar
+    ) {
+        this.sentToEmail = localStorage.getItem('email');
+    }
+
+    ngAfterViewInit() {
+        this.startCountdown();
+    }
+
+    startCountdown(): void {
+        let countdown = 10 * 60;
+        setInterval(() => {
+            if (countdown > 0) {
+                this.countdownTime = countdown--;
+            } else {
+                clearInterval(countdown);
+                this.router.navigate(['/signup']);
+            }
+        }, 1000);
+    }
 
     onOtpChange(event: any): void {
         this.otpValue = event;
         console.log(event);
+
+        // Update the validity of each input field
+        for (let i = 0; i < this.otpValue.length; i++) {
+            this.inputFieldsValid[i] = !!this.otpValue[i];
+        }
     }
 
     verifyOtp(): void {
-        this.isLoading = true; 
-        const userEmail = localStorage.getItem('email'); 
+        if (!this.allInputFieldsValid()) {
+            return; // Early exit if any input field is invalid
+        }
+
+        this.isLoading = true;
+        const userEmail = localStorage.getItem('email');
 
         this.authService.verifyOtp(userEmail, this.otpValue).subscribe(
             (response) => {
-                this.isLoading = false; // Enable the button and hide the loader
-                console.log(response);
-                // Navigate to another page or show a success message
+                this.isLoading = false;
+                this.router.navigate(['/signin']);
             },
             (error) => {
-                this.isLoading = false; // Always reset the loading state on failure
-                console.error(error);
-                // Show an error message to the user
+                this.isLoading = false;
+                this._snackBar.open('Wrong code', 'Close', {
+                  duration: 2000,
+              });
             }
         );
+    }
+
+    allInputFieldsValid(): boolean {
+        return this.inputFieldsValid.every((fieldIsValid) => fieldIsValid);
     }
 }
