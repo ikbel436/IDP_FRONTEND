@@ -1,6 +1,7 @@
 import { Component, ViewEncapsulation } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { fuseAnimations } from '@fuse/animations';
+import { OTPVerificationComponent } from 'app/modules/otp-verification/otp-verification.component';
 
 @Component({
     selector     : 'auth-confirmation-required',
@@ -8,7 +9,7 @@ import { fuseAnimations } from '@fuse/animations';
     encapsulation: ViewEncapsulation.None,
     animations   : fuseAnimations,
     standalone   : true,
-    imports      : [RouterLink],
+    imports      : [RouterLink , OTPVerificationComponent],
 })
 export class AuthConfirmationRequiredComponent
 {
