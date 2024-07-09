@@ -180,7 +180,7 @@ export class FinanceComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     openBundleConfig(bundle): void {
         const dialogRef = this._matDialog.open(CreateDeploymentComponent, {
-          width: '600px',
+          width: '1000px',
           data: { bundle }
         });
         this.cd.detectChanges(); 

@@ -1,7 +1,19 @@
 import { Component, Inject, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { FormBuilder, FormGroup, FormArray, Validators, ReactiveFormsModule, AbstractControl } from '@angular/forms';
+import {
+    MAT_DIALOG_DATA,
+    MatDialog,
+    MatDialogModule,
+    MatDialogRef,
+} from '@angular/material/dialog';
+import {
+    FormBuilder,
+    FormGroup,
+    FormArray,
+    Validators,
+    ReactiveFormsModule,
+    AbstractControl,
+} from '@angular/forms';
 import { DeploymentService } from './deployment.service';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -55,7 +67,7 @@ export class CreateDeploymentComponent {
     hosts: string[] = [];
     showSnackbar$ = new BehaviorSubject<boolean>(false);
 
-    @ViewChild('verticalStepper') private verticalStepper: MatStepper;  // Inject the MatStepper
+    @ViewChild('verticalStepper') private verticalStepper: MatStepper; // Inject the MatStepper
 
     constructor(
         private fb: FormBuilder,
@@ -69,10 +81,15 @@ export class CreateDeploymentComponent {
         this.stepperForm = this.fb.group({
             step1: this.fb.group({
                 dbType: ['', [Validators.required]],
-                port: ['', [Validators.required, Validators.pattern('^[0-9]+$')]],
-                serviceName: ['', [Validators.required, this.lowercaseValidator]],
+                port: [
+                    '',
+                    [Validators.required, Validators.pattern('^[0-9]+$')],
+                ],
+                serviceName: [
+                    '',
+                    [Validators.required, this.lowercaseValidator],
+                ],
                 envVars: this.fb.array([this.createEnvVariable()]),
-
             }),
             projects: this.fb.array([]),
             namespace: [this.data.bundle.name, Validators.required],
@@ -97,19 +114,18 @@ export class CreateDeploymentComponent {
 
     createEnvVariable(): FormGroup {
         return this.fb.group({
-            name: ['', [Validators.required]],
-            value: ['', [Validators.required]],
+            name: [''],
+            value: [''],
         });
     }
 
     addEnvVar(): void {
         this.envVars.push(this.createEnvVariable());
     }
-
+    
     removeEnvVar(index: number): void {
         this.envVars.removeAt(index);
     }
-
     createProjectGroup(projectName: string, dockerImage: string): FormGroup {
         return this.fb.group({
             projectName: [projectName, Validators.required],
@@ -128,7 +144,7 @@ export class CreateDeploymentComponent {
             dockerEmail: [''],
         });
     }
-    
+
     onRegistryTypeChange(projectIndex: number): void {
         const projectGroup = this.projectsArray.at(projectIndex) as FormGroup;
         this.clearValidators(projectGroup);
@@ -137,16 +153,24 @@ export class CreateDeploymentComponent {
     onPrivacyChange(projectIndex: number, privacy: string): void {
         const projectGroup = this.projectsArray.at(projectIndex) as FormGroup;
         this.clearValidators(projectGroup);
-    
+
         if (privacy === 'private') {
-            projectGroup.get('imagePullSecretName').setValidators(Validators.required);
-            projectGroup.get('dockerUsername').setValidators(Validators.required);
-            projectGroup.get('dockerPassword').setValidators(Validators.required);
-            projectGroup.get('dockerEmail').setValidators([Validators.required, Validators.email]);
+            projectGroup
+                .get('imagePullSecretName')
+                .setValidators(Validators.required);
+            projectGroup
+                .get('dockerUsername')
+                .setValidators(Validators.required);
+            projectGroup
+                .get('dockerPassword')
+                .setValidators(Validators.required);
+            projectGroup
+                .get('dockerEmail')
+                .setValidators([Validators.required, Validators.email]);
         } else if (privacy === 'public') {
             projectGroup.get('dockerImage').setValidators(Validators.required);
         }
-    
+
         projectGroup.get('privacy').setValue(privacy); // Set the privacy value for the specific project
         projectGroup.updateValueAndValidity();
     }
@@ -180,14 +204,17 @@ export class CreateDeploymentComponent {
         forkJoin(projectRequests).subscribe(
             (projects: any[]) => {
                 projects.forEach((project) => {
-                    const projectGroup = this.createProjectGroup(project.name, project.DockerImage[0]);
+                    const projectGroup = this.createProjectGroup(
+                        project.name,
+                        project.DockerImage[0]
+                    );
                     this.projectsArray.push(projectGroup);
                 });
             },
             (error) => {
                 this._snackBar.open('Error fetching projects', 'OK', {
                     duration: 3000,
-                    panelClass: ['mat-snack-bar-error']
+                    panelClass: ['mat-snack-bar-error'],
                 });
                 console.error('Error fetching projects:', error);
             }
@@ -203,7 +230,7 @@ export class CreateDeploymentComponent {
             envVariables: this.envVars.value,
             namespace: this.stepperForm.value.namespace,
         };
-    
+
         this.apiService.generateDatabaseDeployment(deploymentData).subscribe(
             (response) => {
                 this.generatedFiles.push(response.deploymentFilePath);
@@ -212,10 +239,14 @@ export class CreateDeploymentComponent {
                 });
             },
             (error) => {
-                this._snackBar.open('Error generating database deployment', 'OK', {
-                    duration: 3000,
-                    panelClass: ['mat-snack-bar-error']
-                });
+                this._snackBar.open(
+                    'Error generating database deployment',
+                    'OK',
+                    {
+                        duration: 3000,
+                        panelClass: ['mat-snack-bar-error'],
+                    }
+                );
                 console.error('Error generating database deployment:', error);
             }
         );
@@ -237,17 +268,18 @@ export class CreateDeploymentComponent {
             dockerUsername: projectGroup.value.dockerUsername,
             dockerPassword: projectGroup.value.dockerPassword,
             dockerEmail: projectGroup.value.dockerEmail,
-
         };
-    
+
         const expose = projectGroup.value.expose;
         const host = projectGroup.value.host;
-    
+
         if (expose) {
             this.hosts.push(host);
         }
-    
-        this.apiService.generateDeployment({...deploymentData, expose, host }).subscribe(
+
+        this.apiService
+            .generateDeployment({ ...deploymentData, expose, host })
+            .subscribe(
                 (response) => {
                     this.generatedFiles.push(response.deploymentFilePath);
                     if (response.ingressFilePath) {
@@ -258,7 +290,10 @@ export class CreateDeploymentComponent {
 
                     const nextIndex = index + 1;
                     if (nextIndex < this.projectsArray.length) {
-                        this.projectsArray.at(nextIndex).get('serviceName').markAsTouched();
+                        this.projectsArray
+                            .at(nextIndex)
+                            .get('serviceName')
+                            .markAsTouched();
                     } else {
                         this.verticalStepper.next();
                         this._snackBar.open('Project Deployed', 'OK', {
@@ -267,11 +302,18 @@ export class CreateDeploymentComponent {
                     }
                 },
                 (error) => {
-                    this._snackBar.open('Error generating project deployment', 'OK', {
-                        duration: 3000,
-                        panelClass: ['mat-snack-bar-error']
-                    });
-                    console.error('Error generating project deployment:', error);
+                    this._snackBar.open(
+                        'Error generating project deployment',
+                        'OK',
+                        {
+                            duration: 3000,
+                            panelClass: ['mat-snack-bar-error'],
+                        }
+                    );
+                    console.error(
+                        'Error generating project deployment:',
+                        error
+                    );
                 }
             );
     }
@@ -322,28 +364,29 @@ export class CreateDeploymentComponent {
             (error) => {
                 this._snackBar.open('Error applying deployment', 'OK', {
                     duration: 3000,
-                    panelClass: ['mat-snack-bar-error']
+                    panelClass: ['mat-snack-bar-error'],
                 });
                 console.error('Error applying deployment:', error);
             }
         );
     }
-    
+
     openHostsModal(data: { hosts: string[] }): void {
         const dialogRef = this.dialog.open(HostsModalComponent, {
-          data: data,
+            data: data,
         });
-      
-        dialogRef.afterClosed().subscribe(result => {
-        });
+
+        dialogRef.afterClosed().subscribe((result) => {});
     }
-    
+
     onCancel(): void {
         this.dialogRef.close();
         this.saveAsDraft();
     }
 
-    lowercaseValidator(control: AbstractControl): { [key: string]: any } | null {
+    lowercaseValidator(
+        control: AbstractControl
+    ): { [key: string]: any } | null {
         const isLowercase = /^[a-z]+$/.test(control.value);
         return isLowercase ? null : { lowercase: { value: control.value } };
     }
