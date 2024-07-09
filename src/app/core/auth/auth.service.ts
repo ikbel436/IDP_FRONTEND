@@ -19,6 +19,7 @@ import { JwtHelperService } from '@auth0/angular-jwt';
 export class AuthService {
     private _authenticated: boolean = false;
     private apiUrl = 'http://localhost:3000/auth';
+    private verifUrl = 'http://localhost:3000/otp';
     private _user: ReplaySubject<User> = new ReplaySubject<User>(1);
     private _jwtHelper: JwtHelperService;
     /**
@@ -40,6 +41,9 @@ export class AuthService {
     }
     getUserRepos(): string {
         return localStorage.getItem('myRepos');
+    }
+    getUserEmail(): string {
+        return localStorage.getItem('email');
     }
     /**
      * Setter & getter for access token
@@ -141,6 +145,7 @@ export class AuthService {
                 localStorage.setItem('userRole', response.user.Role);
                 localStorage.setItem('myProjects', response.user.myProject);
                 localStorage.setItem('myRepos', response.user.myRepo);
+                localStorage.setItem('email', response.user.email);
                 this._authenticated = true;
 
                 this._userService.user = response.user;
@@ -199,6 +204,11 @@ export class AuthService {
     signOut(): Observable<any> {
         // Remove the access token from the local storage
         localStorage.removeItem('accessToken');
+        localStorage.removeItem('userRole');
+        localStorage.removeItem('myProjects');
+        localStorage.removeItem('myRepos');
+        localStorage.removeItem('email');
+
         this._user.next(null);
 
         // Set the authenticated flag to false
@@ -213,13 +223,9 @@ export class AuthService {
      *
      * @param user
      */
-    signUp(user: {
-        name: string;
-        email: string;
-        password: string;
-        phoneNumber: number;
-    }): Observable<any> {
+    signUp(user: any): Observable<any> {
         const url = `${this.apiUrl}/register`;
+        localStorage.setItem('email', user.email);
         return this._httpClient.post(url, user);
     }
 
@@ -249,7 +255,6 @@ export class AuthService {
             return of(false);
         }
 
-     
         this._authenticated = true;
         this.accessToken = localStorage.getItem('accessToken');
         return of(true);
@@ -259,5 +264,18 @@ export class AuthService {
     }
     getCurrentUser(): Observable<any> {
         return this._httpClient.get<any>(`${this.apiUrl}/current`);
+    }
+
+    verifyOtp(userEmail: string, userOtp: string): Observable<any> {
+        return this._httpClient.post(`${this.verifUrl}/verify-otp`, {
+            userEmail,
+            userOtp,
+        });
+    }
+
+    generateOtp(userEmail: string): Observable<any> {
+        return this._httpClient.post(`${this.verifUrl}/generate-otp`, {
+            userEmail,
+        });
     }
 }

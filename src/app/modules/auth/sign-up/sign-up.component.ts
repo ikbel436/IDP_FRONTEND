@@ -33,6 +33,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LanguagesComponent } from 'app/layout/common/languages/languages.component';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { switchMap } from 'rxjs';
 @Component({
   selector: 'auth-sign-up',
   templateUrl: './sign-up.component.html',
@@ -77,6 +78,7 @@ export class AuthSignUpComponent implements OnInit {
   selectedCountry: Country;
   countries: Country[];
   signUpNgForm: NgForm;
+  isLoadingOTP = false;
 
   destroyRef = inject(DestroyRef);
   /**
@@ -88,7 +90,8 @@ export class AuthSignUpComponent implements OnInit {
     private _formBuilder: UntypedFormBuilder,
     private _countryService: CountryService,
     private _router: Router,
-    private _translocoService: TranslocoService
+    private _translocoService: TranslocoService,
+    
   ) { }
 
   // -----------------------------------------------------------------------------------------------------
@@ -183,43 +186,49 @@ export class AuthSignUpComponent implements OnInit {
    * Sign up
    */
   signUp(): void {
-    // Do nothing if the form is invalid
     if (this.signUpForm.invalid) {
-      return;
+        return;
     }
-    // Disable the form
+    this.isLoadingOTP = true; // Start loading
     this.signUpForm.disable();
+    
     const payloadForKeycloak = {
-      name: this.signUpForm.value.name,
-      email: this.signUpForm.value.email.toLowerCase(),
-      password: this.signUpForm.value.passwordConfirm,
-      role: ['User'],
+        name: this.signUpForm.value.name,
+        email: this.signUpForm.value.email.toLowerCase(),
+        password: this.signUpForm.value.passwordConfirm,
+        role: ['User'],
     };
 
     const payLoadForDatabase = {
-      ...payloadForKeycloak,
-      phone: {
-        countryCode: this.getCountryByIso(this.signUpForm.value.countryCode).code,
-        phoneNumber: this.signUpForm.value.phoneNumber,
-      },
-      agreements: this.signUpForm.value.agreements,
+        ...payloadForKeycloak,
+        phone: {
+            countryCode: this.getCountryByIso(this.signUpForm.value.countryCode).code,
+            phoneNumber: this.signUpForm.value.phoneNumber,
+        },
+        agreements: this.signUpForm.value.agreements,
     };
-    // Sign up
-    this._authService.signUp(this.signUpForm.value).subscribe({
-      complete: () => {
-        this._router.navigate(['/confirmation-required']);
-      },
-      error: () => {
-        // Re-enable the form
-        this.signUpForm.enable();
-        // Reset the form
-        this.signUpForm.controls.password.setValue('');
-        this.signUpForm.controls.passwordConfirm.setValue('');
-        this.signUpForm.controls.recaptchaReactive.setValue(null);
-        this.signUpForm.controls.email.setValue('');
-      },
+
+    // Call the AuthService to sign up and generate OTP
+    this._authService.signUp(payLoadForDatabase).pipe(
+        switchMap(() => this._authService.generateOtp(this.signUpForm.value.email)),
+    ).subscribe({
+        complete: () => {
+            this.isLoadingOTP = false; // Stop loading
+            this._router.navigate(['/confirmation-required']);
+        },
+        error: () => {
+            this.isLoadingOTP = false; // Stop loading
+            // Re-enable the form
+            this.signUpForm.enable();
+            // Reset the form
+            this.signUpForm.controls.password.setValue('');
+            this.signUpForm.controls.passwordConfirm.setValue('');
+            this.signUpForm.controls.recaptchaReactive.setValue(null);
+            this.signUpForm.controls.email.setValue('');
+        },
     });
-  }
+}
+
 
   resolved(captchaResponse: string) {
     // console.log(`Resolved captcha with response: ${captchaResponse}`);
