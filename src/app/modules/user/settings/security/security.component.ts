@@ -13,11 +13,16 @@ import {
     UntypedFormGroup,
 } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { Router } from '@angular/router';
 import { AuthService } from 'app/core/auth/auth.service';
+import { OtpDialogComponent } from 'app/modules/otp-dialog/otp-dialog.component';
+import { OTPVerificationComponent } from 'app/modules/otp-verification/otp-verification.component';
+import otpVerificationRoutes from 'app/modules/otp-verification/otp-verification.routes';
 
 
 
@@ -36,16 +41,17 @@ import { AuthService } from 'app/core/auth/auth.service';
         MatInputModule,
         MatSlideToggleModule,
         MatButtonModule,
-        CommonModule
+        CommonModule,
+        OTPVerificationComponent,
     ],
 })
 export class SettingsSecurityComponent implements OnInit {
     securityForm: UntypedFormGroup;
-
+    isLoadingOTP: boolean = false;
     /**
      * Constructor
      */
-    constructor(private _formBuilder: UntypedFormBuilder , private authservice : AuthService, ) {}
+    constructor(private _formBuilder: UntypedFormBuilder, private authservice: AuthService, private _router: Router, private dialog: MatDialog) { }
 
     // -----------------------------------------------------------------------------------------------------
     // @ Lifecycle hooks
@@ -63,26 +69,45 @@ export class SettingsSecurityComponent implements OnInit {
             askPasswordChange: [false],
         });
 
-        
-        
+
+
     }
 
-    
 
-   
+
+
 
     async changePassword() {
+        if (this.securityForm.invalid) {
+            return;
+        }
+
+        this.isLoadingOTP = true;
         const currentPassword = this.securityForm.controls.currentPassword.value;
         const newPassword = this.securityForm.controls.newPassword.value;
-    
+
         try {
             const response = await this.authservice.changePassword({ currentPassword, newPassword }).toPromise();
             if (response) {
-                // Handle success, e.g., show a success message
-                alert('Password changed successfully!');
-                
+                const userEmail = this.authservice.getUserEmail();
+                await this.authservice.generateOtp(userEmail).toPromise();
+    
+                const dialogRef = this.dialog.open(OtpDialogComponent, {
+                    width: '8&00px',
+                    data: { email: userEmail }
+                });
+    
+                dialogRef.afterClosed().subscribe(async (otpVerified) => {
+                    this.isLoadingOTP = false;
+                    if (otpVerified) {
+                       console.log("ok")
+                       
+                    } else {
+                        alert('OTP verification failed. Password change was not completed.');
+                    }
+                });
             } else {
-                // Handle failure, e.g., show an error message
+                this.isLoadingOTP = false;
                 alert('Failed to change password.');
             }
         } catch (error) {

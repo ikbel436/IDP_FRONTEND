@@ -4,6 +4,7 @@ import { NgOtpInputModule } from 'ng-otp-input';
 import { AuthService } from 'app/core/auth/auth.service';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialogRef } from '@angular/material/dialog';
 
 interface OtpChangeEvent {
     value: string;
@@ -28,7 +29,8 @@ export class OTPVerificationComponent {
     constructor(
         private authService: AuthService,
         private router: Router,
-        private _snackBar: MatSnackBar
+        private _snackBar: MatSnackBar,
+    
     ) {
         this.sentToEmail = localStorage.getItem('email');
     }
@@ -74,7 +76,10 @@ export class OTPVerificationComponent {
         this.authService.verifyOtp(userEmail, this.otpValue).subscribe(
             (response) => {
                 this.isLoading = false;
-                this.router.navigate(['/signin']);
+               
+                
+                console.log(response);
+               
             },
             (error) => {
                 this.isLoading = false;
