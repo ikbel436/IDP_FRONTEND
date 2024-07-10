@@ -47,9 +47,8 @@
         <div class="grid grid-cols-1 xl:grid-cols-3 gap-8 w-full mt-8">
             <!-- Recent transactions table -->
 
-            <div
-                class="xl:col-span-2 flex flex-col flex-auto bg-card shadow rounded-2xl overflow-hidden"
-            >
+            <div class="xl:col-span-2 flex flex-col flex-auto bg-card shadow rounded-2xl overflow-hidden max-h-90" id="recentlyAddedSection">
+
                 <div class="p-6">
                     <div
                         class="mr-4 text-lg font-medium tracking-tight leading-6 truncate"
@@ -598,13 +597,20 @@
                     </table>
                 </div>
             </div>
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const recentlyAddedSection = document.getElementById('recentlyAddedSection');
+                    const contentHeight = recentlyAddedSection.scrollHeight;
+                    recentlyAddedSection.style.minHeight = `${contentHeight}px`;
+                });
+                </script>
 
             <!-- Budget -->
-            <div class="flex flex-col flex-auto p-6 bg-card rounded-2xl shadow">
+            <div class="flex flex-col flex-auto p-6 bg-card rounded-2xl shadow overflow-auto  max-h-90" id="myStacksSection">
                 
                 <div class="flex items-center">
                     
-                    <div class="flex flex-col">
+                    <div class="flex flex-col ">
                         <div
                             class="mr-4 text-lg font-medium tracking-tight leading-6 truncate"
                         >
@@ -698,6 +704,13 @@
                     </button>
                 </div> -->
             </div>
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const myStacksSection = document.getElementById('myStacksSection');
+                    const contentHeight = myStacksSection.scrollHeight;
+                    myStacksSection.style.minHeight = `${contentHeight}px`;
+                });
+                </script>
         </div>
     </div>
 </div>
