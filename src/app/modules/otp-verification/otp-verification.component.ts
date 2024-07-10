@@ -19,7 +19,7 @@ interface OtpChangeEvent {
 export class OTPVerificationComponent {
     otpValue: string = '';
     isLoading = false;
-    countdownTime: number = 0;
+    countdownTime: string = ''; // Changed type to string to hold HH:mm:ss format
     inputFieldsValid: boolean[] = Array(6).fill(false);
     sentToEmail: string | null = null;
 
@@ -38,10 +38,14 @@ export class OTPVerificationComponent {
     }
 
     startCountdown(): void {
-        let countdown = 10 * 60;
+        let countdown = 5 * 60; // Initial countdown in seconds
         setInterval(() => {
             if (countdown > 0) {
-                this.countdownTime = countdown--;
+                const hours = Math.floor(countdown / 3600);
+                const minutes = Math.floor((countdown % 3600) / 60);
+                const seconds = countdown % 60;
+                this.countdownTime = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+                countdown--;
             } else {
                 clearInterval(countdown);
                 this.router.navigate(['/signup']);
