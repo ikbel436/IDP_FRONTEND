@@ -66,6 +66,8 @@ export class CreateDeploymentComponent {
     token = 'YOUR_JWT_TOKEN';
     hosts: string[] = [];
     showSnackbar$ = new BehaviorSubject<boolean>(false);
+    bundleData: any;
+
 
     @ViewChild('verticalStepper') private verticalStepper: MatStepper; // Inject the MatStepper
 
@@ -89,7 +91,7 @@ export class CreateDeploymentComponent {
                     '',
                     [Validators.required, this.lowercaseValidator],
                 ],
-                envVars: this.fb.array([this.createEnvVariable()]),
+                envVars: this.fb.array([]),
             }),
             projects: this.fb.array([]),
             namespace: [this.data.bundle.name, Validators.required],
@@ -98,7 +100,44 @@ export class CreateDeploymentComponent {
 
     ngOnInit(): void {
         this.fetchProjects();
+        this.fetchBundleData();
     }
+
+    fetchBundleData(): void {
+        const bundleId = this.data.bundle._id;
+        this.apiService.getBundleById(bundleId).subscribe(
+            (bundle) => {
+                this.bundleData = bundle;
+                console.log('Bundle data:', this.bundleData);
+    
+                // Populate the envVars FormArray with the environment variables from the database                
+                if(this.bundleData.myDBconfig.envVariables.length === 0) {                    
+                    this.envVars.push(this.createEnvVariable());
+                }
+                else{
+                    this.bundleData.myDBconfig.envVariables.forEach(envVar => {
+                        this.envVars.push(this.createEnvVariable());
+                        const index = this.envVars.length - 1;
+                        this.envVars.at(index).patchValue({
+                            name: envVar.key,
+                            value: envVar.value
+                        });
+                    });
+                }
+    
+                // Update other form fields
+                this.step1.patchValue({
+                    dbType: this.bundleData.myDBconfig.dbType || '',
+                    serviceName: this.bundleData.myDBconfig.serviceName || '',
+                    port: this.bundleData.myDBconfig.port || ''
+                });
+            },
+            (error) => {
+                console.error('Error fetching bundle data:', error);
+            }
+        );
+    }
+    
 
     get step1(): FormGroup {
         return this.stepperForm.get('step1') as FormGroup;
@@ -229,8 +268,9 @@ export class CreateDeploymentComponent {
             port: this.step1.value.port,
             envVariables: this.envVars.value,
             namespace: this.stepperForm.value.namespace,
+            bundleId: this.data.bundle._id, 
         };
-
+    
         this.apiService.generateDatabaseDeployment(deploymentData).subscribe(
             (response) => {
                 this.generatedFiles.push(response.deploymentFilePath);

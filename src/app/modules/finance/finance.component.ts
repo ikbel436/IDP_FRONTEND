@@ -197,13 +197,15 @@ export class FinanceComponent implements OnInit, AfterViewInit, OnDestroy {
             data: { bundle },
         });
         this.cd.detectChanges();
-
+        console.log('Bundle:', bundle._id); 
+    
         dialogRef.afterClosed().subscribe((result) => {
             if (result) {
                 console.log('Bundle configuration submitted:', result);
             }
         });
     }
+
     openBundleDialog(): void {
         this.collectSelectedProjects(); // Ensure selected projects are collected
         const dialogRef = this._matDialog.open(BundleComponent, {
