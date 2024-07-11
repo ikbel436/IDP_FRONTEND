@@ -4,8 +4,9 @@
     >
         <h1 class="text-2xl font-semibold text-center mb-6">Enter OTP</h1>
         <p class="text-center mb-4">
-            Code sent to +880-123456789
+           <span style="font-weight: 700;">Code sent to :</span>  {{ sentToEmail ? sentToEmail : 'undefined' }}
         </p>
+        
         <div class="row gap-x-4 my-2 ml-8 justify-center">
             <ng-otp-input
                 (onInputChange)="onOtpChange($event)"
@@ -15,26 +16,30 @@
         <div class="flex items-center flex-col justify-between mb-6">
             <p class="text-sm">Didn't receive code?</p>
             <div class="flex items-center space-x-2">
-                <button
+                <!-- <button
                     class="px-3 py-2 text-sm font-medium text-center rounded text-gray-500 hover:text-blue-500"
                 >
                     Request via Call
-                </button>
+                </button> -->
                 <button
-                    class="px-3 py-2 text-sm font-medium text-center rounded text-gray-500 hover:text-blue-500"
+                    class="px-3 py-2 text-sm font-medium text-center rounded  text-blue-500"
                 >
-                    Request Again (00:00:36)
+                    Verify before : <span style="font-weight: bold;">{{ countdownTime }}</span>
+
+
                 </button>
             </div>
         </div>
         <button
-        class="w-full px-4 py-2 text-lg font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700"
-        [disabled]="isLoading"
         (click)="verifyOtp()"
+        class="w-full px-4 py-2 text-lg font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700"
+        [disabled]="isLoading || !allInputFieldsValid()"
     >
         <span *ngIf="!isLoading">Verify</span>
         <mat-progress-spinner *ngIf="isLoading" mode="indeterminate"></mat-progress-spinner>
     </button>
+    
+    
     
     </div>
 
