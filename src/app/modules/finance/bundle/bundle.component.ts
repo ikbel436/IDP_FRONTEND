@@ -42,35 +42,39 @@ import { MatChipsModule } from '@angular/material/chips';
         MatChipsModule,
     ],
     templateUrl: './bundle.component.html',
-    styleUrl: './bundle.component.scss',
+    styleUrls: ['./bundle.component.scss'],
 })
 export class BundleComponent {
     selectedProjects: any[] = [];
     formFieldHelpers: string[] = [''];
+    bundleName: string = '';
+    bundleDescription: string = '';
+
     constructor(
         public matDialogRef: MatDialogRef<BundleComponent>,
         @Inject(MAT_DIALOG_DATA) public data: any,
         private http: HttpClient,
     ) {
+        this.selectedProjects = data.selectedProjects;
+    }
 
-    }
     onNoClick(): void {
-        this.matDialogRef.close();
+        this.matDialogRef.close(null);
     }
-    onSave(bundleName: string, bundleDescription: string): void {
+
+    onSave(): void {
         const selectedProjects = this.data.selectedProjects;
         console.log('Selected projects:', selectedProjects);
         this.http
             .post('http://localhost:3000/Bundle/BundleTouser', {
-                name: bundleName,
-                description: bundleDescription,
+                name: this.bundleName,
+                description: this.bundleDescription,
                 Projects: selectedProjects,
             })
             .subscribe(
                 (response) => {
                     console.log('Bundle created successfully:', response);
                     this.matDialogRef.close(true);
-                    // Clear the chips after saving
                     this.selectedProjects = [];
                 },
                 (error) => {

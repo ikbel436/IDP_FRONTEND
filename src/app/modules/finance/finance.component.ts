@@ -42,10 +42,10 @@ import {
     TourMatMenuModule,
     TourService,
 } from 'ngx-ui-tour-md-menu';
+import { MatInputModule } from '@angular/material/input';
 
 export interface Repository {
     name: string;
-    // description: string | null;
     createdAt: string;
     lastUpdated: string;
     cloneUrl: string;
@@ -82,6 +82,12 @@ export interface Repository {
         FuseLoadingBarComponent,
         RouterModule,
         TourMatMenuModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatButtonModule,
+        MatIconModule,
+        MatTableModule,
+        MatCheckboxModule,
     ],
 })
 export class FinanceComponent implements OnInit, AfterViewInit, OnDestroy {
@@ -91,43 +97,37 @@ export class FinanceComponent implements OnInit, AfterViewInit, OnDestroy {
     readonly tourSteps: IStepOption[] = [
         {
             anchorId: 'home',
-            content:
-                'Discover the power of our Git provider integration! Easily import your repositories and start managing your projects with ease.',
+            content: 'Discover the power of our Git provider integration! Easily import your repositories and start managing your projects with ease.',
             title: 'Repositories Import',
             enableBackdrop: true,
         },
         {
             anchorId: 'about',
-            content:
-                'Add new projects to your workspace with just a few clicks. Streamline your development process and stay on top of your project portfolio.',
+            content: 'Add new projects to your workspace with just a few clicks. Streamline your development process and stay on top of your project portfolio.',
             title: 'Add New Projects',
             enableBackdrop: true,
         },
         {
             anchorId: 'contact',
-            content:
-                'Select the projects you want to bundle together. Consolidate your efforts and optimize your deployment workflow.',
+            content: 'Select the projects you want to bundle together. Consolidate your efforts and optimize your deployment workflow.',
             title: 'Select Projects',
             enableBackdrop: true,
         },
         {
             anchorId: 'bundle',
-            content:
-                'Create custom bundles from the selected projects. Group related components, services, and configurations to simplify your deployment process.',
+            content: 'Create custom bundles from the selected projects. Group related components, services, and configurations to simplify your deployment process.',
             title: 'Create Bundles',
             enableBackdrop: true,
         },
         {
             anchorId: 'bundles',
-            content:
-                'Choose a bundle from the list and deploy your projects with a single click. Streamline your application delivery and ensure consistent deployments.',
+            content: 'Choose a bundle from the list and deploy your projects with a single click. Streamline your application delivery and ensure consistent deployments.',
             title: 'Select Bundle',
             enableBackdrop: true,
         },
     ];
 
-    @ViewChild('displayedColumns', { read: MatSort })
-    displayedColumnsMatSort: MatSort;
+    @ViewChild('displayedColumns', { read: MatSort }) displayedColumnsMatSort: MatSort;
     dataSource = new MatTableDataSource<any>();
     errorMessage: string = '';
     @Input() selectedProviderId: string;
@@ -151,10 +151,7 @@ export class FinanceComponent implements OnInit, AfterViewInit, OnDestroy {
     bundles: any[] = [];
     data: any;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
-    //    selectedProject: any;
-    /**
-     * Constructor
-     */
+
     constructor(
         private gitProviderService: GitProviderService,
         private http: HttpClient,
@@ -165,15 +162,7 @@ export class FinanceComponent implements OnInit, AfterViewInit, OnDestroy {
         private _snackBar: MatSnackBar
     ) {}
 
-    // -----------------------------------------------------------------------------------------------------
-    // @ Lifecycle hooks
-    // -----------------------------------------------------------------------------------------------------
-
-    /**
-     * On init
-     */
     ngOnInit(): void {
-  
         this.tourService.initialize(this.tourSteps, {});
         const hasStartedTour = localStorage.getItem('hasStartedTour');
         if (!hasStartedTour) {
@@ -190,20 +179,22 @@ export class FinanceComponent implements OnInit, AfterViewInit, OnDestroy {
     startTour() {
         this.tourService.start();
     }
-
+ 
     openBundleConfig(bundle): void {
         const dialogRef = this._matDialog.open(CreateDeploymentComponent, {
             width: '1000px',
             data: { bundle },
         });
         this.cd.detectChanges();
-
+        console.log('Bundle:', bundle._id); 
+    
         dialogRef.afterClosed().subscribe((result) => {
             if (result) {
                 console.log('Bundle configuration submitted:', result);
             }
         });
     }
+
     openBundleDialog(): void {
         this.collectSelectedProjects(); // Ensure selected projects are collected
         const dialogRef = this._matDialog.open(BundleComponent, {
@@ -211,13 +202,21 @@ export class FinanceComponent implements OnInit, AfterViewInit, OnDestroy {
             height: '500px',
             data: { selectedProjects: this.selectedProjects },
         });
-
+    
         dialogRef.afterClosed().subscribe((result) => {
+            console.log("Result from dialog:", result); // Check the result value
             if (result) {
-                console.log('The dialog was closed');
-                // Handle the result, e.g., save the new bundle
+                console.log('The dialog was closed successfully with result:', result);
+                this.fetchBundles(); // Refresh the bundles after closing the dialog
+            } else {
+                console.log('The dialog was closed without adding a new bundle');
             }
         });
+    }
+    
+    applyFilter(event: Event): void {
+        const filterValue = (event.target as HTMLInputElement).value;
+        this.dataSource.filter = filterValue.trim().toLowerCase();
     }
 
     collectSelectedProjects() {
@@ -231,6 +230,11 @@ export class FinanceComponent implements OnInit, AfterViewInit, OnDestroy {
 
     editRow(element: any): void {
         this.openComposeDialog(element);
+    }
+
+    onCheckboxChange(event: any, element: any): void {
+        element.selected = event.checked;
+        this.collectSelectedProjects();
     }
 
     deleteRow(id: string): void {
@@ -252,40 +256,24 @@ export class FinanceComponent implements OnInit, AfterViewInit, OnDestroy {
             }
         );
     }
-    /**
-     * After view init
-     */
+
     ngAfterViewInit(): void {}
 
-    /**
-     * On destroy
-     */
     ngOnDestroy(): void {
-        // Unsubscribe from all subscriptions
         this._unsubscribeAll.next(null);
         this._unsubscribeAll.complete();
+
+        // Unregister all tour anchors
+        this.tourSteps.forEach(step => {
+            this.tourService.unregister(step.anchorId);
+        });
     }
 
-    // -----------------------------------------------------------------------------------------------------
-    // @ Public methods
-    // -----------------------------------------------------------------------------------------------------
-
-    /**
-     * Track by function for ngFor loops
-     *
-     * @param index
-     * @param item
-     */
     trackByFn(index: number, item: any): any {
         return item.id || index;
     }
 
-    /**
-     * Open compose dialog
-     */
-
     openComposeDialog(projectData: any = null): void {
-        // Open the dialog without newProjectId
         const dialogRef = this._matDialog.open(MailboxComposeComponent, {
             panelClass: 'custom-dialog-container',
             data: { projectData },
@@ -302,35 +290,29 @@ export class FinanceComponent implements OnInit, AfterViewInit, OnDestroy {
 
         dialogRef.afterClosed().subscribe((result) => {
             if (result && result.updatedProject) {
-                // Update the data source with the new/updated project
                 const index = this.dataSource.data.findIndex(
                     (project) => project._id === result.updatedProject._id
                 );
                 if (index > -1) {
-                    // Update existing project
                     this.dataSource.data[index] = result.updatedProject;
                 } else {
-                    // Add new project
                     this.dataSource.data = [
                         ...this.dataSource.data,
                         result.updatedProject,
                     ];
                 }
-                this.dataSource._updateChangeSubscription(); // Trigger table update
-                this.cd.detectChanges(); // Trigger change detection manually
+                this.dataSource._updateChangeSubscription(); 
+                this.cd.detectChanges();
             }
         });
     }
-
-    // -----------------------------------------------------------------------------------------------------
-    // @ Private methods
-    // -----------------------------------------------------------------------------------------------------
 
     fetchBundles(): void {
         this.financeService.getBundles().subscribe(
             (bundles) => {
                 this.bundles = bundles;
-                this.cd.detectChanges(); // Trigger change detection manually
+                console.log('Fetched bundles:', bundles);
+                this.cd.detectChanges(); 
             },
             (error) => {
                 console.error('Failed to fetch bundles:', error);
@@ -348,7 +330,6 @@ export class FinanceComponent implements OnInit, AfterViewInit, OnDestroy {
                 const project: InventoryProject = {
                     _id: updatedDetails._id,
                     name: updatedDetails.name,
-                    // description: updatedDetails.description,
                     createdAt: updatedDetails.createdAt,
                     lastUpdated: updatedDetails.lastUpdated,
                     cloneUrl: updatedDetails.cloneUrl,
@@ -362,7 +343,7 @@ export class FinanceComponent implements OnInit, AfterViewInit, OnDestroy {
 
                 this.projectSerivce.createProject(project).subscribe(
                     (response) => {
-                        const newProjectId = response._id.toString(); // Ensure it's a string
+                        const newProjectId = response._id.toString(); 
                         dialogRef.componentInstance.newProjectId = newProjectId;
                         dialogRef.componentInstance.cdr.detectChanges();
                     },
@@ -388,7 +369,7 @@ export class FinanceComponent implements OnInit, AfterViewInit, OnDestroy {
                 } else {
                     console.error('Unexpected projects structure:', projects);
                 }
-                this.cd.detectChanges(); // Trigger change detection manually
+                this.cd.detectChanges();
             });
     }
 }
