@@ -714,7 +714,7 @@
                             </button>
                         </div>
                         <div class="flex justify-end p-6">
-                            <button
+                            <!-- <button
                                 class="px-8"
                                 mat-flat-button
                                 (click)="
@@ -730,7 +730,18 @@
                             >
                                 Generate Deployment for
                                 {{ projectGroup.value.projectName }}
-                            </button>
+                            </button> -->
+                            <button
+                            class="px-8"
+                            mat-flat-button
+                            (click)="generateProjectDeployment(projectIndex)"
+                            [color]="'primary'"
+                            [disabled]="projectGroup.pristine || projectGroup.invalid"
+                            type="button"
+                        >
+                            {{ projectGroup.value.generated ? 'Update Deployment for' : 'Generate Deployment for' }}
+                            {{ projectGroup.value.projectName }}
+                        </button>
                         </div>
                     </div>
                 </div>

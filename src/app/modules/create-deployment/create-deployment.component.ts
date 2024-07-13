@@ -69,7 +69,8 @@ export class CreateDeploymentComponent {
     bundleData: any;
 
 
-    @ViewChild('verticalStepper') private verticalStepper: MatStepper; // Inject the MatStepper
+    // @ViewChild('verticalStepper') private verticalStepper: MatStepper; // Inject the MatStepper
+    @ViewChild('verticalStepper', { static: false }) verticalStepper: MatStepper;
 
     constructor(
         private fb: FormBuilder,
@@ -165,7 +166,7 @@ export class CreateDeploymentComponent {
     removeEnvVar(index: number): void {
         this.envVars.removeAt(index);
     }
-    createProjectGroup(projectName: string, dockerImage: string): FormGroup {
+    createProjectGroup(projectName: string, dockerImage: string, projectId: string, p0: boolean): FormGroup {
         return this.fb.group({
             projectName: [projectName, Validators.required],
             dockerImage: [dockerImage, Validators.required],
@@ -181,8 +182,10 @@ export class CreateDeploymentComponent {
             dockerUsername: [''],
             dockerPassword: [''],
             dockerEmail: [''],
+            projectId: [projectId, Validators.required] 
         });
     }
+    
 
     onRegistryTypeChange(projectIndex: number): void {
         const projectGroup = this.projectsArray.at(projectIndex) as FormGroup;
@@ -233,20 +236,55 @@ export class CreateDeploymentComponent {
         const projectEnvVars = projectGroup.get('projectEnvVars') as FormArray;
         projectEnvVars.removeAt(envVarIndex);
     }
-
     fetchProjects(): void {
         const projectIds = this.data.bundle.Projects;
         const projectRequests = projectIds.map((id) =>
             this.projectService.getProjectsByIds(id)
         );
-
+    
         forkJoin(projectRequests).subscribe(
             (projects: any[]) => {
                 projects.forEach((project) => {
+                    console.log('Project:', project);
+                    const projectDeploymentConfig = project.myprojectDepl || [];
+                    console.log('Project Deployment Config:', projectDeploymentConfig);
+    
                     const projectGroup = this.createProjectGroup(
                         project.name,
-                        project.DockerImage[0]
+                        project.DockerImage[0],
+                        project._id,
+                        projectDeploymentConfig.length > 0
                     );
+    
+                    if (projectDeploymentConfig.length > 0) {
+                        const deploymentConfig = projectDeploymentConfig[0] || {};
+                        console.log('Deployment Config:', deploymentConfig);
+    
+                        const envVariables = Array.isArray(deploymentConfig.envVariables)
+                            ? deploymentConfig.envVariables.map(envVar => this.fb.group({
+                                name: [envVar.key || envVar.name, Validators.required],
+                                value: [envVar.value, Validators.required]
+                            }))
+                            : [];
+    
+                        projectGroup.patchValue({
+                            serviceName: deploymentConfig.serviceName || '',
+                            port: deploymentConfig.port || '',
+                            imagePullSecretName: deploymentConfig.imagePullSecretName || '',
+                            dockerUsername: deploymentConfig.dockerUsername || '',
+                            dockerPassword: deploymentConfig.dockerPassword || '',
+                            dockerEmail: deploymentConfig.dockerEmail || '',
+                            expose: deploymentConfig.expose || false,
+                            host: deploymentConfig.host || '',
+                            generated: true
+                        });
+    
+                        // Update the project environment variables
+                        const projectEnvVarsArray = projectGroup.get('projectEnvVars') as FormArray;
+                        projectEnvVarsArray.clear();
+                        envVariables.forEach(envVarGroup => projectEnvVarsArray.push(envVarGroup));
+                    }
+    
                     this.projectsArray.push(projectGroup);
                 });
             },
@@ -259,7 +297,8 @@ export class CreateDeploymentComponent {
             }
         );
     }
-
+    
+    
     generateDatabaseDeployment(): void {
         const deploymentData = {
             dbType: this.step1.value.dbType,
@@ -291,13 +330,68 @@ export class CreateDeploymentComponent {
             }
         );
     }
-
+    // generateProjectDeployment(index: number): void {
+    //     const projectGroup = this.projectsArray.at(index) as FormGroup;
+        
+    //     const deploymentData = {
+    //         serviceName: projectGroup.value.serviceName,
+    //         port: projectGroup.value.port,
+    //         image: projectGroup.value.dockerImage,
+    //         envVariables: projectGroup.value.projectEnvVars,
+    //         namespace: this.stepperForm.value.namespace,
+    //         imagePullSecretName: projectGroup.value.imagePullSecretName,
+    //         dockerUsername: projectGroup.value.dockerUsername,
+    //         dockerPassword: projectGroup.value.dockerPassword,
+    //         dockerEmail: projectGroup.value.dockerEmail,
+    //         expose: projectGroup.value.expose,
+    //         host: projectGroup.value.host,
+    //         bundleId: this.data.bundle._id,
+    //         projectId: projectGroup.value.projectId
+    //     };
+    
+    //     console.log('Sending deployment data:', deploymentData); // Log the data being sent
+    
+    //     this.apiService.generateDeployment(deploymentData).subscribe(
+    //         (response) => {
+    //             console.log('Response from backend:', response); // Log the response
+    
+    //             this.generatedFiles.push(response.deploymentFilePath);
+    //             if (response.ingressFilePath) {
+    //                 this.generatedFiles.push(response.ingressFilePath);
+    //             }
+    
+    //             projectGroup.patchValue({ generated: true });
+    
+    //             const nextIndex = index + 1;
+    //             if (nextIndex < this.projectsArray.length) {
+    //                 this.projectsArray.at(nextIndex).get('serviceName').markAsTouched();
+    //             } else {
+    //                 if (this.verticalStepper) {
+    //                     this.verticalStepper.next();
+    //                 } else {
+    //                     console.warn('verticalStepper is undefined');
+    //                 }
+    
+    //                 if (this._snackBar) {
+    //                     this._snackBar.open('Project Deployed', 'OK', { duration: 3000 });
+    //                 } else {
+    //                     console.warn('snackBar is undefined');
+    //                 }
+    //             }
+    //         },
+    //         (error) => {
+    //             this._snackBar.open('Error generating project deployment', 'OK', {
+    //                 duration: 3000,
+    //                 panelClass: ['mat-snack-bar-error'],
+    //             });
+    //             console.error('Error generating project deployment:', error);
+    //         }
+    //     );
+    // }
+    
     generateProjectDeployment(index: number): void {
         const projectGroup = this.projectsArray.at(index) as FormGroup;
-        if (projectGroup.value.generated) {
-            return;
-        }
-
+    
         const deploymentData = {
             serviceName: projectGroup.value.serviceName,
             port: projectGroup.value.port,
@@ -308,56 +402,38 @@ export class CreateDeploymentComponent {
             dockerUsername: projectGroup.value.dockerUsername,
             dockerPassword: projectGroup.value.dockerPassword,
             dockerEmail: projectGroup.value.dockerEmail,
+            expose: projectGroup.value.expose,
+            host: projectGroup.value.host,
+            bundleId: this.data.bundle._id,
+            projectId: projectGroup.value.projectId,
+            id: projectGroup.value.deploymentId || undefined // Ensure to include the deployment ID
         };
-
-        const expose = projectGroup.value.expose;
-        const host = projectGroup.value.host;
-
-        if (expose) {
-            this.hosts.push(host);
-        }
-
-        this.apiService
-            .generateDeployment({ ...deploymentData, expose, host })
-            .subscribe(
-                (response) => {
-                    this.generatedFiles.push(response.deploymentFilePath);
-                    if (response.ingressFilePath) {
-                        this.generatedFiles.push(response.ingressFilePath);
-                    }
-
-                    projectGroup.patchValue({ generated: true });
-
-                    const nextIndex = index + 1;
-                    if (nextIndex < this.projectsArray.length) {
-                        this.projectsArray
-                            .at(nextIndex)
-                            .get('serviceName')
-                            .markAsTouched();
-                    } else {
-                        this.verticalStepper.next();
-                        this._snackBar.open('Project Deployed', 'OK', {
-                            duration: 3000,
-                        });
-                    }
-                },
-                (error) => {
-                    this._snackBar.open(
-                        'Error generating project deployment',
-                        'OK',
-                        {
-                            duration: 3000,
-                            panelClass: ['mat-snack-bar-error'],
-                        }
-                    );
-                    console.error(
-                        'Error generating project deployment:',
-                        error
-                    );
+    
+        console.log('Sending deployment data:', deploymentData);
+    
+        this.apiService.generateDeployment(deploymentData).subscribe(
+            (response) => {
+                console.log('Response from backend:', response);
+                this.generatedFiles.push(response.deploymentFilePath);
+                if (response.ingressFilePath) {
+                    this.generatedFiles.push(response.ingressFilePath);
                 }
-            );
+    
+                projectGroup.patchValue({ generated: true });
+    
+                this._snackBar.open(response.msg, 'OK', { duration: 3000 });
+            },
+            (error) => {
+                this._snackBar.open('Error generating project deployment', 'OK', {
+                    duration: 3000,
+                    panelClass: ['mat-snack-bar-error'],
+                });
+                console.error('Error generating project deployment:', error);
+            }
+        );
     }
-
+    
+    
     onSubmit(): void {
         const deploymentData = {
             files: this.generatedFiles,

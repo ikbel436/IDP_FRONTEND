@@ -37,4 +37,7 @@ export class DeploymentService {
   getBundleById(bundleId: string): Observable<any> {
     return this.http.get(`${this.BundleUrl}/bundles/${bundleId}`);
   }
+  updateProjectDeployment(id: string, data: any): Observable<any> {
+    return this.http.put(`http://localhost:3000/projectDepl/${id}`, data);
+}
 }
