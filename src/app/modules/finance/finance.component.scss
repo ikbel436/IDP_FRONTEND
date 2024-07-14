@@ -45,4 +45,22 @@
         border-radius: 50%;
         size: 100cap;
       }
+      @import "~@angular/material/prebuilt-themes/indigo-pink.css"; /* or any other prebuilt theme */
+      .left-section {
+        display: flex;
+        align-items: center;
+      }
       
+      .right-section {
+        display: flex;
+        align-items: center;
+        margin-right: 20px; /* Adjust margin as needed to move it away from the extreme right */
+      }
+      
+      .search-field {
+        width: 200px; /* Adjust width as needed */
+      }
+      
+      .search-field input {
+        font-size: 0.875rem; /* Adjust font size for smaller input */
+      }

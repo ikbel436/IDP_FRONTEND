@@ -213,7 +213,7 @@ export class MailboxComposeComponent implements OnInit {
     loadRepositories(): void {
         setTimeout(() => {
             this.http
-                .get<any[]>('http://localhost:3000/Repos/Allrepos')
+                .get<any[]>('http://localhost:3000/Repos/get')
                 .subscribe((repositories) => {
                     this.dataSource.data = repositories;
                     this.repositories = repositories;
