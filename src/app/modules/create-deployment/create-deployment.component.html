@@ -206,11 +206,7 @@
                             >
                                 <mat-label>Registry Type</mat-label>
                                 <mat-error
-                                    *ngIf="
-                                        projectGroup
-                                            .get('registryType')
-                                            .hasError('required')
-                                    "
+                                *ngIf="projectGroup.get('registryType')?.hasError('required')"
                                     >Select a registry type.</mat-error
                                 >
                                 <mat-select
@@ -234,10 +230,7 @@
                             <!-- Conditional display of radio buttons based on registry type -->
                             <div
                                 class="p-4"
-                                *ngIf="
-                                    projectGroup.get('registryType').value ===
-                                    'dockerHub'
-                                "
+                                *ngIf="projectGroup.get('registryType')?.value === 'dockerHub'"
                             >
                                 <ul class="grid w-full gap-6 md:grid-cols-2">
                                     <li>
@@ -347,30 +340,30 @@
                                     'public'
                                 "
                             >
-                                <mat-form-field class="flex-auto gt-xs:pr-3">
-                                    <mat-label>Docker Image</mat-label>
-                                    <input
-                                        matInput
-                                        formControlName="dockerImage"
-                                        required
-                                    />
-                                    <mat-icon
-                                        class="icon-size-5"
-                                        matPrefix
-                                        [svgIcon]="
-                                            'heroicons_solid:cube-transparent'
-                                        "
-                                    ></mat-icon>
-                                    <mat-error
-                                        *ngIf="
-                                            projectGroup
-                                                .get('dockerImage')
-                                                .hasError('required')
-                                        "
-                                        >A Docker image is required for public
-                                        hosting.</mat-error
-                                    >
-                                </mat-form-field>
+                            <mat-form-field class="flex-auto gt-xs:pr-3">
+                                <mat-label>Docker Image</mat-label>
+                                <input
+                                    matInput
+                                    formControlName="dockerImage"
+                                    required
+                                />
+                                <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:cube-transparent'"></mat-icon>
+                                <mat-error *ngIf="projectGroup.get('dockerImage')?.hasError('required')">
+                                    A Docker image is required for public hosting.
+                                </mat-error>
+                            </mat-form-field>
+                        
+                            <mat-form-field class="flex-auto gt-xs:pl-3">
+                                <mat-label>Docker Image Tag</mat-label>
+                                <mat-select formControlName="dockerTag" required>
+                                    <mat-option *ngFor="let tag of dockerTags[projectIndex]" [value]="tag">
+                                        {{ tag }}
+                                    </mat-option>
+                                </mat-select>
+                                <mat-error *ngIf="projectGroup.get('dockerTag')?.hasError('required')">
+                                    A Docker image tag is required.
+                                </mat-error>
+                            </mat-form-field>
                             </div>
 
                             <!-- Conditionally render Private fields -->
@@ -381,30 +374,30 @@
                                     'private'
                                 "
                             >
-                                <mat-form-field class="flex-auto gt-xs:pr-3">
-                                    <mat-label>Docker Image</mat-label>
-                                    <input
-                                        matInput
-                                        formControlName="dockerImage"
-                                        required
-                                    />
-                                    <mat-icon
-                                        class="icon-size-5"
-                                        matPrefix
-                                        [svgIcon]="
-                                            'heroicons_solid:cube-transparent'
-                                        "
-                                    ></mat-icon>
-                                    <mat-error
-                                        *ngIf="
-                                            projectGroup
-                                                .get('dockerImage')
-                                                .hasError('required')
-                                        "
-                                        >A Docker image and credentials are
-                                        required for private hosting.</mat-error
-                                    >
-                                </mat-form-field>
+                            <mat-form-field class="flex-auto gt-xs:pr-3">
+                                <mat-label>Docker Image</mat-label>
+                                <input
+                                  matInput
+                                  formControlName="dockerImage"
+                                  required
+                                />
+                                <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:cube-transparent'"></mat-icon>
+                                <mat-error *ngIf="projectGroup.get('dockerImage')?.hasError('required')">
+                                  A Docker image and credentials are required for private hosting.
+                                </mat-error>
+                              </mat-form-field>
+                            
+                              <mat-form-field class="flex-auto gt-xs:pl-3">
+                                <mat-label>Docker Image Tag</mat-label>
+                                <mat-select formControlName="dockerTag" required>
+                                  <mat-option *ngFor="let tag of dockerTags[projectIndex]" [value]="tag">
+                                    {{ tag }}
+                                  </mat-option>
+                                </mat-select>
+                                <mat-error *ngIf="projectGroup.get('dockerTag')?.hasError('required')">
+                                  A Docker image tag is required.
+                                </mat-error>
+                              </mat-form-field>
                                 <mat-form-field class="flex-auto gt-xs:pr-3">
                                     <mat-label
                                         >Image Pull Secret Name</mat-label
@@ -495,6 +488,7 @@
                                     formControlName="serviceName"
                                     [placeholder]="'Service Name'"
                                     type="string"
+                                    [disabled]="projectGroup.value.generated"
                                 />
                                 <mat-icon
                                     class="icon-size-5"
@@ -507,8 +501,7 @@
                                             .get('serviceName')
                                             .hasError('required')
                                     "
-                                    >The service name is required.</mat-error
-                                >
+                                >The service name is required.</mat-error>
                                 <mat-error
                                     *ngIf="
                                         projectGroup
@@ -518,9 +511,7 @@
                                             .get('serviceName')
                                             .hasError('required')
                                     "
-                                    >The service name must be in
-                                    lowercase</mat-error
-                                >
+                                >The service name must be in lowercase</mat-error>
                             </mat-form-field>
                             <mat-form-field class="flex-auto gt-xs:pl-3">
                                 <mat-label>Port</mat-label>
