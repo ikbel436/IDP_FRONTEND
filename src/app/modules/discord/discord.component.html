@@ -1,0 +1,111 @@
+<div class="flex flex-col flex-auto min-w-0">
+    <!-- Navigation Bar -->
+    <nav class="bg-gray-800 dark:bg-gray-900">
+        <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
+            <div class="relative flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <!-- SVG Logo -->
+                    <img src="./assets/images/logo/insparklogodark.svg" alt="Bitbucket Logo" class="mx-auto my-4"
+                        style="width: 100px;">
+                </div>
+                <div class="flex-1 flex items-center justify-center sm:items-stretch sm:justify-center">
+                    <div class="hidden sm:block">
+                        <div class="flex space-x-4">
+                            <a href="#"
+                                class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Platform</a>
+                            <a href="#pricing"
+                                class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Pricing</a>
+                            <a href="#"
+                                class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Solutions</a>
+                            <a href="#"
+                                class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Get
+                                a Demo</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="hidden sm:block">
+                    <button mat-flat-button [routerLink]="['/sign-in']">Login</button>
+                </div>
+                <div class="hidden sm:block">
+                    <button mat-stroked-button color="primary" [routerLink]="['/sign-up']">Get Started</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile menu, show/hide based on menu state. -->
+        <div class="sm:hidden" id="mobile-menu">
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                <a href="#"
+                    class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Getting
+                    Started</a>
+                <a href="#pricing"
+                    class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Pricing</a>
+                <a href="#"
+                    class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Solutions</a>
+                <a href="#"
+                    class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Get
+                    a Demo</a>
+                <a href="#"
+                    class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Sign
+                    up</a>
+            </div>
+        </div>
+    </nav>
+
+   <!-- Header -->
+   <div class="relative pt-8 pb-28 px-4 sm:pt-20 sm:pb-48 sm:px-16 overflow-hidden bg-gray-800 dark:bg-gray-900 dark">
+    <!-- Background - @formatter:off -->
+    <!-- Rings -->
+    <svg class="absolute inset-0 pointer-events-none" viewBox="0 0 960 540" width="100%" height="100%"
+        preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
+        <g class="text-gray-700 opacity-25" fill="none" stroke="currentColor" stroke-width="100">
+            <circle r="234" cx="196" cy="23"></circle>
+            <circle r="234" cx="790" cy="491"></circle>
+        </g>
+    </svg>
+    <!-- @formatter:on -->
+    <div class="z-10 relative flex flex-col items-center">
+        <div class="mt-1 text-4xl sm:text-7xl font-extrabold tracking-tight leading-tight text-center">
+            Enable Developers Self-Service
+        </div>
+        <div class="mt-3 sm:text-2xl text-center tracking-tight text-secondary">
+            <p><strong class="leading-tight">Inspark-IDP</strong> is the Internal Developer Platform that cuts noise
+                for developers with
+                paved paths to
+                production.</p>
+            Testing, ephemeral environments, and drive action to improve software.
+        </div>
+        <mat-form-field class="fuse-mat-rounded fuse-mat-bold w-full max-w-80 sm:max-w-120 mt-10 sm:mt-20"
+            [subscriptSizing]="'dynamic'">
+            <input matInput [placeholder]="'Enter a question, topic or keyword'">
+            <mat-icon matPrefix [svgIcon]="'heroicons_outline:magnifying-glass'"></mat-icon>
+        </mat-form-field>
+    </div>
+</div>
+
+<div class="discord-room">
+    <h2>Join the [Your Project Name] Discord community today and supercharge your journey!</h2>
+    <p>
+      Connect with an inspiring, creative, and passionate network of developers, artists, and enthusiasts eager to share their knowledge, tips, and tricks.
+    </p>
+    <p>
+      Our members are dedicated to helping one another level up and create amazing projects. Collaborate on projects, explore new ideas, and stay up-to-date with the latest trends and advancements in the community.
+    </p>
+    <div class="discord-banner">
+      <div class="discord-info">
+        <img src="assets/discord-logo.png" alt="Discord Logo">
+        <span> Members Online</span>
+      </div>
+      <div class="member-list">
+        <div *ngFor="let member of members" class="member">
+          <img [src]="member.avatar" alt="Avatar">
+          <span>{{ member.name }}</span>
+        </div>
+      </div>
+      <button (click)="joinDiscord()">Join Discord</button>
+    </div>
+  </div>
+  
+
+
+    </div>

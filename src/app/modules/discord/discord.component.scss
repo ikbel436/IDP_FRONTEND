@@ -1,0 +1,62 @@
+.discord-room {
+    text-align: center;
+    background: #f4f4f4;
+    padding: 20px;
+    border-radius: 10px;
+  }
+  
+  .discord-banner {
+    background: #5865F2;
+    padding: 20px;
+    border-radius: 10px;
+    color: white;
+    margin-top: 20px;
+  }
+  
+  .discord-info {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .discord-info img {
+    height: 50px;
+    margin-right: 10px;
+  }
+  
+  .member-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  
+  .member {
+    display: flex;
+    align-items: center;
+    margin: 5px;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 5px;
+    border-radius: 5px;
+  }
+  
+  .member img {
+    height: 30px;
+    margin-right: 5px;
+    border-radius: 50%;
+  }
+  
+  button {
+    background: #7289DA;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+  }
+  
+  button:hover {
+    background: #677bc4;
+  }
+  

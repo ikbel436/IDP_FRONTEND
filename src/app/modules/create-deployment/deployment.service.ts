@@ -40,4 +40,8 @@ export class DeploymentService {
   updateProjectDeployment(id: string, data: any): Observable<any> {
     return this.http.put(`http://localhost:3000/projectDepl/${id}`, data);
 }
+  pushFiles(data: any): Observable<any> {
+   
+    return this.http.post(`${this.apiUrl}/testPush`, data);
+  }
 }
