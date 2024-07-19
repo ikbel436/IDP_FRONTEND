@@ -77,7 +77,7 @@ export class GetDeployementsUserComponent {
   }
   openDetails(deployment): void {
     this.dialog.open(DeploymentDetailsComponent, {
-      width: 'auto',
+      width: '',
       data: deployment
     });
   }
