@@ -9,6 +9,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { DeploymentsService } from '../get-deployments/deployments.service';
 import { ChartComponent } from 'ng-apexcharts';
+import { MatTabsModule } from '@angular/material/tabs';
+import { AuthService } from 'app/core/auth/auth.service';
 
 @Component({
   selector: 'app-deployment-stats',
@@ -26,13 +28,23 @@ import { ChartComponent } from 'ng-apexcharts';
     NgFor,
     CurrencyPipe,
     DecimalPipe,
+    MatIconModule,
+    MatButtonModule,
+    MatButtonToggleModule,
+    MatMenuModule,
+    MatTabsModule,
+    MatIconModule,
+    MatButtonModule,
+    MatButtonToggleModule,
+    MatMenuModule,
+    MatTabsModule,
   ],
   templateUrl: './deployment-stats.component.html',
   styleUrls: ['./deployment-stats.component.scss']
 })
 export class DeploymentStatsComponent {
   @ViewChild('chart') chart: ChartComponent;
-  selectedTimeframe: string = 'daily';
+  selectedTimeframe: string = 'monthly';
   totalDeployments: number | null = null;
   overview: any = {};
   namespaceStats: any[] = [];
@@ -40,7 +52,7 @@ export class DeploymentStatsComponent {
   totalUsers: number | null = null;
   totalDeploymentsFreq: number | null = null;
   avgDeploymentsPerUser: number | null = null;
-  
+  users: any[] = [];
   chartOptions: any = {
     series: [{
       name: 'Deployments',
@@ -98,12 +110,121 @@ export class DeploymentStatsComponent {
     }
   };
 
-  constructor(private deploymentsService: DeploymentsService) { }
+  // Placeholder for chartWeeklyExpenses, chartMonthlyExpenses, and chartYearlyExpenses
+  chartWeeklyDeployments: any = {
+    chart  : {
+      animations: {
+          enabled: false,
+      },
+      fontFamily: 'inherit',
+      foreColor : 'inherit',
+      height    : '100%',
+      type      : 'line',
+      sparkline : {
+          enabled: true,
+      },
+  },
+    colors: ['#00E396'],
+    series: [{ name: 'Weekly Deployments', data: [10, 20, 30, 40, 50] }],
+    stroke: { curve: 'smooth', width: 2 },
+    tooltip: {
+      theme: 'dark',
+  },
+    xaxis: { categories: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'] },
+    yaxis: { show: false }
+  };
+
+  chartMonthlyDeployments: any = {
+    chart  : {
+      animations: {
+          enabled: false,
+      },
+      fontFamily: 'inherit',
+      foreColor : 'inherit',
+      height    : '100%',
+      type      : 'line',
+      sparkline : {
+          enabled: true,
+      },
+  },
+    colors: ['#FEB019'],
+    series: [{ name: 'Monthly Deployments', data: [10, 20, 30, 40, 50] }],
+    stroke : {
+      curve: 'smooth',
+  },
+  tooltip: {
+      theme: 'dark',
+  },
+    xaxis: { categories: ['Week 1', 'Week 2', 'Week 3', 'Week 4'] },
+    yaxis  : {
+      labels: {
+          formatter: (val): string => `$${val}`,
+      },
+  },
+  };
+
+  chartYearlyDeployments: any = {
+    chart  : {
+      animations: {
+          enabled: false,
+      },
+      fontFamily: 'inherit',
+      foreColor : 'inherit',
+      height    : '100%',
+      type      : 'line',
+      sparkline : {
+          enabled: true,
+      },
+  },
+    colors: ['#FF4560'],
+    series: [{ name: 'Yearly Deployments', data: [100, 200, 300, 400, 500] }],
+    stroke : {
+      curve: 'smooth',
+  },
+  tooltip: {
+      theme: 'dark',
+  },
+    xaxis: { categories: ['Q1', 'Q2', 'Q3', 'Q4'] },
+    yaxis  : {
+      labels: {
+          formatter: (val): string => `$${val}`,
+      },
+  },
+  };
+
+  constructor(private deploymentsService: DeploymentsService, private authService: AuthService) { }
 
   ngOnInit(): void {
     this.fetchStats();
     this.fetchSuccessRate();
     this.fetchDeploymentFrequency();
+    this.fetchUsers();
+  }
+  onUpdateMember(member: any): void {
+    // Handle update member logic
+    console.log('Update member', member);
+  }
+
+  onDeleteMember(member: any): void {
+    this.authService.deleteUser(member._id).subscribe(
+      (response) => {
+        console.log(response.msg);
+        this.fetchUsers();
+      },
+      (error) => {
+        console.error('Error deleting user:', error);
+      }
+    );
+  }
+  fetchUsers(): void {
+    this.authService.getUsers().subscribe(
+      (response) => {
+        this.users = response.users;
+      },
+      (error) => {
+        console.error('Error fetching users:', error);
+      }
+    );
   }
 
   fetchStats(): void {
@@ -167,6 +288,13 @@ export class DeploymentStatsComponent {
 
   onTimeframeChange(event: any): void {
     this.selectedTimeframe = event.value;
+    this.fetchStats();
+    this.fetchSuccessRate();
+    this.fetchDeploymentFrequency();
+  }
+
+  changeTimeframe(newTimeframe: string): void {
+    this.selectedTimeframe = newTimeframe;
     this.fetchStats();
     this.fetchSuccessRate();
     this.fetchDeploymentFrequency();

@@ -6,7 +6,7 @@
           <div class="text-3xl font-semibold tracking-tight leading-8">Analytics dashboard</div>
           <div class="font-medium tracking-tight text-secondary">Monitor metrics, check reports and review performance</div>
         </div>
-        <div class="flex items-center ml-6">
+        <!-- <div class="flex items-center ml-6">
           <button class="hidden sm:inline-flex" mat-stroked-button>
             <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:cog-8-tooth'"></mat-icon>
             <span class="ml-2">Settings</span>
@@ -14,9 +14,9 @@
           <button class="hidden sm:inline-flex ml-3" mat-flat-button [color]="'primary'">
             <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:arrow-up-tray'"></mat-icon>
             <span class="ml-2">Export</span>
-          </button>
+          </button>-->
           <!-- Actions menu (visible on xs) -->
-          <div class="sm:hidden">
+          <!-- <div class="sm:hidden">
             <button [matMenuTriggerFor]="actionsMenu" mat-icon-button>
               <mat-icon [svgIcon]="'heroicons_outline:ellipsis-vertical'"></mat-icon>
             </button>
@@ -25,35 +25,17 @@
               <button mat-menu-item>Settings</button>
             </mat-menu>
           </div>
-        </div>
+        </div>  -->
       </div>
-  
+
       <div class="w-full mt-6">
-                <!-- <div class="deployment-stats w-full mt-6">
-            <h2>Deployment Statistics</h2>
-            <div class="timeframe-selector mb-4">
-              <label for="timeframe">Select Timeframe:</label>
-              <select id="timeframe" [(ngModel)]="selectedTimeframe" (change)="onTimeframeChange()">
-                <option value="daily">Daily</option>
-                <option value="weekly">Weekly</option>
-                <option value="monthly">Monthly</option>
-              </select>
-            </div>
-      
-            <div class="total-deployments mb-4" *ngIf="totalDeployments !== null">
-              <h3>Total Deployments: {{ totalDeployments }}</h3>
-            </div>
-      
-            <div class="chart-container">
-              <apx-chart
-                [series]="chartOptions.series"
-                [chart]="chartOptions.chart"
-                [xaxis]="chartOptions.xaxis"
-                [title]="chartOptions.title">
-              </apx-chart>
-            </div>
-          </div> -->
-      
+   
+        <mat-tab-group    class="sm:px-2"
+        mat-stretch-tabs="false"
+        [animationDuration]="'0'">
+          <!-- Deployment Stats Tab -->
+          <mat-tab label="Deployment Stats">
+            <ng-template matTabContent>
           <div class="sm:col-span-2 md:col-span-4 flex flex-col flex-auto p-6 bg-card shadow rounded-2xl overflow-hidden">
             <div class="flex flex-col sm:flex-row items-start justify-between">
               <div class="text-lg font-medium tracking-tight leading-6 truncate">Deployment Summary</div>
@@ -99,43 +81,42 @@
                     <div class="text-5xl sm:text-7xl font-semibold leading-none tracking-tight">
                       {{overview.closed}}
                     </div>
-                    <div class="mt-1 text-sm sm:text-lg font-medium">Closed</div>
+                    <div class="mt-1 text-sm sm:text-lg font-medium">Failed</div>
                   </div>
                   <!-- Fixed -->
-                  <div class="col-span-2 sm:col-span-1 flex flex-col items-center justify-center py-8 px-1 rounded-2xl bg-gray-100 text-secondary">
+                  <!-- <div class="col-span-2 sm:col-span-1 flex flex-col items-center justify-center py-8 px-1 rounded-2xl bg-gray-100 text-secondary">
                     <div class="text-5xl font-semibold leading-none tracking-tight">
                       {{overview.fixed}}
                     </div>
                     <div class="mt-1 text-sm font-medium text-center">Fixed</div>
-                  </div>
+                  </div> -->
                   <!-- Won't Fix -->
-                  <div class="col-span-2 sm:col-span-1 flex flex-col items-center justify-center py-8 px-1 rounded-2xl bg-gray-100 text-secondary">
+                  <!-- <div class="col-span-2 sm:col-span-1 flex flex-col items-center justify-center py-8 px-1 rounded-2xl bg-gray-100 text-secondary">
                     <div class="text-5xl font-semibold leading-none tracking-tight">
                       {{overview.wontFix}}
                     </div>
                     <div class="mt-1 text-sm font-medium text-center">Won't Fix</div>
-                  </div>
+                  </div> -->
                   <!-- Re-opened -->
-                  <div class="col-span-2 sm:col-span-1 flex flex-col items-center justify-center py-8 px-1 rounded-2xl bg-gray-100 text-secondary">
+                  <!-- <div class="col-span-2 sm:col-span-1 flex flex-col items-center justify-center py-8 px-1 rounded-2xl bg-gray-100 text-secondary">
                     <div class="text-5xl font-semibold leading-none tracking-tight">
                       {{overview.reOpened}}
                     </div>
                     <div class="mt-1 text-sm font-medium text-center">Re-opened</div>
-                  </div>
+                  </div> -->
                   <!-- Needs Triage -->
-                  <div class="col-span-2 sm:col-span-1 flex flex-col items-center justify-center py-8 px-1 rounded-2xl bg-gray-100 text-secondary">
+                  <!-- <div class="col-span-2 sm:col-span-1 flex flex-col items-center justify-center py-8 px-1 rounded-2xl bg-gray-100 text-secondary">
                     <div class="text-5xl font-semibold leading-none tracking-tight">
                       {{overview.needsTriage}}
                     </div>
                     <div class="mt-1 text-sm font-medium text-center">Needs Triage</div>
-                  </div>
+                  </div> -->
                 </div>
               </div>
             </div>
           </div>
-  
           <div class="flex flex-row flex-wrap w-full mt-8">
-
+            <div class="flex flex-row w-full gap-4">
             <!-- Deployment Success Rate -->
             <div class="flex flex-col flex-auto p-6 bg-card shadow rounded-2xl overflow-hidden mt-4 mr-4">
               <div class="flex flex-col sm:flex-row items-start justify-between">
@@ -172,51 +153,182 @@
                 </div>
               </div>
             </div>
-      
+          
             <!-- Deployment Frequency -->
             <div class="flex flex-col flex-auto p-6 bg-card shadow rounded-2xl overflow-hidden mt-4">
-                <div class="flex flex-col sm:flex-row items-start justify-between">
-                  <div class="text-lg font-medium tracking-tight leading-6 truncate">Deployment Frequency</div>
-                  <div class="mt-3 sm:mt-0 sm:ml-2">
-                    <mat-button-toggle-group [(ngModel)]="selectedTimeframe" (change)="onTimeframeChange($event)">
-                      <mat-button-toggle value="daily">Daily</mat-button-toggle>
-                      <mat-button-toggle value="weekly">Weekly</mat-button-toggle>
-                      <mat-button-toggle value="monthly">Monthly</mat-button-toggle>
-                    </mat-button-toggle-group>
-                  </div>
-                </div>
-                <div class="flex flex-col mt-2 divide-y">
-                  <div class="flex flex-row items-center justify-between py-4 px-0.5">
-                    <div class="flex flex-col">
-                      <div class="font-medium">Total Users</div>
-                      <div class="text-md text-secondary">{{ totalUsers }}</div>
+              <div class="sm:col-span-3 lg:col-span-2 grid grid-cols-1 gap-y-6">
+                <!-- Weekly Deployments -->
+                <div class="sm:col-span-2 flex flex-col flex-auto p-6 bg-card shadow rounded-2xl overflow-hidden">
+                  <div class="flex items-start justify-between">
+                    <div class="text-lg font-medium tracking-tight leading-6 truncate">Total Deployments</div>
+                    <div class="ml-2 -mt-2 -mr-3">
+                      <button mat-icon-button [matMenuTriggerFor]="weeklyDeploymentsMenu">
+                        <mat-icon class="icon-size-5" [svgIcon]="'heroicons_mini:ellipsis-vertical'"></mat-icon>
+                      </button>
+                      <mat-menu #weeklyDeploymentsMenu="matMenu">
+                        <button mat-menu-item (click)="changeTimeframe('daily')">Daily</button>
+                        <button mat-menu-item (click)="changeTimeframe('weekly')">Weekly</button>
+                        <button mat-menu-item (click)="changeTimeframe('monthly')">Monthly</button>
+                      </mat-menu>
                     </div>
                   </div>
-                  <div class="flex flex-row items-center justify-between py-4 px-0.5">
+                  <div class="flex items-center mt-1">
                     <div class="flex flex-col">
-                      <div class="font-medium">Total Deployments</div>
-                      <div class="text-md text-secondary">{{ totalDeploymentsFreq }}</div>
-                    </div>
-                  </div>
-                  <div class="flex flex-row items-center justify-between py-4 px-0.5">
-                    <div class="flex flex-col">
-                      <div class="font-medium">Avg. Deployments per User</div>
-                      <div class="text-md text-secondary">{{ avgDeploymentsPerUser }}</div>
-                    </div>
-                  </div>
-                  <ng-container *ngFor="let user of userDeploymentDetails">
-                    <div class="flex flex-row items-center justify-between py-4 px-0.5">
-                      <div class="flex flex-col">
-                        <div class="font-medium">{{ user.name }}</div>
-                        <div class="text-md text-secondary">Deployments: {{ user.totalDeployments }}</div>
-                        <div class="text-md text-secondary">Bundles: {{ user.totalBundles }}</div>
-                        <div class="text-md text-secondary">Projects: {{ user.totalProjects }}</div>
+                      <div class="text-3xl font-semibold tracking-tight leading-tight">
+                        {{ totalDeploymentsFreq }}
+                      </div>
+                      <div class="flex items-center">
+                        <div class="font-medium text-sm text-secondary leading-none whitespace-nowrap">
+                          Total Deployments
+                        </div>
                       </div>
                     </div>
-                  </ng-container>
+                    <div class="flex flex-col flex-auto ml-8">
+                      <apx-chart
+                        class="flex-auto w-full h-16"
+                        [chart]="chartWeeklyDeployments.chart"
+                        [colors]="chartWeeklyDeployments.colors"
+                        [series]="chartWeeklyDeployments.series"
+                        [stroke]="chartWeeklyDeployments.stroke"
+                        [tooltip]="chartWeeklyDeployments.tooltip"
+                        [xaxis]="chartWeeklyDeployments.xaxis"
+                        [yaxis]="chartWeeklyDeployments.yaxis">
+                      </apx-chart>
+                    </div>
+                  </div>
                 </div>
+                <!-- Monthly Deployments -->
+                <div class="sm:col-span-2 flex flex-col flex-auto p-6 bg-card shadow rounded-2xl overflow-hidden">
+                  <div class="flex items-start justify-between">
+                    <div class="text-lg font-medium tracking-tight leading-6 truncate">Average Deployments</div>
+                    <div class="ml-2 -mt-2 -mr-3">
+                      <button mat-icon-button [matMenuTriggerFor]="monthlyDeploymentsMenu">
+                        <mat-icon class="icon-size-5" [svgIcon]="'heroicons_mini:ellipsis-vertical'"></mat-icon>
+                      </button>
+                      <mat-menu #monthlyDeploymentsMenu="matMenu">
+                        <button mat-menu-item (click)="changeTimeframe('daily')">Daily</button>
+                        <button mat-menu-item (click)="changeTimeframe('weekly')">Weekly</button>
+                        <button mat-menu-item (click)="changeTimeframe('monthly')">Monthly</button>
+                      </mat-menu>
+                    </div>
+                  </div>
+                  <div class="flex items-center mt-1">
+                    <div class="flex flex-col">
+                      <div class="text-3xl font-semibold tracking-tight leading-tight">
+                        {{ avgDeploymentsPerUser }}
+                      </div>
+                      <div class="flex items-center">
+                        <div class="font-medium text-sm text-secondary leading-none whitespace-nowrap">
+                          Avg. Deployments per User
+                        </div>
+                      </div>
+                    </div>
+                    <div class="flex flex-col flex-auto ml-8">
+                      <apx-chart
+                        class="flex-auto w-full h-16"
+                        [chart]="chartMonthlyDeployments.chart"
+                        [colors]="chartMonthlyDeployments.colors"
+                        [series]="chartMonthlyDeployments.series"
+                        [stroke]="chartMonthlyDeployments.stroke"
+                        [tooltip]="chartMonthlyDeployments.tooltip"
+                        [xaxis]="chartMonthlyDeployments.xaxis"
+                        [yaxis]="chartMonthlyDeployments.yaxis">
+                      </apx-chart>
+                    </div>
+                  </div>
+                </div>
+                <!-- Yearly Deployments -->
+                <div class="sm:col-span-2 flex flex-col flex-auto p-6 bg-card shadow rounded-2xl overflow-hidden">
+                  <div class="flex items-start justify-between">
+                    <div class="text-lg font-medium tracking-tight leading-6 truncate">Total User </div>
+                    <div class="ml-2 -mt-2 -mr-3">
+                      <button mat-icon-button [matMenuTriggerFor]="yearlyDeploymentsMenu">
+                        <mat-icon class="icon-size-5" [svgIcon]="'heroicons_mini:ellipsis-vertical'"></mat-icon>
+                      </button>
+                      <mat-menu #yearlyDeploymentsMenu="matMenu">
+                        <button mat-menu-item (click)="changeTimeframe('daily')">Daily</button>
+                        <button mat-menu-item (click)="changeTimeframe('weekly')">Weekly</button>
+                        <button mat-menu-item (click)="changeTimeframe('monthly')">Monthly</button>
+                      </mat-menu>
+                    </div>
+                  </div>
+                  <div class="flex items-center mt-1">
+                    <div class="flex flex-col">
+                      <div class="text-3xl font-semibold tracking-tight leading-tight">
+                        {{ totalUsers }}
+                      </div>
+                      <div class="flex items-center">
+                        <div class="font-medium text-sm text-secondary leading-none whitespace-nowrap">
+                          Total Users
+                        </div>
+                      </div>
+                    </div>
+                    <div class="flex flex-col flex-auto ml-8">
+                      <apx-chart
+                        class="flex-auto w-full h-16"
+                        [chart]="chartYearlyDeployments.chart"
+                        [colors]="chartYearlyDeployments.colors"
+                        [series]="chartYearlyDeployments.series"
+                        [stroke]="chartYearlyDeployments.stroke"
+                        [tooltip]="chartYearlyDeployments.tooltip"
+                        [xaxis]="chartYearlyDeployments.xaxis"
+                        [yaxis]="chartYearlyDeployments.yaxis">
+                      </apx-chart>
+                    </div>
+                  </div>
+                </div>
+              </div>
             
+            </div>
+          
           </div>
-    </div>
-  </div>
-  
+          </div>
+        </ng-template>
+      </mat-tab>
+      <mat-tab label="Team">
+        <ng-template matTabContent>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 w-full min-w-0">
+                <ng-container *ngFor="let member of users">
+                    <div class="flex flex-col flex-auto items-center bg-card shadow rounded-2xl overflow-hidden">
+                        <!-- Settings Button -->
+                        <div class="flex items-center justify-end w-full p-4">
+                          <button mat-icon-button [matMenuTriggerFor]="settingsMenu">
+                              <mat-icon>more_vert</mat-icon>
+                          </button>
+                          <mat-menu #settingsMenu="matMenu">
+                              <button mat-menu-item (click)="onUpdateMember(member)">
+                                  <mat-icon>edit</mat-icon>
+                                  <span>Update</span>
+                              </button>
+                              <button mat-menu-item (click)="onDeleteMember(member)">
+                                  <mat-icon>delete</mat-icon>
+                                  <span>Delete</span>
+                              </button>
+                          </mat-menu>
+                      </div>
+    
+                        <!-- Avatar & Info -->
+                        <div class="flex flex-col flex-auto w-full p-8 text-center">
+                            <div class="w-32 h-32 mx-auto rounded-full overflow-hidden">
+                                <img class="w-full h-full object-cover" [src]="member.image" alt="Avatar">
+                            </div>
+                            <div class="mt-6 font-medium">{{member.name}}</div>
+                            <div class="text-secondary">{{member.Fonction}}</div>
+                        </div>
+    
+                        <!-- Email & Phone -->
+                        <div class="flex items-center w-full border-t divide-x">
+                            <a class="flex flex-auto items-center justify-center py-4 hover:bg-hover" [href]="'mailto:' + member.email">
+                                <mat-icon class="icon-size-5 text-hint" svgIcon="heroicons_solid:envelope"></mat-icon>
+                                <span class="ml-2">Email</span>
+                            </a>
+                            <a class="flex flex-auto items-center justify-center py-4 hover:bg-hover" [href]="'tel:' + member.phoneNumber">
+                                <mat-icon class="icon-size-5 text-hint" svgIcon="heroicons_solid:phone"></mat-icon>
+                                <span class="ml-2">Call</span>
+                            </a>
+                        </div>
+                    </div>
+                </ng-container>
+            </div>
+        </ng-template>
+    </mat-tab>

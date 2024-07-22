@@ -29,13 +29,21 @@ export class AuthService {
         private _httpClient: HttpClient,
         private _userService: UserService
     ) {}
-
+    getUsers(): Observable<any> {
+        return this._httpClient.get<any>(`${this.apiUrl}/users`);
+      }
+      updateUser(id: string, userData: any): Observable<any> {
+        return this._httpClient.put(`${this.apiUrl}/profile/${id}`, userData);
+      }
     // -----------------------------------------------------------------------------------------------------
     // @ Accessors
     // -----------------------------------------------------------------------------------------------------
     getUserRole(): string {
         return localStorage.getItem('userRole');
     }
+    deleteUser(id: string): Observable<any> {
+        return this._httpClient.delete(`${this.apiUrl}/delete/${id}`);
+      }
     getUserProjects(): string {
         return localStorage.getItem('myProjects');
     }

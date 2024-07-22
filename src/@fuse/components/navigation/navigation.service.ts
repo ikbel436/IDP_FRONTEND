@@ -30,10 +30,10 @@ export class FuseNavigationService {
 
             {
                 id: 'Home',
-                title: 'Home',
-                icon: 'heroicons_outline:home',
+                title: 'Dashboard',
+                icon: 'heroicons_outline:chart-pie',
                 type: 'basic',
-                link: '/userHome'
+                link: '/dashboard'
             },
             //{ type: 'basic', title: 'Profile', icon: 'heroicons_outline:user-circle', link: '/profile' },
             //{ type: 'basic', title: 'Settings', icon: 'heroicons_outline:cog-8-tooth', link: '/settings' },
