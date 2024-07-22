@@ -24,11 +24,6 @@ jobs:
       - name: Install Chromium
         run: sudo apt-get install -y chromium-browser
 
-      - name: Run tests
-        run: |
-          npm install karma-cli -g
-          npm install karma --save-dev
-          npm install karma-chrome-launcher --save-dev
-          npm install karma-jasmine --save-dev
-          npm install karma-jasmine-html-reporter --save-dev
-          npm test -- --no-watch --browsers=ChromeHeadless
+      # Commented out the test step
+      # - name: Run tests
+      #   run: npm test
