@@ -39,6 +39,7 @@
         "ng-apexcharts": "1.8.0",
         "ng-otp-input": "^1.9.3",
         "ng-recaptcha": "^13.2.1",
+        "ngx-device-detector": "^8.0.0",
         "ngx-image-cropper": "^7.2.1",
         "ngx-quill": "24.0.2",
         "ngx-ui-tour-md-menu": "^13.0.0",

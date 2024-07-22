@@ -64,38 +64,38 @@ export class OtpDialogComponent {
       }
   }
 
-  verifyOtp(): void {
-      if (!this.allInputFieldsValid()) {
-          return; // Early exit if any input field is invalid
-      }
+//   verifyOtp(): void {
+//       if (!this.allInputFieldsValid()) {
+//           return; // Early exit if any input field is invalid
+//       }
 
-      this.isLoading = true;
-      const userEmail = localStorage.getItem('email');
+//       this.isLoading = true;
+//       const userEmail = localStorage.getItem('email');
 
-      this.authService.verifyOtp(userEmail, this.otpValue).subscribe(
-          (response) => {
-              this.isLoading = false;
+//       this.authService.verifyOtp(userEmail, this.otpValue).subscribe(
+//           (response) => {
+//               this.isLoading = false;
              
-              this.dialogRef.close(true);
-              localStorage.removeItem('accessToken');
-             localStorage.removeItem('email');
-             localStorage.removeItem('userRole');
-             localStorage.removeItem('myRepos');
-             localStorage.removeItem('myProjects');
-              this.router.navigate(['/sign-in']).then(() => {
-                window.location.reload(); // Refresh the sign-in page
-            });
+//               this.dialogRef.close(true);
+//               localStorage.removeItem('accessToken');
+//              localStorage.removeItem('email');
+//              localStorage.removeItem('userRole');
+//              localStorage.removeItem('myRepos');
+//              localStorage.removeItem('myProjects');
+//               this.router.navigate(['/sign-in']).then(() => {
+//                 window.location.reload(); // Refresh the sign-in page
+//             });
              
-          },
-          (error) => {
-              this.isLoading = false;
-              this._snackBar.open('Wrong code', 'Close', {
-                duration: 2000,
-            });
-            this.dialogRef.close(false);
-          }
-      );
-  }
+//           },
+//           (error) => {
+//               this.isLoading = false;
+//               this._snackBar.open('Wrong code', 'Close', {
+//                 duration: 2000,
+//             });
+//             this.dialogRef.close(false);
+//           }
+//       );
+//   }
 
   allInputFieldsValid(): boolean {
       return this.inputFieldsValid.every((fieldIsValid) => fieldIsValid);

@@ -214,7 +214,7 @@ export class AuthSignUpComponent implements OnInit {
     ).subscribe({
         complete: () => {
             this.isLoadingOTP = false; // Stop loading
-            this._router.navigate(['/confirmation-required']);
+            this._router.navigate(['/sign-in']);
         },
         error: () => {
             this.isLoadingOTP = false; // Stop loading
