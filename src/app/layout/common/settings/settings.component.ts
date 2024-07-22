@@ -102,7 +102,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
    */
 
     loadRepositories(): Observable<any[]> {
-        return this.http.get<any[]>('http://localhost:3000/Repos/get');
+        return this.http.get<any[]>('https://backend.idp.insparkconnect.com/Repos/get');
       }
       
     hasProjects(): boolean {

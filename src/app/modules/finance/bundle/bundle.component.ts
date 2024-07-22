@@ -66,7 +66,7 @@ export class BundleComponent {
         const selectedProjects = this.data.selectedProjects;
         console.log('Selected projects:', selectedProjects);
         this.http
-            .post('http://localhost:3000/Bundle/BundleTouser', {
+            .post('https://backend.idp.insparkconnect.com/Bundle/BundleTouser', {
                 name: this.bundleName,
                 description: this.bundleDescription,
                 Projects: selectedProjects,

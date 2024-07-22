@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
     providedIn: 'root',
 })
 export class GitProviderService {
-    private apiUrl = 'http://localhost:3000/connect/connect_bitbucket';
+    private apiUrl = 'https://backend.idp.insparkconnect.com/connect/connect_bitbucket';
     private accessToken: string | null = null;
     private workspace: string | null = null;
 
@@ -28,7 +28,7 @@ export class GitProviderService {
     }
 
     getRepositoriesGit(): Observable<any> {
-        return this.http.post<any>('http://localhost:3000/OAuth/github', {
+        return this.http.post<any>('https://backend.idp.insparkconnect.com/OAuth/github', {
             token: this.accessToken,
         });
     }

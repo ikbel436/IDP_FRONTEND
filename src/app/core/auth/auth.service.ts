@@ -18,8 +18,8 @@ import { JwtHelperService } from '@auth0/angular-jwt';
 @Injectable({ providedIn: 'root' })
 export class AuthService {
     private _authenticated: boolean = false;
-    private apiUrl = 'http://localhost:3000/auth';
-    private verifUrl = 'http://localhost:3000/otp';
+    private apiUrl = 'https://backend.idp.insparkconnect.com/auth';
+    private verifUrl = 'https://backend.idp.insparkconnect.com/otp';
     private _user: ReplaySubject<User> = new ReplaySubject<User>(1);
     private _jwtHelper: JwtHelperService;
     /**

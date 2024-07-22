@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
     providedIn: 'root'
 })
 export class WorkflowService {
-    private baseUrl = 'http://localhost:3000/pipCI';
+    private baseUrl = 'https://backend.idp.insparkconnect.com/pipCI';
 
     constructor(private http: HttpClient) { }
 

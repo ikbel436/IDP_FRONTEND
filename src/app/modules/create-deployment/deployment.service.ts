@@ -9,8 +9,8 @@ export class DeploymentService {
 
   constructor(private http: HttpClient) { }
 
-  private apiUrl = 'http://localhost:3000/k8';
-  private BundleUrl = 'http://localhost:3000/Bundle';
+  private apiUrl = 'https://backend.idp.insparkconnect.com/k8';
+  private BundleUrl = 'https://backend.idp.insparkconnect.com/Bundle';
 
  
   private getHeaders(token: string) {
@@ -38,7 +38,7 @@ export class DeploymentService {
     return this.http.get(`${this.BundleUrl}/bundles/${bundleId}`);
   }
   updateProjectDeployment(id: string, data: any): Observable<any> {
-    return this.http.put(`http://localhost:3000/projectDepl/${id}`, data);
+    return this.http.put(`https://backend.idp.insparkconnect.com/projectDepl/${id}`, data);
 }
   pushFiles(data: any): Observable<any> {
    

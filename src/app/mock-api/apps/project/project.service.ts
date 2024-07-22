@@ -30,7 +30,7 @@ export class ProjectService {
     /**
      * Api Base URL
      */
-    private apiUrl = 'http://localhost:3000';
+    private apiUrl = 'https://backend.idp.insparkconnect.com';
     private _data: BehaviorSubject<any> = new BehaviorSubject(null);
 
     // -----------------------------------------------------------------------------------------------------

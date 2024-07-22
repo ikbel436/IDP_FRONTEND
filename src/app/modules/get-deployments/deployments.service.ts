@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class DeploymentsService {
-  private apiUrl = 'http://localhost:3000/depl'; 
+  private apiUrl = 'https://backend.idp.insparkconnect.com/depl'; 
   constructor(private http: HttpClient) { }
   getAllDeployments(): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/deploymentsUser`);

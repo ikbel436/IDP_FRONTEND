@@ -6,7 +6,7 @@ import { map, Observable, ReplaySubject, tap } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
-    private apiUrl = 'http://localhost:3000/auth';
+    private apiUrl = 'https://backend.idp.insparkconnect.com/auth';
     private _user: ReplaySubject<User> = new ReplaySubject<User>(1);
 
     /**

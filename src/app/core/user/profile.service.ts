@@ -4,7 +4,7 @@ import { BehaviorSubject, Observable, tap } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class ProfileService {
-    private apiUrl = 'http://localhost:3000/project';
+    private apiUrl = 'https://backend.idp.insparkconnect.com/project';
     private _data: BehaviorSubject<any> = new BehaviorSubject(null);
 
     /**

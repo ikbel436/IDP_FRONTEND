@@ -7,7 +7,7 @@ import { catchError, map, Observable, throwError } from 'rxjs';
 })
 export class DockerService {
 
-  private baseUrl = 'http://localhost:3000/api/docker-tags'; // Update to your backend URL
+  private baseUrl = 'https://backend.idp.insparkconnect.com/api/docker-tags'; // Update to your backend URL
 
   constructor(private http: HttpClient) { }
   getDockerImageTags(namespace: string, repository: string): Observable<any> {

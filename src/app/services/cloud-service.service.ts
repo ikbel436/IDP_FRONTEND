@@ -8,7 +8,7 @@ import { CloudService } from 'app/models/cloud-service.types';
 })
 
 export class CloudServiceService {
-  private apiUrl = 'http://localhost:3000/api/cloudservices';
+  private apiUrl = 'https://backend.idp.insparkconnect.com/api/cloudservices';
 
   constructor(private http: HttpClient) { }
 

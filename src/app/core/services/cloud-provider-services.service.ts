@@ -7,7 +7,7 @@ import { Observable, catchError, throwError } from 'rxjs';
 })
 export class CloudProviderServicesService {
 
-  private apiUrl = 'http://localhost:3000/azure/resources';
+  private apiUrl = 'https://backend.idp.insparkconnect.com/azure/resources';
 
   constructor(private http: HttpClient) { }
 

@@ -228,7 +228,7 @@ export class ProfileComponent implements OnInit {
     formData.append('file', this.images);
 
     this._httpClient
-      .put<any>(`http://localhost:3000/auth/upload/${userId}`, formData)
+      .put<any>(`https://backend.idp.insparkconnect.com/auth/upload/${userId}`, formData)
       .subscribe(
         (res) => console.log(res),
         (err) => console.log(err)

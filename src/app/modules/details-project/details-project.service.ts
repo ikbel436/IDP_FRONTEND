@@ -7,7 +7,7 @@ import { InventoryProject } from 'app/mock-api/apps/project/project.types'; // U
   providedIn: 'root'
 })
 export class DetailsProjectService {
-    private apiUrl = 'http://localhost:3000'; // Replace with your API URL
+    private apiUrl = 'https://backend.idp.insparkconnect.com'; // Replace with your API URL
 
   constructor(private _httpClient: HttpClient) {}
 

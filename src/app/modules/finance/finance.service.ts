@@ -6,7 +6,7 @@ import { BehaviorSubject, Observable, tap } from 'rxjs';
 @Injectable({ providedIn: 'root' })
 export class FinanceService {
     private _data: BehaviorSubject<any> = new BehaviorSubject(null);
-    private apiUrl = 'http://localhost:3000/Repos';
+    private apiUrl = 'https://backend.idp.insparkconnect.com/Repos';
     
 
     /**
@@ -102,7 +102,7 @@ export class FinanceService {
          */
 
       getBundles(): Observable<any[]> {
-        return this._httpClient.get<any[]>('http://localhost:3000/Bundle/get');
+        return this._httpClient.get<any[]>('https://backend.idp.insparkconnect.com/Bundle/get');
       }
     
 }

@@ -98,7 +98,7 @@ export class GetProjectsComponent {
   }
   
   loadRepositories(): void {
-    this.http.get('http://localhost:3000/Repos/get').subscribe({
+    this.http.get('https://backend.idp.insparkconnect.com/Repos/get').subscribe({
       next: (repositories) => {
         if (Array.isArray(repositories)) {
           this.dataSource.data = repositories;
@@ -159,7 +159,7 @@ export class GetProjectsComponent {
             language: repo.language,
           }));
 
-          this.http.post('http://localhost:3000/Repos/RepoTouser', mappedResponse).subscribe({
+          this.http.post('https://backend.idp.insparkconnect.com/Repos/RepoTouser', mappedResponse).subscribe({
             next: () => {
               this.dataSource.data = mappedResponse;
               return "Repositories saved successfully."

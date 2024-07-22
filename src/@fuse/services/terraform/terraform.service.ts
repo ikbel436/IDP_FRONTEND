@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class TerraformService {
-  private apiUrl = 'http://localhost:3000/terraform'; 
+  private apiUrl = 'https://backend.idp.insparkconnect.com/terraform'; 
   constructor(private http: HttpClient) { }
   generateTerraform(configs: any): Observable<any>{
     return this.http.post<any>(`${this.apiUrl}/generate-terraform`, configs);
