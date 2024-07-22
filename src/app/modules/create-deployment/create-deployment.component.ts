@@ -108,6 +108,44 @@ export class CreateDeploymentComponent {
         this.dockerTags = []; 
     }
 
+    // fetchBundleData(): void {
+    //     const bundleId = this.data.bundle._id;
+    //     this.apiService.getBundleById(bundleId).subscribe(
+    //         (bundle) => {
+    //             this.bundleData = bundle;
+    //             console.log('Bundle data:', this.bundleData);
+    
+    //             // Populate the envVars FormArray with the environment variables from the database                
+    //             if(this.bundleData.myDBconfig.envVariables.length === 0) {                    
+    //                 this.envVars.push(this.createEnvVariable());
+    //             }
+    //             else{
+    //                 this.bundleData.myDBconfig.envVariables.forEach(envVar => {
+    //                     this.envVars.push(this.createEnvVariable());
+    //                     const index = this.envVars.length - 1;
+    //                     this.envVars.at(index).patchValue({
+    //                         name: envVar.key,
+    //                         value: envVar.value
+    //                     });
+    //                 });
+    //             }
+    
+    //             // Update other form fields
+    //             this.step1.patchValue({
+    //                 dbType: this.bundleData.myDBconfig.type  || '',
+    //                 serviceName: this.bundleData.myDBconfig.serviceName || '',
+    //                 port: this.bundleData.myDBconfig.port || ''
+    //             });
+    //             if (this.bundleData.myDBconfig.serviceName) {
+    //                 this.step1.get('serviceName').disable();
+    //             }
+    //             this.step1.markAsDirty();
+    //         },
+    //         (error) => {
+    //             console.error('Error fetching bundle data:', error);
+    //         }
+    //     );
+    // }
     fetchBundleData(): void {
         const bundleId = this.data.bundle._id;
         this.apiService.getBundleById(bundleId).subscribe(
@@ -115,27 +153,41 @@ export class CreateDeploymentComponent {
                 this.bundleData = bundle;
                 console.log('Bundle data:', this.bundleData);
     
-                // Populate the envVars FormArray with the environment variables from the database                
-                if(this.bundleData.myDBconfig.envVariables.length === 0) {                    
-                    this.envVars.push(this.createEnvVariable());
-                }
-                else{
-                    this.bundleData.myDBconfig.envVariables.forEach(envVar => {
-                        this.envVars.push(this.createEnvVariable());
-                        const index = this.envVars.length - 1;
-                        this.envVars.at(index).patchValue({
-                            name: envVar.key,
-                            value: envVar.value
+                // Check if myDBconfig exists
+                if (this.bundleData.myDBconfig) {
+                    console.log('myDBconfig exists:', this.bundleData.myDBconfig);
+    
+                    // Check if envVariables exists and is an array
+                    if (Array.isArray(this.bundleData.myDBconfig.envVariables)) {
+                        this.bundleData.myDBconfig.envVariables.forEach(envVar => {
+                            this.envVars.push(this.createEnvVariable());
+                            const index = this.envVars.length - 1;
+                            this.envVars.at(index).patchValue({
+                                name: envVar.key,
+                                value: envVar.value
+                            });
                         });
+                    } else {
+                        console.warn('envVariables is not defined or not an array');
+                    }
+    
+                    // Update other form fields
+                    this.step1.patchValue({
+                        dbType: this.bundleData.myDBconfig.type || '',
+                        serviceName: this.bundleData.myDBconfig.serviceName || '',
+                        port: this.bundleData.myDBconfig.port || ''
                     });
+    
+                    // Disable serviceName field if it already exists
+                    if (this.bundleData.myDBconfig.serviceName) {
+                        this.step1.get('serviceName').disable();
+                    }
+                } else {
+                    console.warn('myDBconfig is not defined in the bundle data');
                 }
     
-                // Update other form fields
-                this.step1.patchValue({
-                    dbType: this.bundleData.myDBconfig.dbType || '',
-                    serviceName: this.bundleData.myDBconfig.serviceName || '',
-                    port: this.bundleData.myDBconfig.port || ''
-                });
+                // Mark the form as dirty to make the save button clickable
+                this.step1.markAsDirty();
             },
             (error) => {
                 console.error('Error fetching bundle data:', error);
@@ -143,7 +195,7 @@ export class CreateDeploymentComponent {
         );
     }
     
-
+    
     get step1(): FormGroup {
         return this.stepperForm.get('step1') as FormGroup;
     }
@@ -170,31 +222,7 @@ export class CreateDeploymentComponent {
     removeEnvVar(index: number): void {
         this.envVars.removeAt(index);
     }
-    // createProjectGroup(
-    //     projectName: string,
-    //     dockerImage: string,
-    //     projectId: string,
-    //     generated: boolean
-    // ): FormGroup {
-    //     return this.fb.group({
-    //         projectName: [{ value: projectName, disabled: true }],
-    //         registryType: ['', Validators.required],
-    //         privacy: ['', Validators.required],
-    //         dockerImage: [dockerImage, Validators.required],
-    //         serviceName: [{ value: '', disabled: generated }, Validators.required],
-    //         port: ['', Validators.required],
-    //         imagePullSecretName: [''],
-    //         dockerUsername: [''],
-    //         dockerPassword: [''],
-    //         dockerEmail: [''],
-    //         expose: [false],
-    //         host: ['', Validators.required],
-    //         projectEnvVars: this.fb.array([]),
-    //         projectId: [projectId],
-    //         generated: [generated]
-    //     });
-    // }
-    
+
     createProjectGroup(projectName: string, dockerImage: string, projectId: string, generated: boolean): FormGroup {
         return this.fb.group({
           projectName: [projectName, Validators.required],
@@ -215,6 +243,7 @@ export class CreateDeploymentComponent {
           projectEnvVars: this.fb.array([])
         });
       }
+      
       
       
       
@@ -328,7 +357,7 @@ export class CreateDeploymentComponent {
         const projectRequests = projectIds.map((id) =>
           this.projectService.getProjectsByIds(id)
         );
-    
+      
         forkJoin(projectRequests).subscribe(
           (projects: any[]) => {
             projects.forEach((project, index) => {
@@ -339,7 +368,7 @@ export class CreateDeploymentComponent {
                 project._id,
                 projectDeploymentConfig.length > 0
               );
-    
+      
               if (projectDeploymentConfig.length > 0) {
                 const deploymentConfig = projectDeploymentConfig[0] || {};
                 const envVariables = Array.isArray(deploymentConfig.envVariables)
@@ -348,7 +377,7 @@ export class CreateDeploymentComponent {
                       value: [envVar.value, Validators.required]
                     }))
                   : [];
-    
+      
                 projectGroup.patchValue({
                   serviceName: deploymentConfig.serviceName || '',
                   port: deploymentConfig.port || '',
@@ -358,16 +387,18 @@ export class CreateDeploymentComponent {
                   dockerEmail: deploymentConfig.dockerEmail || '',
                   expose: deploymentConfig.expose || false,
                   host: deploymentConfig.host || '',
+                  registryType: deploymentConfig.registryType || '', // Fetch registryType
+                  privacy: deploymentConfig.privacy || '', // Fetch privacy
                   generated: true
                 });
                 if (projectDeploymentConfig.length > 0) {
-                    projectGroup.get('serviceName').disable();
+                  projectGroup.get('serviceName').disable();
                 }
                 const projectEnvVarsArray = projectGroup.get('projectEnvVars') as FormArray;
                 projectEnvVarsArray.clear();
                 envVariables.forEach(envVarGroup => projectEnvVarsArray.push(envVarGroup));
               }
-    
+      
               this.projectsArray.push(projectGroup);
               this.dockerTags[index] = [];
               this.fetchDockerTags(index, project.DockerImage[0]); // Fetch tags automatically
@@ -382,11 +413,21 @@ export class CreateDeploymentComponent {
           }
         );
       }
+      
+      skipProjectDeployment(index: number): void {
+        const projectGroup = this.projectsArray.at(index) as FormGroup;
+        projectGroup.patchValue({ generated: true, skipped: true }); // Mark as skipped
+
+        this._snackBar.open('Project configuration skipped', 'OK', { duration: 2000 });
+
+        // Optionally navigate to the final step
+        this.verticalStepper.next(); // Move to the next step
+    }
     
     generateDatabaseDeployment(): void {
         const deploymentData = {
             dbType: this.step1.value.dbType,
-            serviceName: this.step1.value.serviceName,
+            serviceName: this.step1.get('serviceName').value,
             dbName: 'mydatabase',
             port: this.step1.value.port,
             envVariables: this.envVars.value,
@@ -423,6 +464,8 @@ export class CreateDeploymentComponent {
             port: projectGroup.value.port,
             image: projectGroup.value.dockerImage,
             dockerTag: projectGroup.value.dockerTag,
+            registryType: projectGroup.value.registryType,
+            privacy: projectGroup.value.privacy,
             envVariables: projectGroup.value.projectEnvVars,
             namespace: this.stepperForm.value.namespace,
             imagePullSecretName: projectGroup.value.imagePullSecretName,
@@ -444,7 +487,9 @@ export class CreateDeploymentComponent {
                 if (response.ingressFilePath) {
                     this.generatedFiles.push(response.ingressFilePath);
                 }
-    
+                if (deploymentData.host) {
+                    this.hosts.push(deploymentData.host);
+                }
                 projectGroup.patchValue({ generated: true });
     
                 this._snackBar.open(response.msg, 'OK', { duration: 3000 });
@@ -458,39 +503,12 @@ export class CreateDeploymentComponent {
             }
         );
     }
-    
-    // onSubmit(): void {
-    //     const deploymentData = {
-    //         files: this.generatedFiles,
-    //         name: this.stepperForm.value.namespace,
-    //         description: this.data.bundle.description,
-    //         bundles: this.data.bundle,
-    //         namespace: this.stepperForm.value.namespace,
-    //     };
-    
-    //     this.apiService.applyK8sFiles(deploymentData).subscribe(
-    //         (response) => {
-    //             const hostsData = { hosts: this.hosts };
-    //             this._snackBar.open('Great you are almost done', 'OK', {
-    //                 duration: 3000,
-    //             });
-    //             this.openHostsModal(hostsData);
-    //         },
-    //         (error) => {
-    //             this._snackBar.open('Error applying deployment', 'OK', {
-    //                 duration: 3000,
-    //                 panelClass: ['mat-snack-bar-error']
-    //             });
-    //             console.error('Error applying deployment:', error);
-    //         }
-    //     );
-    // }
+  
     onSubmit(): void {
         const deploymentData = {
-            filePaths: this.generatedFiles,
             name: this.stepperForm.value.namespace,
-             description: this.data.bundle.description,
-             bundles: this.data.bundle,
+            description: this.data.bundle.description,
+            bundles: this.data.bundle,
             namespace: this.stepperForm.value.namespace,
         };
     
@@ -511,7 +529,6 @@ export class CreateDeploymentComponent {
             }
         );
     }
-
     openHostsModal(data: { hosts: string[] }): void {
         const dialogRef = this.dialog.open(HostsModalComponent, {
             data: data,

@@ -104,6 +104,7 @@ export const appRoutes: Route[] = [
             { path: 'DeploymentsAdmin', loadChildren: () => import('app/modules/get-deployments/get-deployments.routes') },
             { path: 'DeploymentsUser', loadChildren: () => import('app/modules/get-deployements-user/get-deployments-user.routes') },
             {path : 'OTP' , loadChildren: () => import('app/modules/otp-verification/otp-verification.routes')},
+            {path : 'dashboard' , loadChildren: () => import('app/modules/deployment-stats/deployment-stats.routes')},
             // Apps
 
 

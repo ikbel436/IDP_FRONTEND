@@ -257,7 +257,12 @@ export class FinanceComponent implements OnInit, AfterViewInit, OnDestroy {
         );
     }
 
-    ngAfterViewInit(): void {}
+    ngAfterViewInit(): void {    this.fetchBundles();
+        const myStacksSection = document.getElementById('myStacksSection');
+        myStacksSection.addEventListener('click', () => {
+            console.log('My stacks section clicked');
+            this.cd.detectChanges();
+        });}
 
     ngOnDestroy(): void {
         this._unsubscribeAll.next(null);
@@ -312,14 +317,13 @@ export class FinanceComponent implements OnInit, AfterViewInit, OnDestroy {
             (bundles) => {
                 this.bundles = bundles;
                 console.log('Fetched bundles:', bundles);
-                this.cd.detectChanges(); 
+                this.cd.detectChanges(); // Ensure the view updates
             },
             (error) => {
                 console.error('Failed to fetch bundles:', error);
             }
         );
     }
-
     handleUpdatedRepository(data: { provider: string }, dialogRef: any): void {
         this.financeService
             .getRepositoryById(data.provider)

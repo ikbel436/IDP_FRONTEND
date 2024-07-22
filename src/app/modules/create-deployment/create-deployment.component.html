@@ -173,313 +173,202 @@
                         "
                         [formGroupName]="projectIndex"
                     >
-                        <div class="flex flex-col gt-xs:flex-row">
-                            <mat-form-field class="flex-auto gt-xs:pr-3">
-                                <mat-label>Project Name</mat-label>
-                                <mat-error
-                                    *ngIf="
-                                        projectGroup
-                                            .get('projectName')
-                                            .hasError('required')
-                                    "
-                                    >The project name is required.</mat-error
+                    <div class="flex flex-col gt-xs:flex-row">
+                        <mat-form-field class="flex-auto gt-xs:pr-3">
+                          <mat-label>Project Name</mat-label>
+                          <mat-error
+                            *ngIf="projectGroup.get('projectName').hasError('required')"
+                          >
+                            The project name is required.
+                          </mat-error>
+                          <input
+                            matInput
+                            formControlName="projectName"
+                            disabled
+                            readonly
+                          />
+                          <mat-icon
+                            class="icon-size-5"
+                            matPrefix
+                            [svgIcon]="'heroicons_solid:cube-transparent'"
+                          ></mat-icon>
+                        </mat-form-field>
+                      
+                        <mat-form-field
+                          class="w-full mb-2"
+                          appearance="outline"
+                          floatLabel="always"
+                        >
+                          <mat-label>Registry Type</mat-label>
+                          <mat-error
+                            *ngIf="projectGroup.get('registryType')?.hasError('required')"
+                          >
+                            Select a registry type.
+                          </mat-error>
+                          <mat-select
+                            formControlName="registryType"
+                            (selectionChange)="onRegistryTypeChange(projectIndex)"
+                          >
+                            <mat-option value="dockerHub">Docker Hub</mat-option>
+                            <mat-option value="azure">Azure Registry</mat-option>
+                            <mat-option value="gcp">GCP Registry</mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      
+                        <!-- Conditional display of radio buttons based on registry type -->
+                        <div class="p-4" *ngIf="projectGroup.get('registryType')?.value === 'dockerHub'">
+                          <ul class="grid w-full gap-6 md:grid-cols-2">
+                            <li>
+                              <input
+                                type="radio"
+                                id="publicHosting{{ projectIndex }}"
+                                formControlName="privacy"
+                                value="public"
+                                class="hidden peer w-2 h-2"
+                              />
+                              <label
+                                for="publicHosting{{ projectIndex }}"
+                                class="inline-flex items-center justify-between w-full p-5 text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700"
+                                (click)="onPrivacyChange(projectIndex, 'public')"
+                              >
+                                <div class="block">
+                                  <div class="w-full text-lg font-semibold">Public</div>
+                                  <div class="w-full">Good for small websites</div>
+                                </div>
+                                <svg
+                                  class="w-5 h-5 ms-3 rtl:rotate-180"
+                                  aria-hidden="true"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="none"
+                                  viewBox="0 0 14 10"
                                 >
-                                <input
-                                    matInput
-                                    formControlName="projectName"
-                                    disabled
-                                    readonly
-                                />
-                                <mat-icon
-                                    class="icon-size-5"
-                                    matPrefix
-                                    [svgIcon]="
-                                        'heroicons_solid:cube-transparent'
-                                    "
-                                ></mat-icon>
-                            </mat-form-field>
-
-                            <mat-form-field
-                                class="w-full mb-2"
-                                appearance="outline"
-                                floatLabel="always"
-                            >
-                                <mat-label>Registry Type</mat-label>
-                                <mat-error
-                                *ngIf="projectGroup.get('registryType')?.hasError('required')"
-                                    >Select a registry type.</mat-error
+                                  <path
+                                    stroke="currentColor"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M1 5h12m0 0L9 1m4 4L9 9"
+                                  />
+                                </svg>
+                              </label>
+                            </li>
+                            <li>
+                              <input
+                                type="radio"
+                                id="privateHosting{{ projectIndex }}"
+                                formControlName="privacy"
+                                value="private"
+                                class="hidden peer w-2 h-2"
+                              />
+                              <label
+                                for="privateHosting{{ projectIndex }}"
+                                class="inline-flex items-center justify-between w-full p-5 text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700"
+                                (click)="onPrivacyChange(projectIndex, 'private')"
+                              >
+                                <div class="block">
+                                  <div class="w-full text-lg font-semibold">Private</div>
+                                  <div class="w-full">Good for large websites</div>
+                                </div>
+                                <svg
+                                  class="w-5 h-5 ms-3 rtl:rotate-180"
+                                  aria-hidden="true"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="none"
+                                  viewBox="0 0 14 10"
                                 >
-                                <mat-select
-                                    formControlName="registryType"
-                                    (selectionChange)="
-                                        onRegistryTypeChange(projectIndex)
-                                    "
-                                >
-                                    <mat-option value="dockerHub"
-                                        >Docker Hub</mat-option
-                                    >
-                                    <mat-option value="azure"
-                                        >Azure Registry</mat-option
-                                    >
-                                    <mat-option value="gcp"
-                                        >GCP Registry</mat-option
-                                    >
-                                </mat-select>
-                            </mat-form-field>
-
-                            <!-- Conditional display of radio buttons based on registry type -->
-                            <div
-                                class="p-4"
-                                *ngIf="projectGroup.get('registryType')?.value === 'dockerHub'"
-                            >
-                                <ul class="grid w-full gap-6 md:grid-cols-2">
-                                    <li>
-                                        <input
-                                            type="radio"
-                                            id="publicHosting{{ projectIndex }}"
-                                            formControlName="privacy"
-                                            value="public"
-                                            class="hidden peer w-2 h-2"
-                                        />
-                                        <label
-                                            for="publicHosting{{
-                                                projectIndex
-                                            }}"
-                                            class="inline-flex items-center justify-between w-full p-5 text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700"
-                                            (click)="
-                                                onPrivacyChange(
-                                                    projectIndex,
-                                                    'public'
-                                                )
-                                            "
-                                        >
-                                            <div class="block">
-                                                <div
-                                                    class="w-full text-lg font-semibold"
-                                                >
-                                                    Public
-                                                </div>
-                                                <div class="w-full">
-                                                    Good for small websites
-                                                </div>
-                                            </div>
-                                            <svg
-                                                class="w-5 h-5 ms-3 rtl:rotate-180"
-                                                aria-hidden="true"
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                fill="none"
-                                                viewBox="0 0 14 10"
-                                            >
-                                                <path
-                                                    stroke="currentColor"
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                                    stroke-width="2"
-                                                    d="M1 5h12m0 0L9 1m4 4L9 9"
-                                                />
-                                            </svg>
-                                        </label>
-                                    </li>
-                                    <li>
-                                        <input
-                                            type="radio"
-                                            id="privateHosting{{
-                                                projectIndex
-                                            }}"
-                                            formControlName="privacy"
-                                            value="private"
-                                            class="hidden peer w-2 h-2"
-                                        />
-                                        <label
-                                            for="privateHosting{{
-                                                projectIndex
-                                            }}"
-                                            class="inline-flex items-center justify-between w-full p-5 text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700"
-                                            (click)="
-                                                onPrivacyChange(
-                                                    projectIndex,
-                                                    'private'
-                                                )
-                                            "
-                                        >
-                                            <div class="block">
-                                                <div
-                                                    class="w-full text-lg font-semibold"
-                                                >
-                                                    Private
-                                                </div>
-                                                <div class="w-full">
-                                                    Good for large websites
-                                                </div>
-                                            </div>
-                                            <svg
-                                                class="w-5 h-5 ms-3 rtl:rotate-180"
-                                                aria-hidden="true"
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                fill="none"
-                                                viewBox="0 0 14 10"
-                                            >
-                                                <path
-                                                    stroke="currentColor"
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                                    stroke-width="2"
-                                                    d="M1 5h12m0 0L9 1m4 4L9 9"
-                                                />
-                                            </svg>
-                                        </label>
-                                    </li>
-                                </ul>
-                            </div>
-
-                            <!-- Conditionally render Docker Image input for Public -->
-                            <div
-                                class="flex flex-col gt-xs:flex-row"
-                                *ngIf="
-                                    projectGroup.get('privacy').value ===
-                                    'public'
-                                "
-                            >
-                            <mat-form-field class="flex-auto gt-xs:pr-3">
-                                <mat-label>Docker Image</mat-label>
-                                <input
-                                    matInput
-                                    formControlName="dockerImage"
-                                    required
-                                />
-                                <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:cube-transparent'"></mat-icon>
-                                <mat-error *ngIf="projectGroup.get('dockerImage')?.hasError('required')">
-                                    A Docker image is required for public hosting.
-                                </mat-error>
-                            </mat-form-field>
-                        
-                            <mat-form-field class="flex-auto gt-xs:pl-3">
-                                <mat-label>Docker Image Tag</mat-label>
-                                <mat-select formControlName="dockerTag" required>
-                                    <mat-option *ngFor="let tag of dockerTags[projectIndex]" [value]="tag">
-                                        {{ tag }}
-                                    </mat-option>
-                                </mat-select>
-                                <mat-error *ngIf="projectGroup.get('dockerTag')?.hasError('required')">
-                                    A Docker image tag is required.
-                                </mat-error>
-                            </mat-form-field>
-                            </div>
-
-                            <!-- Conditionally render Private fields -->
-                            <div
-                                class="flex flex-col gt-xs:flex-row"
-                                *ngIf="
-                                    projectGroup.get('privacy').value ===
-                                    'private'
-                                "
-                            >
-                            <mat-form-field class="flex-auto gt-xs:pr-3">
-                                <mat-label>Docker Image</mat-label>
-                                <input
-                                  matInput
-                                  formControlName="dockerImage"
-                                  required
-                                />
-                                <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:cube-transparent'"></mat-icon>
-                                <mat-error *ngIf="projectGroup.get('dockerImage')?.hasError('required')">
-                                  A Docker image and credentials are required for private hosting.
-                                </mat-error>
-                              </mat-form-field>
-                            
-                              <mat-form-field class="flex-auto gt-xs:pl-3">
-                                <mat-label>Docker Image Tag</mat-label>
-                                <mat-select formControlName="dockerTag" required>
-                                  <mat-option *ngFor="let tag of dockerTags[projectIndex]" [value]="tag">
-                                    {{ tag }}
-                                  </mat-option>
-                                </mat-select>
-                                <mat-error *ngIf="projectGroup.get('dockerTag')?.hasError('required')">
-                                  A Docker image tag is required.
-                                </mat-error>
-                              </mat-form-field>
-                                <mat-form-field class="flex-auto gt-xs:pr-3">
-                                    <mat-label
-                                        >Image Pull Secret Name</mat-label
-                                    >
-                                    <input
-                                        matInput
-                                        formControlName="imagePullSecretName"
-                                        required
-                                    />
-                                    <mat-error
-                                        *ngIf="
-                                            projectGroup
-                                                .get('imagePullSecretName')
-                                                .hasError('required')
-                                        "
-                                        >An image pull secret name is required
-                                        for private hosting.</mat-error
-                                    >
-                                </mat-form-field>
-                                <mat-form-field class="flex-auto gt-xs:pr-3">
-                                    <mat-label>Docker Username</mat-label>
-                                    <input
-                                        matInput
-                                        formControlName="dockerUsername"
-                                        required
-                                    />
-                                    <mat-error
-                                        *ngIf="
-                                            projectGroup
-                                                .get('dockerUsername')
-                                                .hasError('required')
-                                        "
-                                        >A Docker username is required for
-                                        private hosting.</mat-error
-                                    >
-                                </mat-form-field>
-                                <mat-form-field class="flex-auto gt-xs:pr-3">
-                                    <mat-label>Docker Token</mat-label>
-                                    <input
-                                        matInput
-                                        formControlName="dockerPassword"
-                                        type="password"
-                                        required
-                                    />
-                                    <mat-error
-                                        *ngIf="
-                                            projectGroup
-                                                .get('dockerPassword')
-                                                .hasError('required')
-                                        "
-                                        >A Docker password is required for
-                                        private hosting.</mat-error
-                                    >
-                                </mat-form-field>
-                                <mat-form-field class="flex-auto gt-xs:pr-3">
-                                    <mat-label>Docker Email</mat-label>
-                                    <input
-                                        matInput
-                                        formControlName="dockerEmail"
-                                        required
-                                    />
-                                    <mat-error
-                                        *ngIf="
-                                            projectGroup
-                                                .get('dockerEmail')
-                                                .hasError('required')
-                                        "
-                                        >A Docker email is required for private
-                                        hosting.</mat-error
-                                    >
-                                    <mat-error
-                                        *ngIf="
-                                            projectGroup
-                                                .get('dockerEmail')
-                                                .hasError('email')
-                                        "
-                                        >Please enter a valid Docker email
-                                        address.</mat-error
-                                    >
-                                </mat-form-field>
-                            </div>
+                                  <path
+                                    stroke="currentColor"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M1 5h12m0 0L9 1m4 4L9 9"
+                                  />
+                                </svg>
+                              </label>
+                            </li>
+                          </ul>
                         </div>
+                      
+                        <!-- Conditionally render Docker Image input for Public -->
+                        <div class="flex flex-col gt-xs:flex-row" *ngIf="projectGroup.get('privacy').value === 'public'">
+                          <mat-form-field class="flex-auto gt-xs:pr-3">
+                            <mat-label>Docker Image</mat-label>
+                            <input matInput formControlName="dockerImage" required />
+                            <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:cube-transparent'"></mat-icon>
+                            <mat-error *ngIf="projectGroup.get('dockerImage')?.hasError('required')">
+                              A Docker image is required for public hosting.
+                            </mat-error>
+                          </mat-form-field>
+                      
+                          <mat-form-field class="flex-auto gt-xs:pl-3">
+                            <mat-label>Docker Image Tag</mat-label>
+                            <mat-select formControlName="dockerTag" required>
+                              <mat-option *ngFor="let tag of dockerTags[projectIndex]" [value]="tag">
+                                {{ tag }}
+                              </mat-option>
+                            </mat-select>
+                            <mat-error *ngIf="projectGroup.get('dockerTag')?.hasError('required')">
+                              A Docker image tag is required.
+                            </mat-error>
+                          </mat-form-field>
+                        </div>
+                      
+                        <!-- Conditionally render Private fields -->
+                        <div class="flex flex-col gt-xs:flex-row" *ngIf="projectGroup.get('privacy').value === 'private'">
+                          <mat-form-field class="flex-auto gt-xs:pr-3">
+                            <mat-label>Docker Image</mat-label>
+                            <input matInput formControlName="dockerImage" required />
+                            <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:cube-transparent'"></mat-icon>
+                            <mat-error *ngIf="projectGroup.get('dockerImage')?.hasError('required')">
+                              A Docker image and credentials are required for private hosting.
+                            </mat-error>
+                          </mat-form-field>
+                      
+                          <mat-form-field class="flex-auto gt-xs:pl-3">
+                            <mat-label>Docker Image Tag</mat-label>
+                            <mat-select formControlName="dockerTag" required>
+                              <mat-option *ngFor="let tag of dockerTags[projectIndex]" [value]="tag">
+                                {{ tag }}
+                              </mat-option>
+                            </mat-select>
+                            <mat-error *ngIf="projectGroup.get('dockerTag')?.hasError('required')">
+                              A Docker image tag is required.
+                            </mat-error>
+                          </mat-form-field>
+                      
+                          <mat-form-field class="flex-auto gt-xs:pr-3">
+                            <mat-label>Image Pull Secret Name</mat-label>
+                            <input matInput formControlName="imagePullSecretName" required />
+                            <mat-error *ngIf="projectGroup.get('imagePullSecretName')?.hasError('required')">
+                              An image pull secret name is required for private hosting.
+                            </mat-error>
+                          </mat-form-field>
+                          <mat-form-field class="flex-auto gt-xs:pr-3">
+                            <mat-label>Docker Username</mat-label>
+                            <input matInput formControlName="dockerUsername" required />
+                            <mat-error *ngIf="projectGroup.get('dockerUsername')?.hasError('required')">
+                              A Docker username is required for private hosting.
+                            </mat-error>
+                          </mat-form-field>
+                          <mat-form-field class="flex-auto gt-xs:pr-3">
+                            <mat-label>Docker Token</mat-label>
+                            <input matInput formControlName="dockerPassword" type="password" required />
+                            <mat-error *ngIf="projectGroup.get('dockerPassword')?.hasError('required')">
+                              A Docker password is required for private hosting.
+                            </mat-error>
+                          </mat-form-field>
+                          <mat-form-field class="flex-auto gt-xs:pr-3">
+                            <mat-label>Docker Email</mat-label>
+                            <input matInput formControlName="dockerEmail" required />
+                            <mat-error *ngIf="projectGroup.get('dockerEmail')?.hasError('required')">
+                              A Docker email is required for private hosting.
+                            </mat-error>
+                            <mat-error *ngIf="projectGroup.get('dockerEmail')?.hasError('email')">
+                              Please enter a valid Docker email address.
+                            </mat-error>
+                          </mat-form-field>
+                        </div>
+                      </div>
                         <div class="flex flex-col gt-xs:flex-row">
                             <mat-form-field class="flex-auto gt-xs:pl-3">
                                 <mat-label>Service Name</mat-label>
@@ -727,12 +616,23 @@
                             mat-flat-button
                             (click)="generateProjectDeployment(projectIndex)"
                             [color]="'primary'"
-                            [disabled]="projectGroup.pristine || projectGroup.invalid"
+                            [disabled]="projectGroup.invalid || (!projectGroup.value.generated && projectGroup.pristine)"
                             type="button"
-                        >
+                          >
                             {{ projectGroup.value.generated ? 'Update Deployment for' : 'Generate Deployment for' }}
                             {{ projectGroup.value.projectName }}
-                        </button>
+                          </button>
+                          <button
+                          class="px-8 ml-2"
+                          mat-flat-button
+                          [color]="'warn'"
+                          type="button"
+                          matStepperNext
+
+                      >
+                      
+                          Skip
+                      </button>
                         </div>
                     </div>
                 </div>

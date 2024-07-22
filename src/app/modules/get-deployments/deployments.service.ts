@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
@@ -11,4 +11,14 @@ export class DeploymentsService {
   getAllDeployments(): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/deploymentsUser`);
   }
+  getDeploymentStats(timeframe: string): Observable<any> {
+    const params = new HttpParams().set('timeframe', timeframe);
+    return this.http.get(`${this.apiUrl}/deployment-stats`, { params });
+}
+getDeploymentSuccessRate(timeframe: string): Observable<any> {
+  return this.http.get(`${this.apiUrl}/stat-namespace?timeframe=${timeframe}`);
+}
+getDeploymentFrequency(timeframe: string): Observable<any> {
+  return this.http.get<any>(`${this.apiUrl}/stat-avg-user`, { params: { timeframe } });
+}
 }
