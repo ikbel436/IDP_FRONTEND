@@ -1,7 +1,7 @@
 
 import { NgIf } from '@angular/common';
 import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
-import { FormsModule, NgForm, ReactiveFormsModule, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, NgForm, ReactiveFormsModule, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -15,6 +15,8 @@ import { AuthService } from 'app/core/auth/auth.service';
 import { LanguagesComponent } from 'app/layout/common/languages/languages.component';
 import { TranslocoModule } from '@ngneat/transloco';
 import { User } from 'app/core/user/user.types';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { switchMap } from 'rxjs/operators';
 
 
 @Component({
@@ -26,96 +28,91 @@ import { User } from 'app/core/user/user.types';
     imports: [RouterLink, FuseAlertComponent, TranslocoModule, LanguagesComponent, NgIf, FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule, MatCheckboxModule, MatProgressSpinnerModule],
 })
 export class AuthSignInComponent implements OnInit {
+    
     @ViewChild('signInNgForm') signInNgForm: NgForm;
 
     alert: { type: FuseAlertType; message: string } = {
-        type: 'success',
-        message: '',
+      type: 'success',
+      message: '',
     };
-    signInForm: UntypedFormGroup;
+    signInForm: FormGroup;
     showAlert: boolean = false;
-
-    /**
-     * Constructor
-     */
+    loading: boolean = false;
+  
     constructor(
-        private _activatedRoute: ActivatedRoute,
-        private _authService: AuthService,
-        private _formBuilder: UntypedFormBuilder,
-        private _router: Router,
-    ) {
-    }
-
-    // -----------------------------------------------------------------------------------------------------
-    // @ Lifecycle hooks
-    // -----------------------------------------------------------------------------------------------------
-
-    /**
-     * On init
-     */
+      private _activatedRoute: ActivatedRoute,
+      private _authService: AuthService,
+      private _formBuilder: FormBuilder,
+      private _router: Router,
+      private _snackBar: MatSnackBar
+    ) {}
+  
     ngOnInit(): void {
-        // Create the form
-        this.signInForm = this._formBuilder.group({
-            email: ['', [Validators.required, Validators.email]],
-            password: ['', Validators.required],
-            rememberMe: [''],
-        });
+      this.signInForm = this._formBuilder.group({
+        email: ['', [Validators.required, Validators.email]],
+        password: ['', Validators.required],
+        rememberMe: [''],
+      });
     }
-
-    // -----------------------------------------------------------------------------------------------------
-    // @ Public methods
-    // -----------------------------------------------------------------------------------------------------
-
-    /**
-     * Sign in
-     */
+  
     signIn(): void {
-        // Return if the form is invalid
         if (this.signInForm.invalid) {
-            return;
+          console.log('Invalid form');
+          return;
         }
+    
         const credentials = this.signInForm.value;
-        // Disable the form
         this.signInForm.disable();
-
-        // Hide the alert
         this.showAlert = false;
-
-        // Sign in
-        this._authService.signIn(credentials)
-            .subscribe(
-                () => {
-                    // Set the redirect url.
-                    // The '/signed-in-redirect' is a dummy url to catch the request and redirect the user
-                    // to the correct page after a successful sign in. This way, that url can be set via
-                    // routing file and we don't have to touch here.
-                    const redirectURL = this._activatedRoute.snapshot.queryParamMap.get('redirectURL') || '/signed-in-redirect';
-
-                    // Navigate to the redirect url
-                    this._router.navigateByUrl(redirectURL);
-
-                },
-                (response) => {
-                    // Re-enable the form
-                    this.signInForm.enable();
-
-                    // Reset the form
-                    this.signInNgForm.resetForm();
-
-                    // Set the alert
-                    this.alert = {
-                        type: 'error',
-                        message: 'Wrong email or password',
-                    };
-
-                    // Show the alert
-                    this.showAlert = true;
-                },
-            );
-
+        this.loading = true;
+    
+        this._authService.signIn(credentials).pipe(
+          switchMap((response) => {
+            if (response.untrustedDevice) {
+              return this._authService.generateOtp(credentials.email);
+            } else {
+              this.navigateToHome();
+              return [];
+            }
+          })
+        ).subscribe({
+          next: () => {},
+          error: (error) => {
+            this.signInForm.enable();
+            this.signInNgForm.resetForm();
+            if (error.error.untrustedDevice) {
+              this.handleUntrustedDevice(credentials.email);
+            } else {
+              this.alert = { type: 'error', message: 'Wrong email or password' };
+              this.showAlert = true;
+            }
+            this.loading = false;
+          }
+        });
+      }
+  
+    generateOtp(email: string) {
+      return this._authService.generateOtp(email).pipe(
+        switchMap(() => {
+          this.handleUntrustedDevice(email);
+          return [];
+        })
+      );
     }
-
+  
+    handleUntrustedDevice(email: string): void {
+      this._snackBar.open('Untrusted device. You will be logged out.', 'Close', {
+        duration: 4000,
+      });
+  
+      setTimeout(() => {
+        this._authService.signOut();
+        this._router.navigate(['/confirmation-required'], { queryParams: { email } });
+      }, 4000);
+    }
+  
     navigateToHome(): void {
-        this._router.navigate(['/home']); // '/home' est l'URL de votre page d'accueil
+      this._router.navigate(['/home']);
+      this.loading = false;
     }
-}
+  }

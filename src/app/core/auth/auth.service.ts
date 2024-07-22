@@ -1,4 +1,4 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AuthUtils } from 'app/core/auth/auth.utils';
 import { UserService } from 'app/core/user/user.service';
@@ -52,6 +52,12 @@ export class AuthService {
     }
     getUserEmail(): string {
         return localStorage.getItem('email');
+    }
+    getUserDeviceId(): string {
+        return localStorage.getItem('deviceId');
+    }
+    getUserDeviceInfo(): string {
+        return localStorage.getItem('deviceInfo');
     }
     /**
      * Setter & getter for access token
@@ -135,38 +141,34 @@ export class AuthService {
         );
     }
 
-    /**
-     * Sign in
-     *
-     * @param credentials
-     */
     signIn(credentials: { email: string; password: string }): Observable<any> {
-        // Throw error, if the user is already logged in
-        if (this._authenticated) {
-            return throwError('User is already logged in.');
-        }
-        const url = `${this.apiUrl}/login`;
-        return this._httpClient.post<any>(url, credentials).pipe(
-            switchMap((response: any) => {
-                this.accessToken = response.token;
-
-                localStorage.setItem('userRole', response.user.Role);
-                localStorage.setItem('myProjects', response.user.myProject);
-                localStorage.setItem('myRepos', response.user.myRepo);
-                localStorage.setItem('email', response.user.email);
-                this._authenticated = true;
-
-                this._userService.user = response.user;
-
-                // Return a new observable with the response
-                return this._userService.get();
-            }),
-            tap((user: User) => {
-                // Update the user in UserService
-                this._userService.user = user;
-            })
+        return this._httpClient.post(`${this.apiUrl}/login`, credentials).pipe(
+          tap((response: any) => {
+            if (!response.untrustedDevice) {
+              localStorage.setItem('token', response.token);
+              localStorage.setItem('user', JSON.stringify(response.user));
+            }
+            
+          }
+        ),
+          
+          catchError(this.handleError),
+          
         );
-    }
+      }
+/**
+ * The `handleError` function in TypeScript logs an error and returns an Observable that emits the
+ * error.
+ * @param {HttpErrorResponse} error - The `error` parameter in the `handleError` function is of type
+ * `HttpErrorResponse`, which is an object representing an HTTP response error from a server. It
+ * contains information about the error such as status code, error message, headers, etc.
+ * @returns The `handleError` method is returning an Observable that emits an error using the
+ * `throwError` function from RxJS.
+ */
+      private handleError(error: HttpErrorResponse): Observable<never> {
+        console.error('AuthService::handleError', error);
+        return throwError(error);
+      }
 
     /**
      * Sign in using the access token
@@ -216,6 +218,8 @@ export class AuthService {
         localStorage.removeItem('myProjects');
         localStorage.removeItem('myRepos');
         localStorage.removeItem('email');
+        localStorage.removeItem('deviceId');
+        localStorage.removeItem('deviceInfo');
 
         this._user.next(null);
 
@@ -274,16 +278,41 @@ export class AuthService {
         return this._httpClient.get<any>(`${this.apiUrl}/current`);
     }
 
-    verifyOtp(userEmail: string, userOtp: string): Observable<any> {
+    verifyOtp(userEmail: string, userOtp: string, deviceId: any, deviceInfo: any): Observable<any> {
         return this._httpClient.post(`${this.verifUrl}/verify-otp`, {
             userEmail,
             userOtp,
-        });
+            deviceId,
+            deviceInfo
+        }).pipe(
+            tap((response: any) => {
+                if (response && response.deviceId) {
+                    localStorage.setItem('deviceId', response.deviceId);
+                    localStorage.setItem('deviceInfo', JSON.stringify(response.deviceInfo));                    
+                }
+            })
+        );
     }
+    
+
 
     generateOtp(userEmail: string): Observable<any> {
-        return this._httpClient.post(`${this.verifUrl}/generate-otp`, {
-            userEmail,
+        return this._httpClient.post(`${this.verifUrl}/generate-otp`, { userEmail }).pipe(
+          tap((response: any) => {
+            console.log('Response:', response);
+          }),
+          catchError(this.handleError)
+        );
+      }
+
+      checkDevice(email: string, deviceId: string, deviceInfo: any): Observable<any> {
+        return this._httpClient.post(`${this.apiUrl}/check-device`, {
+            email,
+            deviceId,
+            deviceInfo
         });
     }
+    
 }
+
+
