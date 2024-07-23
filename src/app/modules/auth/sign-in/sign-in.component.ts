@@ -105,7 +105,10 @@ export class AuthSignInComponent implements OnInit {
     }
   
     navigateToHome(): void {
-      this._router.navigate(['/userHome']);
+      const redirectURL = this._activatedRoute.snapshot.queryParamMap.get('redirectURL') || '/userHome';
+      // Navigate to the redirect url
+      this._router.navigateByUrl(redirectURL);
       this.loading = false;
     }
+    
   }

@@ -142,11 +142,22 @@ export class AuthService {
     }
 
     signIn(credentials: { email: string; password: string }): Observable<any> {
+        if (this._authenticated) {
+            return throwError('User is already logged in.');
+        }
         return this._httpClient.post(`${this.apiUrl}/login`, credentials).pipe(
           tap((response: any) => {
+            this.accessToken = response.token;
+
+            localStorage.setItem('userRole', response.user.Role);
+            localStorage.setItem('myProjects', response.user.myProject);
+            localStorage.setItem('myRepos', response.user.myRepo);
+            localStorage.setItem('token', response.token);
+            localStorage.setItem('user', JSON.stringify(response.user));
+            this._authenticated = true;
             if (!response.untrustedDevice) {
-              localStorage.setItem('token', response.token);
-              localStorage.setItem('user', JSON.stringify(response.user));
+            
+                
             }
             
           }
