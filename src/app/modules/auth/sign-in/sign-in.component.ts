@@ -91,14 +91,7 @@ export class AuthSignInComponent implements OnInit {
         });
       }
   
-    generateOtp(email: string) {
-      return this._authService.generateOtp(email).pipe(
-        switchMap(() => {
-          this.handleUntrustedDevice(email);
-          return [];
-        })
-      );
-    }
+  
   
     handleUntrustedDevice(email: string): void {
       this._snackBar.open('Untrusted device. You will be logged out.', 'Close', {
@@ -112,7 +105,7 @@ export class AuthSignInComponent implements OnInit {
     }
   
     navigateToHome(): void {
-      this._router.navigate(['/home']);
+      this._router.navigate(['/userHome']);
       this.loading = false;
     }
   }

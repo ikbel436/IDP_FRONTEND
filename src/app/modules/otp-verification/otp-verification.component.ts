@@ -45,6 +45,10 @@ export class OTPVerificationComponent implements AfterViewInit {
     this.startCountdown();
   }
 
+  ngOnInit(): void {
+    this.generateOtp();
+  }
+
   startCountdown(): void {
     let countdown = 5 * 60; // Initial countdown in seconds
     setInterval(() => {

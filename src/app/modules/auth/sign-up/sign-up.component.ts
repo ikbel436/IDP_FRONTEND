@@ -191,7 +191,7 @@ export class AuthSignUpComponent implements OnInit {
     }
     this.isLoadingOTP = true; // Start loading
     this.signUpForm.disable();
-    
+
     const payloadForKeycloak = {
         name: this.signUpForm.value.name,
         email: this.signUpForm.value.email.toLowerCase(),
@@ -208,10 +208,27 @@ export class AuthSignUpComponent implements OnInit {
         agreements: this.signUpForm.value.agreements,
     };
 
-    // Call the AuthService to sign up and generate OTP
-    this._authService.signUp(payLoadForDatabase).pipe(
-        switchMap(() => this._authService.generateOtp(this.signUpForm.value.email)),
-    ).subscribe({
+    // this._authService.signUp(payLoadForDatabase).pipe(
+    //     switchMap(() => this._authService.generateOtp(this.signUpForm.value.email)),
+    // ).subscribe({
+    //     complete: () => {
+    //         this.isLoadingOTP = false; // Stop loading
+    //         this._router.navigate(['/sign-in']);
+    //     },
+    //     error: () => {
+    //         this.isLoadingOTP = false; // Stop loading
+    //         // Re-enable the form
+    //         this.signUpForm.enable();
+    //         // Reset the form
+    //         this.signUpForm.controls.password.setValue('');
+    //         this.signUpForm.controls.passwordConfirm.setValue('');
+    //         this.signUpForm.controls.recaptchaReactive.setValue(null);
+    //         this.signUpForm.controls.email.setValue('');
+    //     },
+    // });
+
+    // Directly calling the signUp method without generating OTP
+    this._authService.signUp(payLoadForDatabase).subscribe({
         complete: () => {
             this.isLoadingOTP = false; // Stop loading
             this._router.navigate(['/sign-in']);
@@ -228,6 +245,7 @@ export class AuthSignUpComponent implements OnInit {
         },
     });
 }
+
 
 
   resolved(captchaResponse: string) {
