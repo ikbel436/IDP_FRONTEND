@@ -150,9 +150,7 @@ export class AuthService {
             this.accessToken = response.token;
 
             localStorage.setItem('userRole', response.user.Role);
-            localStorage.setItem('myProjects', response.user.myProject);
-            localStorage.setItem('myRepos', response.user.myRepo);
-            localStorage.setItem('token', response.token);
+            localStorage.setItem('email',response.user.email);
             localStorage.setItem('user', JSON.stringify(response.user));
             this._authenticated = true;
             if (!response.untrustedDevice) {
