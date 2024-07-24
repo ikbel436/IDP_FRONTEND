@@ -152,12 +152,11 @@ export class AuthService {
             localStorage.setItem('userRole', response.user.Role);
             localStorage.setItem('myProjects', response.user.myProject);
             localStorage.setItem('myRepos', response.user.myRepo);
-            localStorage.setItem('token', response.token);
             localStorage.setItem('user', JSON.stringify(response.user));
             this._authenticated = true;
             if (!response.untrustedDevice) {
             
-                
+
             }
             
           }
@@ -176,10 +175,10 @@ export class AuthService {
  * @returns The `handleError` method is returning an Observable that emits an error using the
  * `throwError` function from RxJS.
  */
-      private handleError(error: HttpErrorResponse): Observable<never> {
-        console.error('AuthService::handleError', error);
-        return throwError(error);
-      }
+    //   private handleError(error: HttpErrorResponse): Observable<never> {
+    //     console.error('AuthService::handleError', error);
+    //     return throwError(error);
+    //   }
 
     /**
      * Sign in using the access token
@@ -246,11 +245,35 @@ export class AuthService {
      *
      * @param user
      */
-    signUp(user: any): Observable<any> {
-        const url = `${this.apiUrl}/register`;
-        localStorage.setItem('email', user.email);
-        return this._httpClient.post(url, user);
+  signUp(user: any): Observable<any> {
+    const url = `${this.apiUrl}/register`;
+    localStorage.setItem('email', user.email);
+    return this._httpClient.post(url, user).pipe(
+      catchError((error: HttpErrorResponse) => {
+        return throwError(error);
+      })
+    );
+  }
+
+  /**
+ * The `handleError` function in TypeScript logs an error and returns an Observable that emits the
+ * error.
+ * @param {HttpErrorResponse} error - The `error` parameter in the `handleError` function is of type
+ * `HttpErrorResponse`, which is an object representing an HTTP response error from a server. It
+ * contains information about the error such as status code, error message, headers, etc.
+ * @returns The `handleError` method is returning an Observable that emits an error using the
+ * `throwError` function from RxJS.
+ */
+  private handleError(error: HttpErrorResponse) {
+    let errorMessage = 'Unknown error!';
+    if (error.error instanceof ErrorEvent) {
+      errorMessage = `Error: ${error.error.message}`;
+    } else {
+      errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
     }
+    console.error(errorMessage);
+    return throwError(error);
+  }
 
     /**
      * Unlock session
