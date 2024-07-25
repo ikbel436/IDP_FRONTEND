@@ -1,0 +1,164 @@
+:host {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.bg-card {
+    background-color: #fff;
+}
+
+.shadow {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.rounded-2xl {
+    border-radius: 1rem;
+}
+
+.flex-auto {
+    flex: 1 1 auto;
+}
+
+.flex {
+    display: flex;
+}
+
+.flex-col {
+    flex-direction: column;
+}
+
+.flex-row {
+    flex-direction: row;
+}
+
+.flex-wrap {
+    flex-wrap: wrap;
+}
+
+.gt-xs\:flex-row {
+    @media (min-width: 600px) {
+        flex-direction: row;
+    }
+}
+
+.gt-xs\:items-start {
+    @media (min-width: 600px) {
+        align-items: flex-start;
+    }
+}
+
+.justify-end {
+    justify-content: flex-end;
+}
+
+.text-lg {
+    font-size: 1.125rem;
+}
+
+.font-medium {
+    font-weight: 500;
+}
+
+.text-secondary {
+    color: #6b7280;
+}
+
+.mb-6 {
+    margin-bottom: 1.5rem;
+}
+
+.mt-6 {
+    margin-top: 1.5rem;
+}
+
+.mt-2 {
+    margin-top: 0.5rem;
+}
+
+.text-4xl {
+    font-size: 2.25rem;
+}
+
+.font-extrabold {
+    font-weight: 800;
+}
+
+.tracking-tight {
+    letter-spacing: -0.025em;
+}
+
+.mat-form-field {
+    width: 100%;
+}
+
+.mat-form-field-appearance-outline .mat-form-field-outline {
+    border-radius: 1rem;
+}
+
+.mat-form-field-appearance-outline .mat-form-field-outline-thick {
+    border-width: 2px;
+}
+
+.mat-form-field-appearance-outline .mat-form-field-outline-start {
+    border-radius: 1rem 0 0 1rem;
+}
+
+.mat-form-field-appearance-outline .mat-form-field-outline-end {
+    border-radius: 0 1rem 1rem 0;
+}
+
+.mat-form-field-appearance-outline .mat-form-field-outline-gap {
+    margin-top: 0;
+}
+
+.mat-form-field-appearance-outline .mat-form-field-infix {
+    padding: 1rem 1.5rem;
+}
+
+.mat-icon {
+    vertical-align: middle;
+}
+.upload-container {
+    position: relative;
+}
+
+.upload-label {
+    font-weight: bold;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.upload-box {
+    border: 2px dashed #d1d5db;
+    border-radius: 8px;
+    padding: 32px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.3s ease-in-out;
+}
+
+.upload-box:hover {
+    border-color: #4f46e5;
+}
+
+.upload-icon {
+    font-size: 48px;
+    color: #9ca3af;
+}
+
+.upload-subtext {
+    display: block;
+    color: #6b7280;
+    margin-top: 8px;
+}
+
+.upload-input {
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+}

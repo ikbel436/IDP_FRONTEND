@@ -42,7 +42,9 @@ export class FuseNavigationService {
                 children: [
                     { type: 'basic', title: 'Add Cloud Services', icon: 'heroicons_outline:pencil-square', link: '/addCloudService' },
                     { type: 'basic', title: 'Cloud Services', icon: 'heroicons_outline:list-bullet', link: '/listCloudServices' },
-                    { type: 'basic', title: 'Deployments', icon: 'heroicons_outline:list-bullet', link: '/DeploymentsAdmin' },]
+                    { type: 'basic', title: 'Deployments', icon: 'heroicons_outline:list-bullet', link: '/DeploymentsAdmin' },
+                    { type: 'basic', title: 'Add Infrastructure', icon: 'heroicons_outline:list-bullet', link: '/infrastructure' },
+                    { type: 'basic', title: 'Infrastructure', icon: 'heroicons_outline:list-bullet', link: '/getInfra' },]
             },
 
 
