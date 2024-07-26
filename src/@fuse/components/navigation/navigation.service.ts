@@ -42,14 +42,30 @@ export class FuseNavigationService {
                 children: [
                     { type: 'basic', title: 'Add Cloud Services', icon: 'heroicons_outline:pencil-square', link: '/addCloudService' },
                     { type: 'basic', title: 'Cloud Services', icon: 'heroicons_outline:list-bullet', link: '/listCloudServices' },
-                    { type: 'basic', title: 'Deployments', icon: 'heroicons_outline:list-bullet', link: '/DeploymentsAdmin' },
-                    { type: 'basic', title: 'Add Infrastructure', icon: 'heroicons_outline:list-bullet', link: '/infrastructure' },
-                    { type: 'basic', title: 'Infrastructure', icon: 'heroicons_outline:list-bullet', link: '/getInfra' },]
+                   
+                   ]
             },
 
+            {
+                id: 'Cloud',
+                title: 'Infrastructure',
+                icon: 'heroicons_outline:bolt',
+                type: 'group', children: [
+                    { type: 'basic', title: 'Add Infrastructure', icon: 'playlist_add', link: '/infrastructure' },
+                    { type: 'basic', title: 'Infrastructure', icon: 'mat_solid:view_list', link: '/getInfra' },]
+      
+     },
+     {
+        id: 'demployment',
+        title: 'Demplyment',
+        icon: 'heroicons_outline:globe-alt',
+        type: 'basic',
+        link: '/DeploymentsAdmin'
+    }, ]
+            
 
 
-        ];
+        ;
     }
 
     getUserNavigation(): any[] {

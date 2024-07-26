@@ -227,7 +227,7 @@ export class CreateDeploymentComponent {
         return this.fb.group({
             projectName: [projectName, Validators.required],
             dockerImage: [dockerImage, Validators.required],
-            dockerTag: ['', Validators.required], // Ensure this is initialized
+            dockerTag: ['main', Validators.required], // Ensure this is initialized
             registryType: ['', Validators.required],
             privacy: ['', Validators.required],
             projectId: [projectId],
@@ -300,6 +300,15 @@ export class CreateDeploymentComponent {
     onRegistryTypeChange(projectIndex: number): void {
         const projectGroup = this.projectsArray.at(projectIndex) as FormGroup;
         this.clearValidators(projectGroup);
+        const registryType = projectGroup.get('registryType')?.value;
+        if (registryType === 'github') {
+            projectGroup.get('dockerTag')?.setValue('main');
+            this.dockerTags[projectIndex] = ['main']; // Initialize with 'main'
+            this.fetchDockerTags(projectIndex, ''); // Fetch additional tags for GitHub repository
+            
+        } 
+
+        projectGroup.updateValueAndValidity();
     }
 
     onPrivacyChange(projectIndex: number, privacy: string): void {
