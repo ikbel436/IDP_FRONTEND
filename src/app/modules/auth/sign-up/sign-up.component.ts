@@ -197,6 +197,8 @@ export class AuthSignUpComponent implements OnInit {
         email: this.signUpForm.value.email.toLowerCase(),
         password: this.signUpForm.value.passwordConfirm,
         role: ['User'],
+        birthDate: this.signUpForm.value.birthDate, 
+        
     };
 
     const payLoadForDatabase = {

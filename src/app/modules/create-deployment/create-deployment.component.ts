@@ -254,7 +254,7 @@ export class CreateDeploymentComponent {
       onDockerImageBlur(projectIndex: number) {
         const projectGroup = this.projectsArray.at(projectIndex) as FormGroup;
         const dockerImage = projectGroup.get('dockerImage')?.value;
-
+    
         if (dockerImage) {
             const [namespace, repository] = dockerImage.includes('/')
                 ? dockerImage.split('/')
@@ -266,17 +266,24 @@ export class CreateDeploymentComponent {
                         this.dockerTags[projectIndex] = data.results.map(
                             (tag) => tag.name
                         );
+    
+                        // Ensure 'main' tag is always included
+                        if (!this.dockerTags[projectIndex].includes('main')) {
+                            this.dockerTags[projectIndex].push('main');
+                        }
+    
+                        // Set the first tag as default if it exists, otherwise set 'main' as default
                         if (this.dockerTags[projectIndex].length > 0) {
                             projectGroup
                                 .get('dockerTag')
                                 ?.setValue(this.dockerTags[projectIndex][0]);
                         } else {
-                            projectGroup.get('dockerTag')?.reset();
+                            projectGroup.get('dockerTag')?.setValue('main');
                         }
                     },
                     (error) => {
-                        this.dockerTags[projectIndex] = []; // Clear tags in case of error
-                        projectGroup.get('dockerTag')?.reset();
+                        this.dockerTags[projectIndex] = ['main']; // Set 'main' as default in case of error
+                        projectGroup.get('dockerTag')?.setValue('main');
                         this._snackBar.open(
                             'Error fetching Docker image tags',
                             'OK',
@@ -292,29 +299,30 @@ export class CreateDeploymentComponent {
                     }
                 );
         } else {
-            this.dockerTags[projectIndex] = []; // Clear tags if no image is provided
-            projectGroup.get('dockerTag')?.reset();
+            this.dockerTags[projectIndex] = ['main']; // Set 'main' as default if no image is provided
+            projectGroup.get('dockerTag')?.setValue('main');
         }
     }
+    
 
     onRegistryTypeChange(projectIndex: number): void {
         const projectGroup = this.projectsArray.at(projectIndex) as FormGroup;
         this.clearValidators(projectGroup);
         const registryType = projectGroup.get('registryType')?.value;
-        if (registryType === 'github') {
-            projectGroup.get('dockerTag')?.setValue('main');
-            this.dockerTags[projectIndex] = ['main']; // Initialize with 'main'
-            this.fetchDockerTags(projectIndex, ''); // Fetch additional tags for GitHub repository
+        // if (registryType === 'github') {
+        //     projectGroup.get('dockerTag')?.setValue('main');
+        //     this.dockerTags[projectIndex] = ['main']; // Initialize with 'main'
+        //     this.fetchDockerTags(projectIndex, ''); // Fetch additional tags for GitHub repository
             
-        } 
+        // } 
 
-        projectGroup.updateValueAndValidity();
+        // projectGroup.updateValueAndValidity();
     }
 
     onPrivacyChange(projectIndex: number, privacy: string): void {
         const projectGroup = this.projectsArray.at(projectIndex) as FormGroup;
         this.clearValidators(projectGroup);
-
+    
         if (privacy === 'private') {
             projectGroup
                 .get('imagePullSecretName')
@@ -331,19 +339,23 @@ export class CreateDeploymentComponent {
         } else if (privacy === 'public') {
             projectGroup.get('dockerImage').setValidators(Validators.required);
         }
-
+    
         projectGroup.get('privacy').setValue(privacy); // Set the privacy value for the specific project
         projectGroup.updateValueAndValidity();
     }
-
+    
     clearValidators(group: FormGroup): void {
         group.get('imagePullSecretName').clearValidators();
         group.get('dockerUsername').clearValidators();
         group.get('dockerPassword').clearValidators();
         group.get('dockerEmail').clearValidators();
         group.get('dockerImage').clearValidators();
+        group.get('imagePullSecretName').updateValueAndValidity();
+        group.get('dockerUsername').updateValueAndValidity();
+        group.get('dockerPassword').updateValueAndValidity();
+        group.get('dockerEmail').updateValueAndValidity();
+        group.get('dockerImage').updateValueAndValidity();
     }
-
     addProjectEnvVar(index: number): void {
         const projectGroup = this.projectsArray.at(index) as FormGroup;
         const projectEnvVars = projectGroup.get('projectEnvVars') as FormArray;
@@ -363,18 +375,20 @@ export class CreateDeploymentComponent {
                 .subscribe(
                     (tags) => {
                         this.dockerTags[projectIndex] = tags;
-                        const projectGroup =
-                            this.projectsArray.at(projectIndex);
+    
+                        // Ensure 'main' tag is always included
+                        if (!this.dockerTags[projectIndex].includes('main')) {
+                            this.dockerTags[projectIndex].push('main');
+                        }
+    
+                        const projectGroup = this.projectsArray.at(projectIndex);
                         const dockerTagControl = projectGroup.get('dockerTag');
                         if (dockerTagControl) {
-                            dockerTagControl.setValue(tags[0]); // Set the first tag as default
+                            dockerTagControl.setValue(this.dockerTags[projectIndex][0]); // Set the first tag as default
                         }
                     },
                     (error) => {
-                        console.error(
-                            'Error fetching Docker image tags:',
-                            error
-                        );
+                        console.error('Error fetching Docker image tags:', error);
                         this._snackBar.open(
                             'Error fetching Docker image tags',
                             'OK',
@@ -387,6 +401,7 @@ export class CreateDeploymentComponent {
                 );
         }
     }
+    
     fetchProjects(): void {
         const projectIds = this.data.bundle.Projects;
         const projectRequests = projectIds.map((id) =>
