@@ -6,6 +6,7 @@ import { MatButton, MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterLink } from '@angular/router';
+import { WebSocketService } from '@fuse/services/WebSocket/webSocket.service';
 import { NotificationsService } from 'app/layout/common/notifications/notifications.service';
 import { Notification } from 'app/layout/common/notifications/notifications.types';
 import { Subject, takeUntil } from 'rxjs';
@@ -37,6 +38,7 @@ export class NotificationsComponent implements OnInit, OnDestroy
         private _notificationsService: NotificationsService,
         private _overlay: Overlay,
         private _viewContainerRef: ViewContainerRef,
+        private _webSocketService: WebSocketService
     )
     {
     }
@@ -45,41 +47,37 @@ export class NotificationsComponent implements OnInit, OnDestroy
     // @ Lifecycle hooks
     // -----------------------------------------------------------------------------------------------------
 
+ 
     /**
      * On init
      */
-    ngOnInit(): void
-    {
-        // Subscribe to notification changes
-        this._notificationsService.notifications$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((notifications: Notification[]) =>
-            {
-                // Load the notifications
-                this.notifications = notifications;
+    ngOnInit(): void {
+        // Fetch notifications from the backend
+        const email = this._notificationsService.getUserEmail();
+        this._notificationsService.getAll(email).subscribe((notifications: Notification[]) => {
+            this.notifications = notifications;
+            this._calculateUnreadCount();
+            this._changeDetectorRef.markForCheck();
+        });
 
-                // Calculate the unread count
-                this._calculateUnreadCount();
-
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
-            });
+        // Subscribe to WebSocket notifications
+        this._webSocketService.notifications.pipe(takeUntil(this._unsubscribeAll)).subscribe((notification: Notification) => {
+            // Add the new notification to the local state
+            this.notifications.push(notification);
+            // Recalculate the unread count
+            this._calculateUnreadCount();
+            // Trigger change detection
+            this._changeDetectorRef.markForCheck();
+        });
     }
 
     /**
      * On destroy
      */
-    ngOnDestroy(): void
-    {
+    ngOnDestroy(): void {
         // Unsubscribe from all subscriptions
         this._unsubscribeAll.next(null);
         this._unsubscribeAll.complete();
-
-        // Dispose the overlay
-        if ( this._overlayRef )
-        {
-            this._overlayRef.dispose();
-        }
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -89,17 +87,14 @@ export class NotificationsComponent implements OnInit, OnDestroy
     /**
      * Open the notifications panel
      */
-    openPanel(): void
-    {
+    openPanel(): void {
         // Return if the notifications panel or its origin is not defined
-        if ( !this._notificationsPanel || !this._notificationsOrigin )
-        {
+        if (!this._notificationsPanel || !this._notificationsOrigin) {
             return;
         }
 
         // Create the overlay if it doesn't exist
-        if ( !this._overlayRef )
-        {
+        if (!this._overlayRef) {
             this._createOverlay();
         }
 
@@ -110,39 +105,38 @@ export class NotificationsComponent implements OnInit, OnDestroy
     /**
      * Close the notifications panel
      */
-    closePanel(): void
-    {
+    closePanel(): void {
         this._overlayRef.detach();
     }
 
     /**
      * Mark all notifications as read
      */
-    markAllAsRead(): void
-    {
-        // Mark all as read
-        this._notificationsService.markAllAsRead().subscribe();
+    markAllAsRead(): void {
+        this._notificationsService.markAllAsRead().subscribe(() => {
+            this._calculateUnreadCount();
+            this._changeDetectorRef.markForCheck();
+        });
     }
 
     /**
      * Toggle read status of the given notification
      */
-    toggleRead(notification: Notification): void
-    {
-        // Toggle the read status
-        notification.read = !notification.read;
-
-        // Update the notification
-        this._notificationsService.update(notification.id, notification).subscribe();
+    toggleRead(notification: Notification): void {
+        this._notificationsService.markAsRead(notification.id).subscribe(() => {
+            this._calculateUnreadCount();
+            this._changeDetectorRef.markForCheck();
+        });
     }
 
     /**
      * Delete the given notification
      */
-    delete(notification: Notification): void
-    {
-        // Delete the notification
-        this._notificationsService.delete(notification.id).subscribe();
+    delete(notification: Notification): void {
+        this._notificationsService.delete(notification.id).subscribe(() => {
+            this._calculateUnreadCount();
+            this._changeDetectorRef.markForCheck();
+        });
     }
 
     /**
@@ -151,8 +145,7 @@ export class NotificationsComponent implements OnInit, OnDestroy
      * @param index
      * @param item
      */
-    trackByFn(index: number, item: any): any
-    {
+    trackByFn(index: number, item: any): any {
         return item.id || index;
     }
 
@@ -163,39 +156,38 @@ export class NotificationsComponent implements OnInit, OnDestroy
     /**
      * Create the overlay
      */
-    private _createOverlay(): void
-    {
+    private _createOverlay(): void {
         // Create the overlay
         this._overlayRef = this._overlay.create({
-            hasBackdrop     : true,
-            backdropClass   : 'fuse-backdrop-on-mobile',
-            scrollStrategy  : this._overlay.scrollStrategies.block(),
+            hasBackdrop: true,
+            backdropClass: 'fuse-backdrop-on-mobile',
+            scrollStrategy: this._overlay.scrollStrategies.block(),
             positionStrategy: this._overlay.position()
                 .flexibleConnectedTo(this._notificationsOrigin._elementRef.nativeElement)
                 .withLockedPosition(true)
                 .withPush(true)
                 .withPositions([
                     {
-                        originX : 'start',
-                        originY : 'bottom',
+                        originX: 'start',
+                        originY: 'bottom',
                         overlayX: 'start',
                         overlayY: 'top',
                     },
                     {
-                        originX : 'start',
-                        originY : 'top',
+                        originX: 'start',
+                        originY: 'top',
                         overlayX: 'start',
                         overlayY: 'bottom',
                     },
                     {
-                        originX : 'end',
-                        originY : 'bottom',
+                        originX: 'end',
+                        originY: 'bottom',
                         overlayX: 'end',
                         overlayY: 'top',
                     },
                     {
-                        originX : 'end',
-                        originY : 'top',
+                        originX: 'end',
+                        originY: 'top',
                         overlayX: 'end',
                         overlayY: 'bottom',
                     },
@@ -203,8 +195,7 @@ export class NotificationsComponent implements OnInit, OnDestroy
         });
 
         // Detach the overlay from the portal on backdrop click
-        this._overlayRef.backdropClick().subscribe(() =>
-        {
+        this._overlayRef.backdropClick().subscribe(() => {
             this._overlayRef.detach();
         });
     }
@@ -214,13 +205,11 @@ export class NotificationsComponent implements OnInit, OnDestroy
      *
      * @private
      */
-    private _calculateUnreadCount(): void
-    {
+    private _calculateUnreadCount(): void {
         let count = 0;
 
-        if ( this.notifications && this.notifications.length )
-        {
-            count = this.notifications.filter(notification => !notification.read).length;
+        if (this.notifications && this.notifications.length) {
+            count = this.notifications.filter((notification) => !notification.read).length;
         }
 
         this.unreadCount = count;

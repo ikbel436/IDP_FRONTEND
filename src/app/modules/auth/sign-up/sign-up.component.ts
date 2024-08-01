@@ -34,6 +34,7 @@ import { LanguagesComponent } from 'app/layout/common/languages/languages.compon
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { switchMap } from 'rxjs';
+import { MatSnackBar } from '@angular/material/snack-bar';
 @Component({
   selector: 'auth-sign-up',
   templateUrl: './sign-up.component.html',
@@ -91,6 +92,8 @@ export class AuthSignUpComponent implements OnInit {
     private _countryService: CountryService,
     private _router: Router,
     private _translocoService: TranslocoService,
+    private _snackBar: MatSnackBar
+
     
   ) { }
 
@@ -185,12 +188,75 @@ export class AuthSignUpComponent implements OnInit {
   /**
    * Sign up
    */
-  signUp(): void {
-    if (this.signUpForm.invalid) {
-        return;
-    }
-    this.isLoadingOTP = true; // Start loading
-    this.signUpForm.disable();
+//   signUp(): void {
+//     if (this.signUpForm.invalid) {
+//         return;
+//     }
+//     this.isLoadingOTP = true; // Start loading
+//     this.signUpForm.disable();
+
+//     const payloadForKeycloak = {
+//         name: this.signUpForm.value.name,
+//         email: this.signUpForm.value.email.toLowerCase(),
+//         password: this.signUpForm.value.passwordConfirm,
+//         role: ['User'],
+//     };
+
+//     const payLoadForDatabase = {
+//         ...payloadForKeycloak,
+//         phone: {
+//             countryCode: this.getCountryByIso(this.signUpForm.value.countryCode).code,
+//             phoneNumber: this.signUpForm.value.phoneNumber,
+//         },
+//         agreements: this.signUpForm.value.agreements,
+//     };
+
+//     // this._authService.signUp(payLoadForDatabase).pipe(
+//     //     switchMap(() => this._authService.generateOtp(this.signUpForm.value.email)),
+//     // ).subscribe({
+//     //     complete: () => {
+//     //         this.isLoadingOTP = false; // Stop loading
+//     //         this._router.navigate(['/sign-in']);
+//     //     },
+//     //     error: () => {
+//     //         this.isLoadingOTP = false; // Stop loading
+//     //         // Re-enable the form
+//     //         this.signUpForm.enable();
+//     //         // Reset the form
+//     //         this.signUpForm.controls.password.setValue('');
+//     //         this.signUpForm.controls.passwordConfirm.setValue('');
+//     //         this.signUpForm.controls.recaptchaReactive.setValue(null);
+//     //         this.signUpForm.controls.email.setValue('');
+//     //     },
+//     // });
+
+//     // Directly calling the signUp method without generating OTP
+//     this._authService.signUp(payLoadForDatabase).subscribe({
+//         complete: () => {
+//             this.isLoadingOTP = false; // Stop loading
+//             this._router.navigate(['/sign-in']);
+//         },
+//         error: () => {
+//             this.isLoadingOTP = false; // Stop loading
+//             // Re-enable the form
+//             this.signUpForm.enable();
+//             // Reset the form
+//             this.signUpForm.controls.password.setValue('');
+//             this.signUpForm.controls.passwordConfirm.setValue('');
+//             this.signUpForm.controls.recaptchaReactive.setValue(null);
+//             this.signUpForm.controls.email.setValue('');
+//         },
+//     });
+// }
+
+
+signUp(): void {
+  if (this.signUpForm.invalid) {
+    return;
+  }
+
+  this.isLoadingOTP = true; // Start loading
+  this.signUpForm.disable();
 
     const payloadForKeycloak = {
         name: this.signUpForm.value.name,
@@ -210,42 +276,28 @@ export class AuthSignUpComponent implements OnInit {
         agreements: this.signUpForm.value.agreements,
     };
 
-    // this._authService.signUp(payLoadForDatabase).pipe(
-    //     switchMap(() => this._authService.generateOtp(this.signUpForm.value.email)),
-    // ).subscribe({
-    //     complete: () => {
-    //         this.isLoadingOTP = false; // Stop loading
-    //         this._router.navigate(['/sign-in']);
-    //     },
-    //     error: () => {
-    //         this.isLoadingOTP = false; // Stop loading
-    //         // Re-enable the form
-    //         this.signUpForm.enable();
-    //         // Reset the form
-    //         this.signUpForm.controls.password.setValue('');
-    //         this.signUpForm.controls.passwordConfirm.setValue('');
-    //         this.signUpForm.controls.recaptchaReactive.setValue(null);
-    //         this.signUpForm.controls.email.setValue('');
-    //     },
-    // });
+  this._authService.signUp(payLoadForDatabase).subscribe({
+    complete: () => {
+      this.isLoadingOTP = false; // Stop loading
+      this._router.navigate(['/sign-in']);
+    },
+    error: (error) => {
+      this.isLoadingOTP = false; // Stop loading
+      this.signUpForm.enable();
 
-    // Directly calling the signUp method without generating OTP
-    this._authService.signUp(payLoadForDatabase).subscribe({
-        complete: () => {
-            this.isLoadingOTP = false; // Stop loading
-            this._router.navigate(['/sign-in']);
-        },
-        error: () => {
-            this.isLoadingOTP = false; // Stop loading
-            // Re-enable the form
-            this.signUpForm.enable();
-            // Reset the form
-            this.signUpForm.controls.password.setValue('');
-            this.signUpForm.controls.passwordConfirm.setValue('');
-            this.signUpForm.controls.recaptchaReactive.setValue(null);
-            this.signUpForm.controls.email.setValue('');
-        },
-    });
+      if (error.status === 401 && error.error.msg) {
+        this._snackBar.open(error.error.msg, 'Close', { duration: 4000 });
+      } else {
+        this._snackBar.open('An error occurred. Please try again.', 'Close', { duration: 4000 });
+      }
+
+      // Reset the form
+      this.signUpForm.controls.password.setValue('');
+      this.signUpForm.controls.passwordConfirm.setValue('');
+      this.signUpForm.controls.recaptchaReactive.setValue(null);
+      this.signUpForm.controls.email.setValue('');
+    },
+  });
 }
 
 

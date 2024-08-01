@@ -17,6 +17,8 @@ import { FuseCardComponent } from '@fuse/components/card';
   templateUrl: './logged-in-home.component.html',
   styleUrl: './logged-in-home.component.scss'
 })
+
 export class LoggedInHomeComponent {
+  yearlyBilling: boolean = true;
 
 }
