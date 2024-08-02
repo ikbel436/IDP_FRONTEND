@@ -16,11 +16,10 @@ export class WebSocketService {
     };
 
     this.socket.onmessage = (event) => {
-        const notification = JSON.parse(event.data);
-        // Assuming each message contains a single notification object
-        this.notificationSubject.next([notification]);
-      };
-      
+      const notification = JSON.parse(event.data);
+      // Emit the notification directly
+      this.notificationSubject.next(notification);
+    };
 
     this.socket.onerror = (error) => {
       console.error('WebSocket error:', error);

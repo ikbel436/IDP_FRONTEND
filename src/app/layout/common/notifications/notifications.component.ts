@@ -1,7 +1,23 @@
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
-import { DatePipe, NgClass, NgFor, NgIf, NgTemplateOutlet } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, TemplateRef, ViewChild, ViewContainerRef, ViewEncapsulation } from '@angular/core';
+import {
+    DatePipe,
+    NgClass,
+    NgFor,
+    NgIf,
+    NgTemplateOutlet,
+} from '@angular/common';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    OnDestroy,
+    OnInit,
+    TemplateRef,
+    ViewChild,
+    ViewContainerRef,
+    ViewEncapsulation,
+} from '@angular/core';
 import { MatButton, MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -12,20 +28,30 @@ import { Notification } from 'app/layout/common/notifications/notifications.type
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({
-    selector       : 'notifications',
-    templateUrl    : './notifications.component.html',
-    encapsulation  : ViewEncapsulation.None,
+    selector: 'notifications',
+    templateUrl: './notifications.component.html',
+    encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush,
-    exportAs       : 'notifications',
-    standalone     : true,
-    imports        : [MatButtonModule, NgIf, MatIconModule, MatTooltipModule, NgFor, NgClass, NgTemplateOutlet, RouterLink, DatePipe],
+    exportAs: 'notifications',
+    standalone: true,
+    imports: [
+        MatButtonModule,
+        NgIf,
+        MatIconModule,
+        MatTooltipModule,
+        NgFor,
+        NgClass,
+        NgTemplateOutlet,
+        RouterLink,
+        DatePipe,
+    ],
 })
-export class NotificationsComponent implements OnInit, OnDestroy
-{
+export class NotificationsComponent implements OnInit, OnDestroy {
     @ViewChild('notificationsOrigin') private _notificationsOrigin: MatButton;
-    @ViewChild('notificationsPanel') private _notificationsPanel: TemplateRef<any>;
+    @ViewChild('notificationsPanel')
+    private _notificationsPanel: TemplateRef<any>;
 
-    notifications: Notification[];
+    notifications: Notification[] = [];
     unreadCount: number = 0;
     private _overlayRef: OverlayRef;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
@@ -39,36 +65,37 @@ export class NotificationsComponent implements OnInit, OnDestroy
         private _overlay: Overlay,
         private _viewContainerRef: ViewContainerRef,
         private _webSocketService: WebSocketService
-    )
-    {
-    }
+    ) {}
 
     // -----------------------------------------------------------------------------------------------------
     // @ Lifecycle hooks
     // -----------------------------------------------------------------------------------------------------
 
- 
     /**
      * On init
      */
     ngOnInit(): void {
         // Fetch notifications from the backend
         const email = this._notificationsService.getUserEmail();
-        this._notificationsService.getAll(email).subscribe((notifications: Notification[]) => {
-            this.notifications = notifications;
-            this._calculateUnreadCount();
-            this._changeDetectorRef.markForCheck();
-        });
+        this._notificationsService
+            .getAll(email)
+            .subscribe((notifications: Notification[]) => {
+                this.notifications = notifications;
+                this._calculateUnreadCount();
+                this._changeDetectorRef.markForCheck();
+            });
 
         // Subscribe to WebSocket notifications
-        this._webSocketService.notifications.pipe(takeUntil(this._unsubscribeAll)).subscribe((notification: Notification) => {
-            // Add the new notification to the local state
-            this.notifications.push(notification);
-            // Recalculate the unread count
-            this._calculateUnreadCount();
-            // Trigger change detection
-            this._changeDetectorRef.markForCheck();
-        });
+        this._webSocketService.notifications
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((notification: Notification) => {
+                // Add the new notification to the local state
+                this.notifications.push(notification);
+                // Recalculate the unread count
+                this._calculateUnreadCount();
+                // Trigger change detection
+                this._changeDetectorRef.markForCheck();
+            });
     }
 
     /**
@@ -99,7 +126,9 @@ export class NotificationsComponent implements OnInit, OnDestroy
         }
 
         // Attach the portal to the overlay
-        this._overlayRef.attach(new TemplatePortal(this._notificationsPanel, this._viewContainerRef));
+        this._overlayRef.attach(
+            new TemplatePortal(this._notificationsPanel, this._viewContainerRef)
+        );
     }
 
     /**
@@ -114,6 +143,9 @@ export class NotificationsComponent implements OnInit, OnDestroy
      */
     markAllAsRead(): void {
         this._notificationsService.markAllAsRead().subscribe(() => {
+            this.notifications.forEach(
+                (notification) => (notification.read = true)
+            );
             this._calculateUnreadCount();
             this._changeDetectorRef.markForCheck();
         });
@@ -124,6 +156,7 @@ export class NotificationsComponent implements OnInit, OnDestroy
      */
     toggleRead(notification: Notification): void {
         this._notificationsService.markAsRead(notification.id).subscribe(() => {
+            notification.read = !notification.read;
             this._calculateUnreadCount();
             this._changeDetectorRef.markForCheck();
         });
@@ -134,6 +167,9 @@ export class NotificationsComponent implements OnInit, OnDestroy
      */
     delete(notification: Notification): void {
         this._notificationsService.delete(notification.id).subscribe(() => {
+            this.notifications = this.notifications.filter(
+                (notif) => notif.id !== notification.id
+            );
             this._calculateUnreadCount();
             this._changeDetectorRef.markForCheck();
         });
@@ -162,8 +198,11 @@ export class NotificationsComponent implements OnInit, OnDestroy
             hasBackdrop: true,
             backdropClass: 'fuse-backdrop-on-mobile',
             scrollStrategy: this._overlay.scrollStrategies.block(),
-            positionStrategy: this._overlay.position()
-                .flexibleConnectedTo(this._notificationsOrigin._elementRef.nativeElement)
+            positionStrategy: this._overlay
+                .position()
+                .flexibleConnectedTo(
+                    this._notificationsOrigin._elementRef.nativeElement
+                )
                 .withLockedPosition(true)
                 .withPush(true)
                 .withPositions([
@@ -209,7 +248,9 @@ export class NotificationsComponent implements OnInit, OnDestroy
         let count = 0;
 
         if (this.notifications && this.notifications.length) {
-            count = this.notifications.filter((notification) => !notification.read).length;
+            count = this.notifications.filter(
+                (notification) => !notification.read
+            ).length;
         }
 
         this.unreadCount = count;

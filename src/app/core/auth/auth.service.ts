@@ -84,32 +84,44 @@ export class AuthService {
         return this._httpClient.post(url, { email });
     }
 
-    /**
-     * Reset password
-     *
-     * @param password
-     */
-    set resetPasswordToken(token: string) {
-        localStorage.setItem('resetLink', token);
-    }
-    get resetPasswordToken(): string {
-        return localStorage.getItem('resetLink') ?? '';
-    }
-    resetPassword(password: string): Observable<any> {
-        const token = this.resetPasswordToken;
+     /**
+   * Set reset password token
+   */
+  set resetPasswordToken(token: string) {
+    localStorage.setItem('resetLink', token);
+  }
 
-        const url = `${this.apiUrl}/reset`;
-        const requestBody = {
-            newPass: password,
-            resetLink: token,
-        };
+  /**
+   * Get reset password token
+   */
+  get resetPasswordToken(): string {
+    return localStorage.getItem('resetLink') ?? '';
+  }
 
-        return this._httpClient.post(url, requestBody).pipe(
-            tap(() => {
-                localStorage.removeItem('resetLink');
-            })
-        );
-    }
+  /**
+   * Reset password
+   */
+  resetPassword(password: string): Observable<any> {
+    const token = this.resetPasswordToken;
+
+    const url = `${this.apiUrl}/reset`;
+    const requestBody = {
+      newPass: password,
+      resetLink: token,
+    };
+
+    return this._httpClient.post(url, requestBody).pipe(
+      tap(() => {
+        localStorage.removeItem('resetLink');
+      }),
+      catchError(err => {
+        // Handle the error here
+        console.error('Error resetting password:', err);
+        // Optionally, transform the error to a more user-friendly message
+        return throwError('Failed to reset password. Please try again.');
+      })
+    );
+  }
 
     /**
      * Change password
