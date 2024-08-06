@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class InfrastructureService {
-  private apiUrl = 'http://localhost:3000/infra';
+  private apiUrl = 'https://backend.idp.insparkconnect.com/infra';
   constructor(private http: HttpClient) { }
   addInfra(formData: FormData): Observable<any> {
     const token = localStorage.getItem('accessToken');  

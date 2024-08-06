@@ -7,7 +7,7 @@ import { map, Observable, ReplaySubject, switchMap, take, tap } from 'rxjs';
 @Injectable({ providedIn: 'root' })
 export class NotificationsService {
   private _notifications: ReplaySubject<Notification[]> = new ReplaySubject<Notification[]>(1);
-  private apiUrl = 'http://localhost:3000/notifications';
+  private apiUrl = 'https://backend.idp.insparkconnect.com/notifications';
 
   /**
    * Constructor
