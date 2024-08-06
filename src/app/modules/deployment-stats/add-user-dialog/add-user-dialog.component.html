@@ -1,0 +1,58 @@
+<div mat-dialog-content class="form-container">
+    <!-- Header -->
+    <div class="header flex items-center justify-between h-12 px-4 bg-primary text-on-primary rounded-t-lg">
+      <div class="text-lg font-medium text-white">{{ isUpdateMode ? 'Update User' : 'Add User' }}</div>
+      <button mat-icon-button (click)="onCancel()">
+        <mat-icon class="text-white">close</mat-icon>
+      </button>
+    </div>
+  
+    <!-- Add/Update User Form -->
+    <form class="flex flex-col p-4 overflow-y-auto flex-grow" [formGroup]="addUserForm" (ngSubmit)="onSubmit()">
+      <!-- Name -->
+      <mat-form-field class="w-full mb-3" appearance="outline" floatLabel="always">
+        <mat-label>Name</mat-label>
+        <input matInput formControlName="name" placeholder="Enter name" required>
+      </mat-form-field>
+  
+      <!-- Email -->
+      <mat-form-field class="w-full mb-3" appearance="outline" floatLabel="always">
+        <mat-label>Email</mat-label>
+        <input matInput formControlName="email" placeholder="Enter email" required>
+      </mat-form-field>
+  
+      <!-- Phone Number -->
+      <mat-form-field class="w-full mb-3" appearance="outline" floatLabel="always">
+        <mat-label>Phone Number</mat-label>
+        <input matInput formControlName="phoneNumber" placeholder="Enter phone number" required>
+      </mat-form-field>
+  
+      <!-- Password (Only for Add User) -->
+      <mat-form-field *ngIf="!isUpdateMode" class="w-full mb-3" appearance="outline" floatLabel="always">
+        <mat-label>Password</mat-label>
+        <input matInput type="password" formControlName="password" placeholder="Enter password" required>
+      </mat-form-field>
+  
+      <!-- Birth Date -->
+      <mat-form-field class="w-full mb-3" appearance="outline" floatLabel="always">
+        <mat-label>Birth Date</mat-label>
+        <input matInput type="date" formControlName="birthDate" required>
+      </mat-form-field>
+  
+      <!-- Role -->
+      <mat-form-field class="w-full mb-3" appearance="outline" floatLabel="always">
+        <mat-label>Role</mat-label>
+        <mat-select formControlName="role">
+          <mat-option value="User">User</mat-option>
+          <mat-option value="Admin">Admin</mat-option>
+        </mat-select>
+      </mat-form-field>
+  
+      <!-- Action Buttons -->
+      <div class="flex justify-end space-x-2 mt-3">
+        <button mat-button (click)="onCancel()">Cancel</button>
+        <button mat-raised-button color="primary" type="submit">{{ isUpdateMode ? 'Update' : 'Add' }}</button>
+      </div>
+    </form>
+  </div>
+  

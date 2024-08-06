@@ -69,10 +69,10 @@ export class CreateDeploymentComponent {
     showSnackbar$ = new BehaviorSubject<boolean>(false);
     bundleData: any;
 
-
     // @ViewChild('verticalStepper') private verticalStepper: MatStepper; // Inject the MatStepper
-    @ViewChild('verticalStepper', { static: false }) verticalStepper: MatStepper;
-    dockerTags: string[][] = []; 
+    @ViewChild('verticalStepper', { static: false })
+    verticalStepper: MatStepper;
+    dockerTags: string[][] = [];
     constructor(
         private fb: FormBuilder,
         private dialogRef: MatDialogRef<CreateDeploymentComponent>,
@@ -81,7 +81,7 @@ export class CreateDeploymentComponent {
         private projectService: ProjectService,
         private dialog: MatDialog,
         private _snackBar: MatSnackBar,
-        private dockerService: DockerService 
+        private dockerService: DockerService
     ) {
         this.stepperForm = this.fb.group({
             step1: this.fb.group({
@@ -104,8 +104,8 @@ export class CreateDeploymentComponent {
     ngOnInit(): void {
         this.fetchProjects();
         this.fetchBundleData();
-        
-        this.dockerTags = []; 
+
+        this.dockerTags = [];
     }
 
     // fetchBundleData(): void {
@@ -151,7 +151,7 @@ export class CreateDeploymentComponent {
         this.apiService.getBundleById(bundleId).subscribe(
             (bundle) => {
                 this.bundleData = bundle;
-                console.log('Bundle data:', this.bundleData);
+                console.log('Bundle data:', this.bundleData.myDBconfig);
     
                 // Check if myDBconfig exists
                 if (this.bundleData.myDBconfig) {
@@ -218,29 +218,32 @@ export class CreateDeploymentComponent {
     addEnvVar(): void {
         this.envVars.push(this.createEnvVariable());
     }
-    
+
     removeEnvVar(index: number): void {
         this.envVars.removeAt(index);
     }
 
     createProjectGroup(projectName: string, dockerImage: string, projectId: string, generated: boolean): FormGroup {
         return this.fb.group({
-          projectName: [projectName, Validators.required],
-          dockerImage: [dockerImage, Validators.required],
-          dockerTag: ['', Validators.required], // Ensure this is initialized
-          registryType: ['', Validators.required],
-          privacy: ['', Validators.required],
-          projectId: [projectId],
-          generated: [generated],
-          serviceName: [{ value: '', disabled: generated }, [Validators.required, Validators.pattern('^[a-z0-9-]+$')]],
-          port: ['', [Validators.required, Validators.pattern('^[0-9]+$')]],
-          imagePullSecretName: [''],
-          dockerUsername: [''],
-          dockerPassword: [''],
-          dockerEmail: ['', Validators.email],
-          expose: [false],
-          host: [''],
-          projectEnvVars: this.fb.array([])
+            projectName: [projectName, Validators.required],
+            dockerImage: [dockerImage, Validators.required],
+            dockerTag: ['main', Validators.required], // Ensure this is initialized
+            registryType: ['', Validators.required],
+            privacy: ['', Validators.required],
+            projectId: [projectId],
+            generated: [generated],
+            serviceName: [
+                { value: '', disabled: generated },
+                [Validators.required, Validators.pattern('^[a-z0-9-]+$')],
+            ],
+            port: ['', [Validators.required, Validators.pattern('^[0-9]+$')]],
+            imagePullSecretName: [''],
+            dockerUsername: [''],
+            dockerPassword: [''],
+            dockerEmail: ['', Validators.email],
+            expose: [false],
+            host: [''],
+            projectEnvVars: this.fb.array([]),
         });
       }
       
@@ -251,45 +254,75 @@ export class CreateDeploymentComponent {
       onDockerImageBlur(projectIndex: number) {
         const projectGroup = this.projectsArray.at(projectIndex) as FormGroup;
         const dockerImage = projectGroup.get('dockerImage')?.value;
-      
+    
         if (dockerImage) {
-          const [namespace, repository] = dockerImage.includes('/') ? dockerImage.split('/') : ['library', dockerImage];
-          this.dockerService.getDockerImageTags(namespace, repository)
-            .subscribe(
-              data => {
-                this.dockerTags[projectIndex] = data.results.map(tag => tag.name);
-                if (this.dockerTags[projectIndex].length > 0) {
-                  projectGroup.get('dockerTag')?.setValue(this.dockerTags[projectIndex][0]);
-                } else {
-                  projectGroup.get('dockerTag')?.reset();
-                }
-              },
-              error => {
-                this.dockerTags[projectIndex] = []; // Clear tags in case of error
-                projectGroup.get('dockerTag')?.reset();
-                this._snackBar.open('Error fetching Docker image tags', 'OK', {
-                  duration: 3000,
-                  panelClass: ['mat-snack-bar-error'],
-                });
-                console.error('Error fetching Docker image tags:', error);
-              }
-            );
+            const [namespace, repository] = dockerImage.includes('/')
+                ? dockerImage.split('/')
+                : ['library', dockerImage];
+            this.dockerService
+                .getDockerImageTags(namespace, repository)
+                .subscribe(
+                    (data) => {
+                        this.dockerTags[projectIndex] = data.results.map(
+                            (tag) => tag.name
+                        );
+    
+                        // Ensure 'main' tag is always included
+                        if (!this.dockerTags[projectIndex].includes('main')) {
+                            this.dockerTags[projectIndex].push('main');
+                        }
+    
+                        // Set the first tag as default if it exists, otherwise set 'main' as default
+                        if (this.dockerTags[projectIndex].length > 0) {
+                            projectGroup
+                                .get('dockerTag')
+                                ?.setValue(this.dockerTags[projectIndex][0]);
+                        } else {
+                            projectGroup.get('dockerTag')?.setValue('main');
+                        }
+                    },
+                    (error) => {
+                        this.dockerTags[projectIndex] = ['main']; // Set 'main' as default in case of error
+                        projectGroup.get('dockerTag')?.setValue('main');
+                        this._snackBar.open(
+                            'Error fetching Docker image tags',
+                            'OK',
+                            {
+                                duration: 3000,
+                                panelClass: ['mat-snack-bar-error'],
+                            }
+                        );
+                        console.error(
+                            'Error fetching Docker image tags:',
+                            error
+                        );
+                    }
+                );
         } else {
-          this.dockerTags[projectIndex] = []; // Clear tags if no image is provided
-          projectGroup.get('dockerTag')?.reset();
+            this.dockerTags[projectIndex] = ['main']; // Set 'main' as default if no image is provided
+            projectGroup.get('dockerTag')?.setValue('main');
         }
-      }
-      
-      
+    }
+    
+
     onRegistryTypeChange(projectIndex: number): void {
         const projectGroup = this.projectsArray.at(projectIndex) as FormGroup;
         this.clearValidators(projectGroup);
+        const registryType = projectGroup.get('registryType')?.value;
+        // if (registryType === 'github') {
+        //     projectGroup.get('dockerTag')?.setValue('main');
+        //     this.dockerTags[projectIndex] = ['main']; // Initialize with 'main'
+        //     this.fetchDockerTags(projectIndex, ''); // Fetch additional tags for GitHub repository
+            
+        // } 
+
+        // projectGroup.updateValueAndValidity();
     }
 
     onPrivacyChange(projectIndex: number, privacy: string): void {
         const projectGroup = this.projectsArray.at(projectIndex) as FormGroup;
         this.clearValidators(projectGroup);
-
+    
         if (privacy === 'private') {
             projectGroup
                 .get('imagePullSecretName')
@@ -306,19 +339,23 @@ export class CreateDeploymentComponent {
         } else if (privacy === 'public') {
             projectGroup.get('dockerImage').setValidators(Validators.required);
         }
-
+    
         projectGroup.get('privacy').setValue(privacy); // Set the privacy value for the specific project
         projectGroup.updateValueAndValidity();
     }
-
+    
     clearValidators(group: FormGroup): void {
         group.get('imagePullSecretName').clearValidators();
         group.get('dockerUsername').clearValidators();
         group.get('dockerPassword').clearValidators();
         group.get('dockerEmail').clearValidators();
         group.get('dockerImage').clearValidators();
+        group.get('imagePullSecretName').updateValueAndValidity();
+        group.get('dockerUsername').updateValueAndValidity();
+        group.get('dockerPassword').updateValueAndValidity();
+        group.get('dockerEmail').updateValueAndValidity();
+        group.get('dockerImage').updateValueAndValidity();
     }
-
     addProjectEnvVar(index: number): void {
         const projectGroup = this.projectsArray.at(index) as FormGroup;
         const projectEnvVars = projectGroup.get('projectEnvVars') as FormArray;
@@ -332,30 +369,43 @@ export class CreateDeploymentComponent {
     }
     fetchDockerTags(projectIndex: number, dockerImage: string): void {
         if (dockerImage) {
-          const [namespace, repository] = dockerImage.split('/');
-          this.dockerService.getDockerImageTags(namespace, repository).subscribe(
-            (tags) => {
-              this.dockerTags[projectIndex] = tags;
-              const projectGroup = this.projectsArray.at(projectIndex);
-              const dockerTagControl = projectGroup.get('dockerTag');
-              if (dockerTagControl) {
-                dockerTagControl.setValue(tags[0]); // Set the first tag as default
-              }
-            },
-            (error) => {
-              console.error('Error fetching Docker image tags:', error);
-              this._snackBar.open('Error fetching Docker image tags', 'OK', {
-                duration: 3000,
-                panelClass: ['mat-snack-bar-error'],
-              });
-            }
-          );
+            const [namespace, repository] = dockerImage.split('/');
+            this.dockerService
+                .getDockerImageTags(namespace, repository)
+                .subscribe(
+                    (tags) => {
+                        this.dockerTags[projectIndex] = tags;
+    
+                        // Ensure 'main' tag is always included
+                        if (!this.dockerTags[projectIndex].includes('main')) {
+                            this.dockerTags[projectIndex].push('main');
+                        }
+    
+                        const projectGroup = this.projectsArray.at(projectIndex);
+                        const dockerTagControl = projectGroup.get('dockerTag');
+                        if (dockerTagControl) {
+                            dockerTagControl.setValue(this.dockerTags[projectIndex][0]); // Set the first tag as default
+                        }
+                    },
+                    (error) => {
+                        console.error('Error fetching Docker image tags:', error);
+                        this._snackBar.open(
+                            'Error fetching Docker image tags',
+                            'OK',
+                            {
+                                duration: 3000,
+                                panelClass: ['mat-snack-bar-error'],
+                            }
+                        );
+                    }
+                );
         }
-      }
-      fetchProjects(): void {
+    }
+    
+    fetchProjects(): void {
         const projectIds = this.data.bundle.Projects;
         const projectRequests = projectIds.map((id) =>
-          this.projectService.getProjectsByIds(id)
+            this.projectService.getProjectsByIds(id)
         );
       
         forkJoin(projectRequests).subscribe(
@@ -432,9 +482,9 @@ export class CreateDeploymentComponent {
             port: this.step1.value.port,
             envVariables: this.envVars.value,
             namespace: this.stepperForm.value.namespace,
-            bundleId: this.data.bundle._id, 
+            bundleId: this.data.bundle._id,
         };
-    
+
         this.apiService.generateDatabaseDeployment(deploymentData).subscribe(
             (response) => {
                 this.generatedFiles.push(response.deploymentFilePath);
@@ -458,7 +508,7 @@ export class CreateDeploymentComponent {
 
     generateProjectDeployment(index: number): void {
         const projectGroup = this.projectsArray.at(index) as FormGroup;
-    
+
         const deploymentData = {
             serviceName: projectGroup.get('serviceName').value,
             port: projectGroup.value.port,
@@ -475,11 +525,11 @@ export class CreateDeploymentComponent {
             expose: projectGroup.value.expose,
             host: projectGroup.value.host,
             bundleId: this.data.bundle._id,
-            projectId: projectGroup.value.projectId
+            projectId: projectGroup.value.projectId,
         };
-    
+
         console.log('Sending deployment data:', deploymentData);
-    
+
         this.apiService.generateDeployment(deploymentData).subscribe(
             (response) => {
                 console.log('Response from backend:', response);
@@ -491,14 +541,18 @@ export class CreateDeploymentComponent {
                     this.hosts.push(deploymentData.host);
                 }
                 projectGroup.patchValue({ generated: true });
-    
+
                 this._snackBar.open(response.msg, 'OK', { duration: 3000 });
             },
             (error) => {
-                this._snackBar.open('Error generating project deployment', 'OK', {
-                    duration: 3000,
-                    panelClass: ['mat-snack-bar-error'],
-                });
+                this._snackBar.open(
+                    'Error generating project deployment',
+                    'OK',
+                    {
+                        duration: 3000,
+                        panelClass: ['mat-snack-bar-error'],
+                    }
+                );
                 console.error('Error generating project deployment:', error);
             }
         );
@@ -511,7 +565,7 @@ export class CreateDeploymentComponent {
             bundles: this.data.bundle,
             namespace: this.stepperForm.value.namespace,
         };
-    
+
         this.apiService.pushFiles(deploymentData).subscribe(
             (response) => {
                 const hostsData = { hosts: this.hosts };

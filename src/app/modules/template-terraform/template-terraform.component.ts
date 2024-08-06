@@ -16,28 +16,57 @@ import { RouterLink } from '@angular/router';
 import { FuseCardComponent } from '@fuse/components/card';
 import { Router} from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
+import { InfrastructureService } from '../add-infrastructure/infrastructure.service';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { MatTableModule } from '@angular/material/table';
 @Component({
   selector: 'app-template-terraform',
   standalone     : true,
-  imports        : [MatButtonToggleModule, FormsModule, NgFor, FuseCardComponent, MatButtonModule, MatIconModule, RouterLink, NgClass, MatMenuModule, MatCheckboxModule, MatProgressBarModule, MatFormFieldModule, MatInputModule, TextFieldModule, MatDividerModule, MatTooltipModule, TitleCasePipe],
+  imports        : [MatButtonToggleModule, MatPaginatorModule,
+    MatTableModule, FormsModule, NgFor, FuseCardComponent, MatButtonModule, MatIconModule, RouterLink, NgClass, MatMenuModule, MatCheckboxModule, MatProgressBarModule, MatFormFieldModule, MatInputModule, TextFieldModule, MatDividerModule, MatTooltipModule, TitleCasePipe],
 
   templateUrl: './template-terraform.component.html',
   styleUrl: './template-terraform.component.scss'
 })
 export class TemplateTerraformComponent implements AfterViewInit{
   @ViewChildren(FuseCardComponent, {read: ElementRef}) private _fuseCards: QueryList<ElementRef>;
-
+  infrastructures: any[] = [];
+  paginatedInfrastructures: any[] = [];
     filters: string[] = ['all', 'aws', 'azure', 'GCP'];
     numberOfCards: any = {};
     selectedFilter: string = 'all';
-
+    pageSize: number = 5;
+    currentPage: number = 0;
     /**
      * Constructor
      */
-    constructor(private _renderer2: Renderer2,private router: Router,private dialog: MatDialog)
+    constructor(private _renderer2: Renderer2,private router: Router,private dialog: MatDialog,private infraService: InfrastructureService)
     {
     }
-
+    ngOnInit(): void {
+      this.getInfrastructures();
+    }
+    getInfrastructures(): void {
+      this.infraService.getInfras().subscribe((data: any[]) => {
+        this.infrastructures = data.map(infra => {
+          if (infra.steps && infra.steps.length > 0) {
+            infra.steps = infra.steps.reduce((acc, step) => {
+              try {
+                const parsedStep = JSON.parse(step);
+                return Array.isArray(parsedStep) ? [...acc, ...parsedStep] : [...acc, parsedStep];
+              } catch (e) {
+                return [...acc, step];
+              }
+            }, []);
+          }
+          return infra;
+        });
+        this.paginatedInfrastructures = this.infrastructures.slice(0, this.pageSize);
+        this._calcNumberOfCards();
+        this._filterCards();
+      });
+    }
+  
     // -----------------------------------------------------------------------------------------------------
     // @ Lifecycle hooks
     // -----------------------------------------------------------------------------------------------------
@@ -75,7 +104,13 @@ export class TemplateTerraformComponent implements AfterViewInit{
     // -----------------------------------------------------------------------------------------------------
     // @ Private methods
     // -----------------------------------------------------------------------------------------------------
-
+    onPageChange(event: PageEvent): void {
+      this.currentPage = event.pageIndex;
+      this.pageSize = event.pageSize;
+      const startIndex = this.currentPage * this.pageSize;
+      const endIndex = startIndex + this.pageSize;
+      this.paginatedInfrastructures = this.infrastructures.slice(startIndex, endIndex);
+    }
     private _calcNumberOfCards(): void
     {
         // Prepare the numberOfCards object
@@ -135,6 +170,15 @@ export class TemplateTerraformComponent implements AfterViewInit{
                 }
             }
         });
+    }
+    downloadFile(fileUrl: string): void {
+      const link = document.createElement('a');
+      link.href = fileUrl;
+      link.download = fileUrl.split('/').pop();
+      link.target = '_blank';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     }
     downloadZIP() {
         // URL vers le fichier PDF à télécharger

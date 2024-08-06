@@ -16,6 +16,7 @@ import { GetProjectsComponent } from '../git-provider/get-projects/get-projects.
 import { MatPaginator } from '@angular/material/paginator';
 
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSnackBar } from '@angular/material/snack-bar';
 @Component({
   selector: 'app-get-deployments',
   standalone: true,
@@ -47,7 +48,7 @@ export class GetDeploymentsComponent implements OnInit {
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  constructor(private deploymentService: DeploymentsService) {}
+  constructor(private deploymentService: DeploymentsService,private _snackBar: MatSnackBar) {}
 
   ngOnInit(): void {
     this.fetchDeployments();
@@ -65,6 +66,22 @@ export class GetDeploymentsComponent implements OnInit {
       },
       (error) => {
         console.error('Error fetching deployments:', error);
+      }
+    );
+  }
+  deleteDeployment(deploymentId: string): void {
+    this.deploymentService.deleteDeployment(deploymentId).subscribe(
+      () => {
+        this._snackBar.open('Deployment deleted successfully', 'Close', {
+          duration: 2000,
+        });
+        this.fetchDeployments(); // Reload deployments after deletion
+      },
+      (error) => {
+        console.error('Error deleting deployment', error);
+        this._snackBar.open('Failed to delete deployment', 'Close', {
+          duration: 2000,
+        });
       }
     );
   }

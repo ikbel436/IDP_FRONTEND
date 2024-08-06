@@ -81,11 +81,11 @@ export class SettingsSecurityComponent implements OnInit {
         if (this.securityForm.invalid) {
             return;
         }
-
+    
         this.isLoadingOTP = true;
         const currentPassword = this.securityForm.controls.currentPassword.value;
         const newPassword = this.securityForm.controls.newPassword.value;
-
+    
         try {
             const response = await this.authservice.changePassword({ currentPassword, newPassword }).toPromise();
             if (response) {
@@ -93,15 +93,14 @@ export class SettingsSecurityComponent implements OnInit {
                 await this.authservice.generateOtp(userEmail).toPromise();
     
                 const dialogRef = this.dialog.open(OtpDialogComponent, {
-                    width: '8&00px',
+                    width: '8&00px', 
                     data: { email: userEmail }
                 });
     
                 dialogRef.afterClosed().subscribe(async (otpVerified) => {
                     this.isLoadingOTP = false;
                     if (otpVerified) {
-                       console.log("ok")
-                       
+                        console.log("Password change and OTP verification successful.");
                     } else {
                         alert('OTP verification failed. Password change was not completed.');
                     }
@@ -111,6 +110,7 @@ export class SettingsSecurityComponent implements OnInit {
                 alert('Failed to change password.');
             }
         } catch (error) {
+            this.isLoadingOTP = false;
             console.error('Error changing password:', error);
             alert('An error occurred while changing the password.');
         }

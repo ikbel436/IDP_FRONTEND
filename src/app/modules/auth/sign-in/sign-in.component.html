@@ -1,6 +1,4 @@
-<div class="absolute top-0 right-2 md:right-56 z-80">
-
-</div>
+<div class="absolute top-0 right-2 md:right-56 z-80"></div>
 
 <div class="flex flex-col flex-auto items-center sm:justify-center min-w-0"
   *transloco="let t; read: 'authForms.signIn'">
@@ -49,17 +47,13 @@
           <mat-label>{{ t('email') }}</mat-label>
           <input id="email" title="email" matInput [formControlName]="'email'" autocomplete="email" />
 
-          @if (signInForm.get('email').hasError('required')) {
-          <mat-error>{{ t('email') }}
+          <mat-error *ngIf="signInForm.get('email').hasError('required')">
+            {{ t('email') }}
             <span *transloco="let t; read: 'validators'">{{ t('isRequired') }}</span>
           </mat-error>
-          }
-          <!--  -->
-
-          @if (signInForm.get('email').hasError('email')) {
-          <mat-error>
-            <span *transloco="let t; read: 'validators'">{{ t('invalidEmail') }}</span></mat-error>
-          }
+          <mat-error *ngIf="signInForm.get('email').hasError('email')">
+            <span *transloco="let t; read: 'validators'">{{ t('invalidEmail') }}</span>
+          </mat-error>
         </mat-form-field>
 
         <!-- Password field -->
@@ -75,7 +69,7 @@
             <mat-icon class="icon-size-5" *ngIf="passwordField.type === 'text'"
               [svgIcon]="'heroicons_solid:eye-slash'"></mat-icon>
           </button>
-          <mat-error> Password is required </mat-error>
+          <mat-error *ngIf="signInForm.get('password').hasError('required')"> Password is required </mat-error>
         </mat-form-field>
 
         <!-- Actions -->

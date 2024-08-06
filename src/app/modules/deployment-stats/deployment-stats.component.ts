@@ -11,6 +11,8 @@ import { DeploymentsService } from '../get-deployments/deployments.service';
 import { ChartComponent } from 'ng-apexcharts';
 import { MatTabsModule } from '@angular/material/tabs';
 import { AuthService } from 'app/core/auth/auth.service';
+import { MatDialog } from '@angular/material/dialog';
+import { AddUserDialogComponent } from './add-user-dialog/add-user-dialog.component';
 
 @Component({
   selector: 'app-deployment-stats',
@@ -192,7 +194,7 @@ export class DeploymentStatsComponent {
   },
   };
 
-  constructor(private deploymentsService: DeploymentsService, private authService: AuthService) { }
+  constructor(private dialog: MatDialog,private deploymentsService: DeploymentsService, private authService: AuthService) { }
 
   ngOnInit(): void {
     this.fetchStats();
@@ -204,7 +206,17 @@ export class DeploymentStatsComponent {
     // Handle update member logic
     console.log('Update member', member);
   }
+  openAddUserDialog(member: any): void {
+    const dialogRef = this.dialog.open(AddUserDialogComponent, {
+      data: member 
+    });
 
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === 'success') {
+        this.fetchUsers();
+      }
+    });
+  }
   onDeleteMember(member: any): void {
     this.authService.deleteUser(member._id).subscribe(
       (response) => {

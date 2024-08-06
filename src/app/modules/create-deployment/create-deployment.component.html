@@ -212,6 +212,7 @@
                             <mat-option value="dockerHub">Docker Hub</mat-option>
                             <mat-option value="azure">Azure Registry</mat-option>
                             <mat-option value="gcp">GCP Registry</mat-option>
+                            <mat-option value="github">GitHub Registry</mat-option> 
                           </mat-select>
                         </mat-form-field>
                       
@@ -436,6 +437,8 @@
                                 >
                             </mat-form-field>
                         </div>
+                     
+                    
                         <div>
                             <mat-checkbox formControlName="expose"
                                 >Expose Service</mat-checkbox
@@ -618,10 +621,10 @@
                             [color]="'primary'"
                             [disabled]="projectGroup.invalid || (!projectGroup.value.generated && projectGroup.pristine)"
                             type="button"
-                          >
+                        >
                             {{ projectGroup.value.generated ? 'Update Deployment for' : 'Generate Deployment for' }}
                             {{ projectGroup.value.projectName }}
-                          </button>
+                        </button>
                           <button
                           class="px-8 ml-2"
                           mat-flat-button

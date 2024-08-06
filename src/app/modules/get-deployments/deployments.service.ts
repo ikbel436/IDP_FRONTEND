@@ -21,4 +21,7 @@ getDeploymentSuccessRate(timeframe: string): Observable<any> {
 getDeploymentFrequency(timeframe: string): Observable<any> {
   return this.http.get<any>(`${this.apiUrl}/stat-avg-user`, { params: { timeframe } });
 }
+deleteDeployment(deploymentId: string): Observable<any> {
+  return this.http.delete(`${this.apiUrl}/delete-depl/${deploymentId}`);
+}
 }

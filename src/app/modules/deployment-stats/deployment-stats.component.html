@@ -6,28 +6,8 @@
           <div class="text-3xl font-semibold tracking-tight leading-8">Analytics dashboard</div>
           <div class="font-medium tracking-tight text-secondary">Monitor metrics, check reports and review performance</div>
         </div>
-        <!-- <div class="flex items-center ml-6">
-          <button class="hidden sm:inline-flex" mat-stroked-button>
-            <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:cog-8-tooth'"></mat-icon>
-            <span class="ml-2">Settings</span>
-          </button>
-          <button class="hidden sm:inline-flex ml-3" mat-flat-button [color]="'primary'">
-            <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:arrow-up-tray'"></mat-icon>
-            <span class="ml-2">Export</span>
-          </button>-->
-          <!-- Actions menu (visible on xs) -->
-          <!-- <div class="sm:hidden">
-            <button [matMenuTriggerFor]="actionsMenu" mat-icon-button>
-              <mat-icon [svgIcon]="'heroicons_outline:ellipsis-vertical'"></mat-icon>
-            </button>
-            <mat-menu #actionsMenu="matMenu">
-              <button mat-menu-item>Export</button>
-              <button mat-menu-item>Settings</button>
-            </mat-menu>
-          </div>
-        </div>  -->
       </div>
-
+     
       <div class="w-full mt-6">
    
         <mat-tab-group    class="sm:px-2"
@@ -285,8 +265,12 @@
           </div>
         </ng-template>
       </mat-tab>
+      
       <mat-tab label="Team">
         <ng-template matTabContent>
+          <div class="flex justify-end w-full mt-4 mb-4"> <!-- Added mb-4 for bottom margin -->
+            <button mat-raised-button color="accent" (click)="openAddUserDialog()">Add User</button>
+        </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 w-full min-w-0">
                 <ng-container *ngFor="let member of users">
                     <div class="flex flex-col flex-auto items-center bg-card shadow rounded-2xl overflow-hidden">
@@ -296,7 +280,7 @@
                               <mat-icon>more_vert</mat-icon>
                           </button>
                           <mat-menu #settingsMenu="matMenu">
-                              <button mat-menu-item (click)="onUpdateMember(member)">
+                              <button mat-menu-item (click)="openAddUserDialog(member)">
                                   <mat-icon>edit</mat-icon>
                                   <span>Update</span>
                               </button>

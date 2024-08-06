@@ -3,36 +3,37 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root',
 })
 export class DeploymentService {
+    constructor(private http: HttpClient) {}
 
-  constructor(private http: HttpClient) { }
+    // private apiUrl = 'http://localhost:3000/k8';
+    // private BundleUrl = 'http://localhost:3000/Bundle';
 
   private apiUrl = 'https://backend.idp.insparkconnect.com/k8';
   private BundleUrl = 'https://backend.idp.insparkconnect.com/Bundle';
+    private getHeaders(token: string) {
+        return new HttpHeaders({
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+        });
+    }
 
- 
-  private getHeaders(token: string) {
-    return new HttpHeaders({
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
-    });
-  }
+    generateDatabaseDeployment(data: any): Observable<any> {
+        return this.http.post(
+            `${this.apiUrl}/generate-database-deployment`,
+            data
+        );
+    }
 
-  generateDatabaseDeployment(data: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/generate-database-deployment`, data);
-  }
+    generateDeployment(data: any): Observable<any> {
+        return this.http.post(`${this.apiUrl}/generate-deployment`, data);
+    }
 
-  generateDeployment(data: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/generate-deployment`, data);
-  }
-
-  
-  applyK8sFiles(data: any): Observable<any> {
-   
-    return this.http.post(`${this.apiUrl}/apply-generated-k8s-files`, data);
-  }
+    applyK8sFiles(data: any): Observable<any> {
+        return this.http.post(`${this.apiUrl}/apply-generated-k8s-files`, data);
+    }
 
   getBundleById(bundleId: string): Observable<any> {
     return this.http.get(`${this.BundleUrl}/bundles/${bundleId}`);

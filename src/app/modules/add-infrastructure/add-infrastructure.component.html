@@ -1,0 +1,78 @@
+<div class="sm:absolute sm:inset-0 flex flex-col flex-auto min-w-0 sm:overflow-hidden bg-gray-50 dark:bg-gray-800 p-8">
+    <!-- Header -->
+    <div
+        class="relative flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between py-8 px-6 md:px-8 border-b">
+        <!-- Loader -->
+        <div class="absolute inset-x-0 bottom-0">
+            <mat-progress-bar></mat-progress-bar>
+        </div>
+        <!-- Title -->
+        <div class="text-4xl font-extrabold tracking-tight">Add Infrastructure</div>
+    </div>
+    <div class="sm:col-span-6 flex flex-col flex-auto p-6 bg-white shadow-lg rounded-2xl overflow-hidden mt-8">
+        <div class="flex flex-col flex-auto mt-2 overflow-x-auto">
+            <form (ngSubmit)="onSubmit()" [formGroup]="infraForm" class="space-y-6">
+                <div class="text-lg font-semibold">Add your Infrastructure Details</div>
+                <div class="text-gray-600 mb-6">Add your infrastructure details here to manage and deploy your resources effectively.</div>
+
+                <div class="flex flex-col space-y-6">
+                    <mat-form-field appearance="outline" class="w-full" [ngClass]="{'error': infraForm.get('title').invalid && infraForm.get('title').touched}">
+                        <mat-label>Title</mat-label>
+                        <input matInput formControlName="title" placeholder="Enter Title">
+                        <mat-icon matPrefix>cloud_upload</mat-icon>
+                        <mat-error *ngIf="infraForm.get('title').invalid && infraForm.get('title').touched">Title is required</mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" class="w-full" [ngClass]="{'error': infraForm.get('description').invalid && infraForm.get('description').touched}">
+                        <mat-label>Description</mat-label>
+                        <textarea matInput formControlName="description" placeholder="Enter Description"></textarea>
+                        <mat-icon matPrefix>category</mat-icon>
+                        <mat-error *ngIf="infraForm.get('description').invalid && infraForm.get('description').touched">Description is required</mat-error>
+                    </mat-form-field>
+
+
+
+                    <div class="flex flex-col space-y-4">
+                        <div class="upload-container">
+                            <label for="image" class="upload-label">Cover photo</label>
+                            <div class="upload-box" (click)="triggerFileInput('image')">
+                                <mat-icon class="upload-icon">photo</mat-icon>
+                                <span>{{ selectedImage ? selectedImage.name : 'Upload a file or drag and drop' }}</span>
+                                <span class="upload-subtext">PNG, JPG, GIF up to 10MB</span>
+                            </div>
+                            <input type="file" id="image" (change)="onImageSelected($event)" class="upload-input">
+                            <mat-error *ngIf="infraForm.get('image').invalid && infraForm.get('image').touched">Image is required</mat-error>
+                        </div>
+
+                        <div class="upload-container">
+                            <label for="file" class="upload-label">Upload File</label>
+                            <div class="upload-box" (click)="triggerFileInput('file')">
+                                <mat-icon class="upload-icon">insert_drive_file</mat-icon>
+                                <span>{{ selectedFile ? selectedFile.name : 'Upload a file or drag and drop' }}</span>
+                                <span class="upload-subtext">Any file up to 10MB</span>
+                            </div>
+                            <input type="file" id="file" (change)="onFileSelected($event)" class="upload-input">
+                            <mat-error *ngIf="infraForm.get('file').invalid && infraForm.get('file').touched">File is required</mat-error>
+                        </div>
+                        <div formArrayName="steps" class="space-y-4">
+                            <div *ngFor="let step of steps.controls; let i=index" [formGroupName]="i" class="step-card flex items-center space-x-2">
+                                <mat-form-field appearance="outline" class="flex-auto">
+                                    <mat-label>Step {{ i + 1 }}</mat-label>
+                                    <input matInput formControlName="step" placeholder="Enter Step">
+                                </mat-form-field>
+                                <button type="button" mat-icon-button color="warn" (click)="removeStep(i)">
+                                    <mat-icon>remove_circle</mat-icon>
+                                </button>
+                            </div>
+                            <button type="button" mat-raised-button color="primary" (click)="addStep()">Add Step</button>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end mt-6">
+                        <button mat-raised-button color="primary" type="submit">Add Infrastructure</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
