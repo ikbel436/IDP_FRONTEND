@@ -1,0 +1,28 @@
+.form-container {
+    width: 600px; /* Adjust width as needed */
+    max-height: 90vh; /* Ensure the dialog doesn't exceed viewport height */
+    display: flex;
+    flex-direction: column;
+    padding: 0; /* Remove padding from the container */
+    
+    .header {
+      background-color: #3f51b5; // Example color, change to match your theme
+      color: #fff; // Text color on primary background
+      border-top-left-radius: 8px;
+      border-top-right-radius: 8px;
+    }
+  
+    .mat-form-field {
+      width: 100%;
+      margin-bottom: 8px; /* Reduce the space between fields */
+    }
+  
+    .mat-dialog-actions {
+      justify-content: flex-end;
+    }
+  
+    form {
+      padding: 0 16px 16px 16px; /* Add padding only to the content inside the form */
+    }
+  }
+  

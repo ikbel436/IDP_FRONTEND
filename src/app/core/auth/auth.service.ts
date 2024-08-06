@@ -267,7 +267,14 @@ export class AuthService {
       })
     );
   }
-
+  signUpAdmin(user: any): Observable<any> {
+    const url = `${this.apiUrl}/register`;
+    return this._httpClient.post(url, user).pipe(
+      catchError((error: HttpErrorResponse) => {
+        return throwError(error);
+      })
+    );
+  }
   /**
  * The `handleError` function in TypeScript logs an error and returns an Observable that emits the
  * error.
